@@ -10,11 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\User\" />
-    <Folder Include="Controllers\Organization\" />
     <Folder Include="Models\User\" />
-    <Folder Include="Models\Organization\" />
-    <Folder Include="Repository\User\" />
-    <Folder Include="Repository\Organization\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="swashbuckle.aspnetcore" Version="5.6.1" />

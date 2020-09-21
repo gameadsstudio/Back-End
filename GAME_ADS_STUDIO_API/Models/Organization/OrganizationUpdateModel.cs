@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace GAME_ADS_STUDIO_API.Models.Organization
 {
-    public class OrganizationModel
+    public class OrganizationUpdateModel
     {
-        public uint Id { get; set; }
         public string Name { get; set; }
+
+        [EmailAddress]
         public string PublicEmail { get; set; }
+
+        [EmailAddress]
         public string PrivateEmail { get; set; }
         public string Localization { get; set; }
         public string LogoUrl { get; set; }
@@ -17,7 +21,5 @@ namespace GAME_ADS_STUDIO_API.Models.Organization
         public string Type { get; set; }
         public string State { get; set; }
         public string DefaultAuthorization { get; set; }
-        public DateTimeOffset CreationDate { get; set; }
-        public DateTimeOffset ModificationDate { get; set; }
     }
 }

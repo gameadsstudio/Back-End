@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GAME_ADS_STUDIO_API.Data.User;
+using GAME_ADS_STUDIO_API.Repositories.User;
 using GAME_ADS_STUDIO_API.Models.User;
 using Microsoft.AspNetCore.Mvc;
 

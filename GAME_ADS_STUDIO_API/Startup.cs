@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using GAME_ADS_STUDIO_API.Configuration;
+using GAME_ADS_STUDIO_API.Contexts;
 
 namespace GAME_ADS_STUDIO_API
 {
@@ -29,6 +31,9 @@ namespace GAME_ADS_STUDIO_API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettingsSection = Configuration.GetSection("Application");
+            services.Configure<AppSettings>(appSettingsSection);
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
