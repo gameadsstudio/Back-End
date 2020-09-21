@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GAME_ADS_STUDIO_API.Business.Organization;
+using GAME_ADS_STUDIO_API.Contexts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+
+using GAME_ADS_STUDIO_API.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using GAME_ADS_STUDIO_API.Models.Organization;
+
+namespace GAME_ADS_STUDIO_API.Controllers
+{
+    [Route("/api/organizations")]
+    [ApiController]
+    public class OrganizationController : ControllerBase
+    {
+        private readonly IOrganizationBusinessLogic _business;
+
+        public OrganizationController(IOptions<AppSettings> appSettings)
+        {
+            _business = new OrganizationBusinessLogic(appSettings);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var organizationGet = _business.GetOrganizationById(id);
+
+            if (organizationGet != null)
+                return Ok(organizationGet);
+            if (id < 0)
+                return BadRequest();
+            return NotFound("Organization not found.");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult Post([FromForm] OrganizationCreationModel newOrganization)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var success = _business.AddNewOrganization(newOrganization);
+
+            if (success != null)
+                return Created("Organizations", success);
+            return Conflict(new { message = "Couldn't create organization" });
+        }
+
+        [AllowAnonymous]
+        [HttpPatch("{id}")]
+        public IActionResult Patch(int id, [FromForm] OrganizationUpdateModel newOrganization)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var success = _business.UpdateOrganizationById(id, newOrganization);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => NotFound(),
+                _ => BadRequest()
+            };
+        }
+
+        [AllowAnonymous]
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromForm] OrganizationUpdateModel newOrganization)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var success = _business.UpdateOrganizationById(id, newOrganization);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => NotFound(),
+                _ => BadRequest()
+            };
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var success = _business.DeleteOrganizationById(id);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => Unauthorized(),
+                _ => BadRequest()
+            };
+        }
+    }
+}

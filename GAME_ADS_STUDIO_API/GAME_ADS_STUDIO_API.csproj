@@ -1,20 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
-
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\User\" />
-    <Folder Include="Models\User\" />
-    <Folder Include="Controllers\User\" />
+    <Compile Remove="Data\**" />
+    <Content Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
   </ItemGroup>
-
-
+  <ItemGroup>
+    <Folder Include="Controllers\User\" />
+    <Folder Include="Models\User\" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="swashbuckle.aspnetcore" Version="5.6.1" />
   </ItemGroup>
