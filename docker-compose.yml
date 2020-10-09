@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  gas-api:
+    build:
+      context: ./GAME_ADS_STUDIO_API
+    container_name: "gas-api"
+    ports:
+      - "5000:5000"
+      - "5001:5001"
