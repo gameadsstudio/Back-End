@@ -41,6 +41,9 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
 
         public OrganizationModel GetOrganizationById(int id)
         {
+            if (id < 0)
+                return null;
+
             var organization = new OrganizationModel();
 
             organization.Id = (uint)id;
