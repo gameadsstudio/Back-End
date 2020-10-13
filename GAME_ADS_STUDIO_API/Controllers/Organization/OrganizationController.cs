@@ -118,14 +118,13 @@ namespace GAME_ADS_STUDIO_API.Controllers
         [HttpGet("{id}/users")]
         public IActionResult GetOrganizationUsers(int id)
         {
-            var success = _business.GetOrganizationUsers(id);
+            var users = _business.GetOrganizationUsers(id);
 
-            return success switch
-            {
-                1 => (IActionResult)Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            if (users != null)
+                return Ok(users);
+            if (id < 0)
+                return BadRequest();
+            return NotFound("Organization not found.");
         }
 
         [AllowAnonymous]
@@ -136,7 +135,7 @@ namespace GAME_ADS_STUDIO_API.Controllers
 
             return success switch
             {
-                1 => (IActionResult)Ok(),
+                1 => (IActionResult)Ok("Deleted user from organization successfully"),
                 2 => Unauthorized(),
                 _ => BadRequest()
             };

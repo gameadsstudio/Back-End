@@ -8,6 +8,7 @@ using GAME_ADS_STUDIO_API.Configuration;
 using GAME_ADS_STUDIO_API.Contexts;
 using Microsoft.Extensions.Options;
 using GAME_ADS_STUDIO_API.Models.Organization;
+using GAME_ADS_STUDIO_API.Models.User;
 
 namespace GAME_ADS_STUDIO_API.Business.Organization
 {
@@ -58,9 +59,12 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         {
             return 1;
         }
-        public int GetOrganizationUsers(int id)
+        public List<UserModel> GetOrganizationUsers(int id)
         {
-            return 1;
+            List<UserModel> users = new List<UserModel>();
+            users.Add(new UserModel { Id = 1, Username = "JohnnyBoy", Firstname = "John", Lastname = "Doe" });
+            users.Add(new UserModel { Id = 2, Username = "Jane", Firstname = "Jane", Lastname = "Doe" });
+            return users;
         }
         public int DeleteUserFromOrganization(int id, int userId)
         {

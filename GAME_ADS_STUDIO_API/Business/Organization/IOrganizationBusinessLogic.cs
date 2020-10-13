@@ -1,4 +1,5 @@
 ﻿using GAME_ADS_STUDIO_API.Models.Organization;
+using GAME_ADS_STUDIO_API.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         int UpdateOrganizationById(int id, OrganizationUpdateModel updatedOrganization);
         int DeleteOrganizationById(int id);
         int AddUserToOrganization(int id, int userId);
-        int GetOrganizationUsers(int id);
+        List<UserModel> GetOrganizationUsers(int id);
         int DeleteUserFromOrganization(int id, int userId);
     }
 }
