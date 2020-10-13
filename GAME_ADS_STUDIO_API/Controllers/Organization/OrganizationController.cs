@@ -99,5 +99,47 @@ namespace GAME_ADS_STUDIO_API.Controllers
                 _ => BadRequest()
             };
         }
+
+        [AllowAnonymous]
+        [HttpPost("{id}/users/{userId}")]
+        public IActionResult AddUserToOrganization(int id, int userId)
+        {
+            var success = _business.AddUserToOrganization(id, userId);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => Unauthorized(),
+                _ => BadRequest()
+            };
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/users")]
+        public IActionResult GetOrganizationUsers(int id)
+        {
+            var success = _business.GetOrganizationUsers(id);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => Unauthorized(),
+                _ => BadRequest()
+            };
+        }
+
+        [AllowAnonymous]
+        [HttpDelete("{id}/users/{userId}")]
+        public IActionResult DeleteUserFromOrganization(int id, int userId)
+        {
+            var success = _business.DeleteUserFromOrganization(id, userId);
+
+            return success switch
+            {
+                1 => (IActionResult)Ok(),
+                2 => Unauthorized(),
+                _ => BadRequest()
+            };
+        }
     }
 }

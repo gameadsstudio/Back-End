@@ -42,7 +42,7 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         {
             var organization = new OrganizationModel();
 
-            organization.Id = (uint) id;
+            organization.Id = (uint)id;
             organization.Name = "foobar";
             organization.Type = "Advertiser";
 
@@ -50,6 +50,19 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         }
 
         public int UpdateOrganizationById(int id, OrganizationUpdateModel updatedOrganization)
+        {
+            return 1;
+        }
+
+        public int AddUserToOrganization(int id, int userId)
+        {
+            return 1;
+        }
+        public int GetOrganizationUsers(int id)
+        {
+            return 1;
+        }
+        public int DeleteUserFromOrganization(int id, int userId)
         {
             return 1;
         }

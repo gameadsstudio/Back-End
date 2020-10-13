@@ -12,5 +12,8 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         OrganizationModel GetOrganizationById(int id);
         int UpdateOrganizationById(int id, OrganizationUpdateModel updatedOrganization);
         int DeleteOrganizationById(int id);
+        int AddUserToOrganization(int id, int userId);
+        int GetOrganizationUsers(int id);
+        int DeleteUserFromOrganization(int id, int userId);
     }
 }
