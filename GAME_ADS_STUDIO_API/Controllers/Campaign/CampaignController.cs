@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GAME_ADS_STUDIO_API.Business.User;
+using GAME_ADS_STUDIO_API.Business.Campaign;
 using GAME_ADS_STUDIO_API.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,56 +10,43 @@ using Microsoft.Extensions.Options;
 
 using GAME_ADS_STUDIO_API.Configuration;
 using Microsoft.AspNetCore.Authorization;
-using GAME_ADS_STUDIO_API.Models.User;
+using GAME_ADS_STUDIO_API.Models.Campaign;
 
-namespace GAME_ADS_STUDIO_API.Controllers
+namespace Campaign_ADS_STUDIO_API.Controllers.Campaign
 {
-    [Route("/api/user")]
+    [Route("/api/Campaign")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class CampaignController : ControllerBase
     {
-        private readonly IUserBusinessLogic _business;
+        private readonly ICampaignBusinessLogic _business;
 
-        public UserController(IOptions<AppSettings> appSettings)
+        public CampaignController(IOptions<AppSettings> appSettings)
         {
-            _business = new UserBusinessLogic(appSettings);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            var UserGet = _business.GetUserById(id);
-
-            if (UserGet != null)
-                return Ok(UserGet);
-            if (id < 0)
-                return BadRequest();
-            return NotFound("User not found.");
+            _business = new CampaignBusinessLogic(appSettings);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromForm] UserCreationModel newUser)
+        public IActionResult Post([FromForm] CampaignCreationModel newCampaign)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.AddNewUser(newUser);
+            var success = _business.AddNewCampaign(newCampaign);
 
             if (success != null)
-                return Created("User", success);
-            return Conflict(new { message = "Couldn't create User" });
+                return Created("Campaign", success);
+            return Conflict(new { message = "Couldn't create Campaign" });
         }
 
         [AllowAnonymous]
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromForm] UserUpdateModel newUser)
+        public IActionResult Patch(int id, [FromForm] CampaignUpdateModel newCampaign)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.UpdateUserById(id, newUser);
+            var success = _business.UpdateCampaignById(id, newCampaign);
 
             return success switch
             {
@@ -71,12 +58,12 @@ namespace GAME_ADS_STUDIO_API.Controllers
 
         [AllowAnonymous]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromForm] UserUpdateModel newUser)
+        public IActionResult Put(int id, [FromForm] CampaignUpdateModel newCampaign)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.UpdateUserById(id, newUser);
+            var success = _business.UpdateCampaignById(id, newCampaign);
 
             return success switch
             {
@@ -90,7 +77,7 @@ namespace GAME_ADS_STUDIO_API.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var success = _business.DeleteUserById(id);
+            var success = _business.DeleteCampaignById(id);
 
             return success switch
             {

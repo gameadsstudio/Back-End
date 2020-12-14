@@ -5,7 +5,9 @@ namespace GAME_ADS_STUDIO_API.Repositories.User
 { 
     public interface IUserRepository
     {
-        IEnumerable<UserModel> GetUsers();
+        int AddNewUser(UserModel User);
         UserModel GetUserById(int id);
+        int UpdateUser(UserModel updatedUser, UserModel targetUser);
+        int DeleteUser(UserModel User);
     }
 }

@@ -11,6 +11,15 @@
   <ItemGroup>
     <Folder Include="Controllers\User\" />
     <Folder Include="Models\User\" />
+    <Folder Include="Business\User\" />
+    <Folder Include="Models\Game\" />
+    <Folder Include="Controllers\Game\" />
+    <Folder Include="Business\Game\" />
+    <Folder Include="Repositories\Game\" />
+    <Folder Include="Repositories\Campaign\" />
+    <Folder Include="Models\Campaign\" />
+    <Folder Include="Controllers\Campaign\" />
+    <Folder Include="Business\Campaign\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="swashbuckle.aspnetcore" Version="5.6.1" />

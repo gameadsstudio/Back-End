@@ -22,8 +22,14 @@ namespace GAME_ADS_STUDIO_API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseUrls();
-                    webBuilder.UseKestrel();
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+
+                        serverOptions.Limits.MaxConcurrentConnections = 100;
+                        serverOptions.Limits.MaxRequestBodySize = 10 * 1024;
+
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }

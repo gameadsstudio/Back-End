@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GAME_ADS_STUDIO_API.Business.User;
+using GAME_ADS_STUDIO_API.Business.Game;
 using GAME_ADS_STUDIO_API.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,56 +10,42 @@ using Microsoft.Extensions.Options;
 
 using GAME_ADS_STUDIO_API.Configuration;
 using Microsoft.AspNetCore.Authorization;
-using GAME_ADS_STUDIO_API.Models.User;
-
-namespace GAME_ADS_STUDIO_API.Controllers
+using GAME_ADS_STUDIO_API.Models.Game;
+namespace GAME_ADS_STUDIO_API.Controllers.Game
 {
-    [Route("/api/user")]
+    [Route("/api/game")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class GameController : ControllerBase
     {
-        private readonly IUserBusinessLogic _business;
+        private readonly IGameBusinessLogic _business;
 
-        public UserController(IOptions<AppSettings> appSettings)
+        public GameController(IOptions<AppSettings> appSettings)
         {
-            _business = new UserBusinessLogic(appSettings);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            var UserGet = _business.GetUserById(id);
-
-            if (UserGet != null)
-                return Ok(UserGet);
-            if (id < 0)
-                return BadRequest();
-            return NotFound("User not found.");
+            _business = new GameBusinessLogic(appSettings);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromForm] UserCreationModel newUser)
+        public IActionResult Post([FromForm] GameCreationModel newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.AddNewUser(newUser);
+            var success = _business.AddNewGame(newGame);
 
             if (success != null)
-                return Created("User", success);
-            return Conflict(new { message = "Couldn't create User" });
+                return Created("Game", success);
+            return Conflict(new { message = "Couldn't create Game" });
         }
 
         [AllowAnonymous]
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromForm] UserUpdateModel newUser)
+        public IActionResult Patch(int id, [FromForm] GameUpdateModel newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.UpdateUserById(id, newUser);
+            var success = _business.UpdateGameById(id, newGame);
 
             return success switch
             {
@@ -71,12 +57,12 @@ namespace GAME_ADS_STUDIO_API.Controllers
 
         [AllowAnonymous]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromForm] UserUpdateModel newUser)
+        public IActionResult Put(int id, [FromForm] GameUpdateModel newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.UpdateUserById(id, newUser);
+            var success = _business.UpdateGameById(id, newGame);
 
             return success switch
             {
@@ -90,7 +76,7 @@ namespace GAME_ADS_STUDIO_API.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var success = _business.DeleteUserById(id);
+            var success = _business.DeleteGameById(id);
 
             return success switch
             {

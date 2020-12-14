@@ -177,5 +177,8 @@ namespace GameAdsStudio.IntegrationTests
             var response = await _client.DeleteAsync(requestUri: "api/organizations/{id}/users/{userId}".Replace("{id}", "1").Replace("{userId}", "1"));
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+
+
     }
 }

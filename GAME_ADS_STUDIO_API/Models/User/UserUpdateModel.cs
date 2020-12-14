@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GAME_ADS_STUDIO_API.Models.User
 {
-    public class UserModel
+    public class UserUpdateModel
     {
-        public uint Id { get; set; }
+        [EmailAddress]
         public string Username { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
@@ -13,7 +17,5 @@ namespace GAME_ADS_STUDIO_API.Models.User
         public string Level { get; set; }
         public string Status { get; set; }
         public string Date_status { get; set; }
-        public DateTimeOffset Date_creation { get; set; }
-        public DateTimeOffset Date_update { get; set; }
     }
 }
