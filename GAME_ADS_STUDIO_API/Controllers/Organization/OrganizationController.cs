@@ -20,14 +20,21 @@ namespace GAME_ADS_STUDIO_API.Controllers
     {
         private readonly IOrganizationBusinessLogic _business;
 
-        public OrganizationController(IOptions<AppSettings> appSettings)
+        public OrganizationController(GasContext context, IOptions<AppSettings> appSettings)
         {
-            _business = new OrganizationBusinessLogic(appSettings);
+            _business = new OrganizationBusinessLogic(context, appSettings);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult getOrganizations([FromQuery] int offset, [FromQuery] int limit)
+        {
+            return Ok(_business.GetOrganizations(offset, limit));
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetOrganizationById(int id)
         {
             var organizationGet = _business.GetOrganizationById(id);
 

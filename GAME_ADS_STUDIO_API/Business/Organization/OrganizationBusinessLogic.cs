@@ -17,26 +17,23 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
         private readonly IOrganizationRepository _repository;
         private readonly AppSettings _appSettings;
 
-        public OrganizationBusinessLogic(IOptions<AppSettings> appSettings)
+        public OrganizationBusinessLogic(GasContext context, IOptions<AppSettings> appSettings)
         {
-            //_repository = new OrganizationRepository(context);
+            _repository = new OrganizationRepository(context);
             _appSettings = appSettings.Value;
         }
 
         public OrganizationModel AddNewOrganization(OrganizationCreationModel newOrganization)
         {
-            var organization = new OrganizationModel();
 
-            organization.Name = newOrganization.Name;
-            organization.PrivateEmail = newOrganization.PrivateEmail;
-            organization.Type = newOrganization.Type;
+            var organization = new OrganizationModel { org_name = newOrganization.org_name, org_email_private = newOrganization.org_email_private, org_type = newOrganization.org_type };
 
-            return organization;
+            return _repository.AddNewOrganization(organization) == 1 ? organization : null;
         }
 
-        public int DeleteOrganizationById(int id)
+        public OrganizationPublicModel[] GetOrganizations(int offset, int limit)
         {
-            return 1;
+            return _repository.GetOrganizations(offset, limit);
         }
 
         public OrganizationModel GetOrganizationById(int id)
@@ -44,19 +41,66 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
             if (id < 0)
                 return null;
 
-            var organization = new OrganizationModel();
-
-            organization.Id = (uint)id;
-            organization.Name = "foobar";
-            organization.Type = "Advertiser";
+            var organization = _repository.GetOrganizationById(id);
 
             return organization;
         }
 
         public int UpdateOrganizationById(int id, OrganizationUpdateModel updatedOrganization)
         {
-            return 1;
+            var target = _repository.GetOrganizationById(id);
+
+            if (target == null)
+                return 2;
+            if (updatedOrganization == null)
+                return 0;
+
+            if (updatedOrganization.media_id == null)
+                updatedOrganization.media_id = target.media_id;
+
+            if (updatedOrganization.org_name == null)
+                updatedOrganization.org_name = target.org_name;
+
+            if (updatedOrganization.org_email == null)
+                updatedOrganization.org_email = target.org_email;
+
+            if (updatedOrganization.org_email_private == null)
+                updatedOrganization.org_email_private = target.org_email_private;
+
+            if (updatedOrganization.org_city == null)
+                updatedOrganization.org_city = target.org_city;
+
+            if (updatedOrganization.org_address == null)
+                updatedOrganization.org_address = target.org_address;
+
+            if (updatedOrganization.org_url == null)
+                updatedOrganization.org_url = target.org_url;
+
+            if (updatedOrganization.org_type == null)
+                updatedOrganization.org_type = target.org_type;
+
+            if (updatedOrganization.org_status == null)
+                updatedOrganization.org_status = target.org_status;
+
+            if (updatedOrganization.org_level_default == null)
+                updatedOrganization.org_level_default = target.org_level_default;
+
+            return _repository.UpdateOrganization(updatedOrganization, target);
         }
+
+        public int DeleteOrganizationById(int id)
+        {
+            if (id < 0)
+                return 0;
+
+            var organization = _repository.GetOrganizationById(id);
+
+            if (organization == null)
+                return 0;
+
+            return _repository.DeleteOrganization(organization);
+        }
+
 
         public int AddUserToOrganization(int id, int userId)
         {

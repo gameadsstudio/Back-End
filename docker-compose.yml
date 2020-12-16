@@ -8,3 +8,8 @@ services:
     ports:
       - "80:5000"
       - "443:5001"
+
+networks:
+  default:
+    external:
+      name: back-tier

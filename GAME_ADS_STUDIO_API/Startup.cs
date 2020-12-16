@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using GAME_ADS_STUDIO_API.Configuration;
 using GAME_ADS_STUDIO_API.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace GAME_ADS_STUDIO_API
 {
@@ -22,15 +23,15 @@ namespace GAME_ADS_STUDIO_API
         {
             Configuration = configuration;
         }
-
-
-
-
         public IConfiguration Configuration { get; }
 
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<GasContext>(options =>
+                  options.UseSqlServer(Configuration.GetConnectionString("Database")));
+
+
             var appSettingsSection = Configuration.GetSection("Application");
             services.Configure<AppSettings>(appSettingsSection);
 

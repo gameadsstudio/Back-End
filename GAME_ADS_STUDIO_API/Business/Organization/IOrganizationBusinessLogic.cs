@@ -10,6 +10,7 @@ namespace GAME_ADS_STUDIO_API.Business.Organization
     interface IOrganizationBusinessLogic
     {
         OrganizationModel AddNewOrganization(OrganizationCreationModel newOrganization);
+        OrganizationPublicModel[] GetOrganizations(int offset, int limit);
         OrganizationModel GetOrganizationById(int id);
         int UpdateOrganizationById(int id, OrganizationUpdateModel updatedOrganization);
         int DeleteOrganizationById(int id);

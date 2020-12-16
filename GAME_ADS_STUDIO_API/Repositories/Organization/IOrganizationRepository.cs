@@ -6,8 +6,9 @@ namespace GAME_ADS_STUDIO_API.Repositories.Organization
     public interface IOrganizationRepository
     {
         int AddNewOrganization(OrganizationModel organization);
+        OrganizationPublicModel[] GetOrganizations(int offset, int limit);
         OrganizationModel GetOrganizationById(int id);
-        int UpdateOrganization(OrganizationModel updatedOrganization, OrganizationModel targetOrganization);
+        int UpdateOrganization(OrganizationUpdateModel updatedOrganization, OrganizationModel targetOrganization);
         int DeleteOrganization(OrganizationModel organization);
     }
 }

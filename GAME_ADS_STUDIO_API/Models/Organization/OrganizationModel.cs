@@ -7,17 +7,19 @@ namespace GAME_ADS_STUDIO_API.Models.Organization
 {
     public class OrganizationModel
     {
-        public uint Id { get; set; }
-        public string Name { get; set; }
-        public string PublicEmail { get; set; }
-        public string PrivateEmail { get; set; }
-        public string Localization { get; set; }
-        public string LogoUrl { get; set; }
-        public string WebsiteUrl { get; set; }
-        public string Type { get; set; }
-        public string State { get; set; }
-        public string DefaultAuthorization { get; set; }
-        public DateTimeOffset CreationDate { get; set; }
-        public DateTimeOffset ModificationDate { get; set; }
+        public uint org_id { get; set; }
+        public uint media_id { get; set; }
+        public string org_name { get; set; }
+        public string org_email { get; set; }
+        public string org_email_private { get; set; }
+        public string org_city { get; set; }
+        public string org_address { get; set; }
+        public string org_url { get; set; }
+        public string org_type { get; set; }
+        public string org_status { get; set; }
+        public int org_level_default { get; set; }
+        public DateTimeOffset org_date_status { get; set; }
+        public DateTimeOffset org_date_creation { get; set; }
+        public DateTimeOffset org_date_update { get; set; }
     }
 }
