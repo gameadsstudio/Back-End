@@ -14,7 +14,7 @@ using GAME_ADS_STUDIO_API.Models.Campaign;
 
 namespace Campaign_ADS_STUDIO_API.Controllers.Campaign
 {
-    [Route("/api/Campaign")]
+    [Route("/api/campaign")]
     [ApiController]
     public class CampaignController : ControllerBase
     {

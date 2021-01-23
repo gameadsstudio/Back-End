@@ -179,6 +179,81 @@ namespace GameAdsStudio.IntegrationTests
         }
 
 
+        [Fact]
+        public async Task PostValidUser()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Username", "test@test.fr"),
+                new KeyValuePair<string, string>("Firstname", "test"),
+                new KeyValuePair<string, string>("Lastname", "testeee"),
+            }
+            );
 
+            var response = await _client.PostAsync(requestUri: "api/user", formContent);
+
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Fact]
+        public async Task PostIncompleteUserRequest()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Firstname", "test"),
+                new KeyValuePair<string, string>("Lastname", "testeee"),
+            }
+            );
+
+            var response = await _client.PostAsync(requestUri: "api/user", formContent);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task PostUserInvalidEmail()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Username", "ttes"),
+                new KeyValuePair<string, string>("Firstname", "test"),
+                new KeyValuePair<string, string>("Lastname", "testeee"),
+            }
+            );
+
+            var response = await _client.PostAsync(requestUri: "api/user", formContent);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task PutValidUser()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Username", "test@test.fr"),
+                new KeyValuePair<string, string>("Firstname", "test"),
+                new KeyValuePair<string, string>("Lastname", "testeee"),
+            }
+            );
+
+            var response = await _client.PutAsync(requestUri: "api/user/{id}".Replace("{id}", "1"), formContent);
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task PutIncompleteUserRequest()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>(null, null),
+            }
+            );
+
+            var response = await _client.PutAsync(requestUri: "api/user/{id}".Replace("{id}", "1"), formContent);
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
     }
 }

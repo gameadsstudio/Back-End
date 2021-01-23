@@ -32,7 +32,7 @@ namespace GAME_ADS_STUDIO_API.Business.Campaign
             Campaign.Cpg_age_max = newCampaign.Cpg_age_max;
             Campaign.Cpg_type = newCampaign.Cpg_type;
             Campaign.Cpg_status = newCampaign.Cpg_status;
-            Campaign.Cpg_date_begin = newCampaign.Cpg_date_end;
+            Campaign.Cpg_date_begin = newCampaign.Cpg_date_begin;
             Campaign.Cpg_date_end = newCampaign.Cpg_date_end;
             Campaign.Cpg_date_creation = DateTime.Now;
             Campaign.Cpg_date_update = DateTime.Now;
