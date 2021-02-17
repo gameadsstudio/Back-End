@@ -1,11 +1,37 @@
 version: "3"
 
-# comment to trigger auto deploy
-
 services:
     gas-api:
         build:
             context: ./GAME_ADS_STUDIO_API
-        container_name: "gas-api"
         ports:
             - "8081:5000"
+        restart: unless-stopped
+
+    gas-db:
+        image: postgres:13.1-alpine
+        restart: unless-stopped
+        environment:
+            - POSTGRES_DB=${GAS_POSTGRES_DB}
+            - POSTGRES_USER=${GAS_POSTGRES_USERNAME}
+            - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
+        volumes:
+            - aca-db-data:/var/lib/postgresql/data
+        command: -p ${GAS_POSTGRES_PORT}
+
+    gas-pgadmin:
+        image: dpage/pgadmin4
+        restart: always
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: root
+        ports:
+            - "5050:80"
+        logging:
+            driver: none
+
+volumes:
+    gas-db-data:
+        driver: local
+    pgadmin:
+        driver: local
