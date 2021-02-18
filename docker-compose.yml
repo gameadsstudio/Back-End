@@ -3,7 +3,7 @@ version: "3"
 services:
     gas-api:
         build:
-            context: ./game_ads_studio_api
+            context: ./api
         ports:
             - "8081:5000"
         restart: unless-stopped
