@@ -4,8 +4,10 @@ namespace api.Models.Game
 {
     public class GameUpdateModel
     {
-        public string GameName { get; set; }
-        public string GameStatus { get; set; }
-        public DateTimeOffset GameDateUpdate { get; set; }
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public string OrganizationId { get; set; }
+        public string MediaId { get; set; }
+        public DateTimeOffset DateLaunch { get; set; }
     }
 }

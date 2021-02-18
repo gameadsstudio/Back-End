@@ -5,12 +5,12 @@ namespace api.Models.Game
     public class GameModel
     {
         public Guid Id { get; set; }
-        public uint OrgId { get; set; }
-        public uint MediaId { get; set; }
-        public string GameName { get; set; }
-        public string GameStatus { get; set; }
-        public DateTimeOffset GameDateLaunch { get; set; }
-        public DateTimeOffset GameDateCreation { get; set; }
-        public DateTimeOffset GameDateUpdate { get; set; }
+        public Guid OrgId { get; set; }
+        public Guid MediaId { get; set; }
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public DateTimeOffset DateLaunch { get; set; }
+        public DateTimeOffset DateCreation { get; set; }
+        public DateTimeOffset DateUpdate { get; set; }
     }
 }

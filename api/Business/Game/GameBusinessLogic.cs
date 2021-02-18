@@ -22,13 +22,13 @@ namespace api.Business.Game
         {
             var game = new GameModel
             {
-                OrgId = newGame.OrgId,
-                MediaId = newGame.MediaId,
-                GameName = newGame.GameName,
-                GameStatus = newGame.GameStatus,
-                GameDateCreation = DateTime.Now,
-                GameDateLaunch = DateTime.Now,
-                GameDateUpdate = DateTime.Now
+                OrgId = Guid.Parse(newGame.OrganizationId),
+                MediaId = Guid.Parse(newGame.MediaId),
+                Name = newGame.Name,
+                Status = newGame.Status,
+                DateCreation = DateTime.Now,
+                DateLaunch = DateTime.Now,
+                DateUpdate = DateTime.Now
             };
 
             throw new NotImplementedException();

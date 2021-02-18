@@ -6,32 +6,27 @@ namespace api.Models.Campaign
     public class CampaignCreationModel
     {
         [Required]
-        public uint OrgId { get; set; }
+        public string OrganizationId { get; set; }
 
         [Required]
-        public string CpgName { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public string CpgAgeMin { get; set; }
+        public string AgeMin { get; set; }
 
         [Required]
-        public string CpgAgeMax { get; set; }
+        public string AgeMax { get; set; }
 
         [Required]
-        public string CpgType { get; set; }
+        public string Type { get; set; }
 
         [Required]
-        public string CpgStatus { get; set; }
+        public string Status { get; set; }
 
         [Required]
-        public DateTimeOffset CpgDateBegin { get; set; }
+        public DateTimeOffset DateBegin { get; set; }
 
         [Required]
-        public DateTimeOffset CpgDateEnd { get; set; }
-
-        [Required]
-        public DateTimeOffset CpgDateCreation { get; set; }
-
-        public DateTimeOffset CpgDateUpdate { get; set; }
+        public DateTimeOffset DateEnd { get; set; }
     }
 }

@@ -2,10 +2,12 @@ version: "3"
 
 services:
     gas-api:
+        depends_on:
+            -   gas-db
         build:
             context: ./api
         ports:
-            - "8081:5000"
+            - "8081:${GAS_PORT}"
         restart: unless-stopped
 
     gas-db:
@@ -16,17 +18,16 @@ services:
             - POSTGRES_USER=${GAS_POSTGRES_USERNAME}
             - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         volumes:
-            - aca-db-data:/var/lib/postgresql/data
-        command: -p ${GAS_POSTGRES_PORT}
+            - gas-db-data:/var/lib/postgresql/data
 
     gas-pgadmin:
         image: dpage/pgadmin4
-        restart: always
+        restart: unless-stopped
         environment:
-            PGADMIN_DEFAULT_EMAIL: admin@admin.com
-            PGADMIN_DEFAULT_PASSWORD: root
+            PGADMIN_DEFAULT_EMAIL: ${GAS_DB_ADMIN_MAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${GAS_DB_ADMIN_PASSWORD}
         ports:
-            - "5050:80"
+            - "5050:${GAS_DB_ADMIN_PORT}"
         logging:
             driver: none
 

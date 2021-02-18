@@ -44,6 +44,7 @@ node_modules/
 
 .vs/
 .vscode/
+.idea/
 
 *.csproj.user
 *.code-workspace
@@ -58,6 +59,4 @@ node_modules/
 *.seed
 *.swp
 
-# Ignore idea configuration
-
-.idea/
+.env

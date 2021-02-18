@@ -22,16 +22,16 @@ namespace api.Business.Campaign
         {
             var campaign = new CampaignModel
             {
-                OrgId = newCampaign.OrgId,
-                CpgName = newCampaign.CpgName,
-                CpgAgeMin = newCampaign.CpgAgeMin,
-                CpgAgeMax = newCampaign.CpgAgeMax,
-                CpgType = newCampaign.CpgType,
-                CpgStatus = newCampaign.CpgStatus,
-                CpgDateBegin = newCampaign.CpgDateBegin,
-                CpgDateEnd = newCampaign.CpgDateEnd,
-                CpgDateCreation = DateTime.Now,
-                CpgDateUpdate = DateTime.Now
+                OrgId = Guid.Parse(newCampaign.OrganizationId),
+                Name = newCampaign.Name,
+                AgeMin = newCampaign.AgeMin,
+                AgeMax = newCampaign.AgeMax,
+                Type = newCampaign.Type,
+                Status = newCampaign.Status,
+                DateBegin = newCampaign.DateBegin,
+                DateEnd = newCampaign.DateEnd,
+                DateCreation = DateTime.Now,
+                DateUpdate = DateTime.Now
             };
 
             throw new NotImplementedException();

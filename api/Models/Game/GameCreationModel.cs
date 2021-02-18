@@ -6,23 +6,18 @@ namespace api.Models.Game
     public class GameCreationModel
     {
         [Required]
-        public uint OrgId { get; set; }
+        public string OrganizationId { get; set; }
 
         [Required]
-        public uint MediaId { get; set; }
+        public string MediaId { get; set; }
 
         [Required]
-        public string GameName { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public string GameStatus { get; set; }
+        public string Status { get; set; }
 
         [Required]
-        public DateTimeOffset GameDateLaunch { get; set; }
-
-        [Required]
-        public DateTimeOffset GameDateCreation { get; set; }
-
-        public DateTimeOffset GameDateUpdate { get; set; }
+        public DateTimeOffset DateLaunch { get; set; }
     }
 }

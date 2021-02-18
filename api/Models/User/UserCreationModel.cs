@@ -17,5 +17,7 @@ namespace api.Models.User
         [Required]
         public string Lastname { get; set; }
 
+        [Required]
+        public string Password { get; set; }
     }
 }

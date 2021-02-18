@@ -8,7 +8,6 @@ namespace api.Models.Organization
 
         [EmailAddress]
         public string PublicEmail { get; set; }
-
         [EmailAddress]
         public string PrivateEmail { get; set; }
         public string Localization { get; set; }

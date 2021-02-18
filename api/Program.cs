@@ -17,10 +17,8 @@ namespace api
                     webBuilder.UseUrls();
                     webBuilder.ConfigureKestrel(serverOptions =>
                     {
-
                         serverOptions.Limits.MaxConcurrentConnections = 100;
                         serverOptions.Limits.MaxRequestBodySize = 10 * 1024;
-
                     })
                     .UseStartup<Startup>();
                 });
