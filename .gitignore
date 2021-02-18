@@ -57,3 +57,7 @@ node_modules/
 *.pid
 *.seed
 *.swp
+
+# Ignore idea configuration
+
+.idea/

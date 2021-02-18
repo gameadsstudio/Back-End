@@ -1,7 +1,5 @@
-using GAME_ADS_STUDIO_API;
-using GAME_ADS_STUDIO_API.Models.Organization;
+using game_ads_studio_api;
 using Microsoft.AspNetCore.Mvc.Testing;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;

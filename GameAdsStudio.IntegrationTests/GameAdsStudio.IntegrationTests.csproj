@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GAME_ADS_STUDIO_API\GAME_ADS_STUDIO_API.csproj" />
+    <ProjectReference Include="..\game_ads_studio_api\game_ads_studio_api.csproj" />
   </ItemGroup>
 
 </Project>
