@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace game_ads_studio_api.Controllers.User
 {
-    [Route("/api/user")]
+    [Route("/users")]
     [ApiController]
     public class UserController : ControllerBase
     {

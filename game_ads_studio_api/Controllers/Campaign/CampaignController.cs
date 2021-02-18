@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace game_ads_studio_api.Controllers.Campaign
 {
-    [Route("/api/campaign")]
+    [Route("/campaigns")]
     [ApiController]
     public class CampaignController : ControllerBase
     {

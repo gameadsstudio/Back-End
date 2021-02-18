@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace game_ads_studio_api.Controllers.Organization
 {
-    [Route("/api/organizations")]
+    [Route("/organizations")]
     [ApiController]
     public class OrganizationController : ControllerBase
     {
