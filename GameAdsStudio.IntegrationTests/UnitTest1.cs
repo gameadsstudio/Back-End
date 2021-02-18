@@ -1,4 +1,4 @@
-using game_ads_studio_api;
+using api;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http;
