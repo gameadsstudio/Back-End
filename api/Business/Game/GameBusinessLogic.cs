@@ -22,7 +22,7 @@ namespace api.Business.Game
         {
             var game = new GameModel
             {
-                OrgId = Guid.Parse(newGame.OrganizationId),
+                OrganizationId = Guid.Parse(newGame.OrganizationId),
                 MediaId = Guid.Parse(newGame.MediaId),
                 Name = newGame.Name,
                 Status = newGame.Status,

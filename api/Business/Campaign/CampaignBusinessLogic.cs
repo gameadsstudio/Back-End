@@ -22,7 +22,7 @@ namespace api.Business.Campaign
         {
             var campaign = new CampaignModel
             {
-                OrgId = Guid.Parse(newCampaign.OrganizationId),
+                OrganizationId = Guid.Parse(newCampaign.OrganizationId),
                 Name = newCampaign.Name,
                 AgeMin = newCampaign.AgeMin,
                 AgeMax = newCampaign.AgeMax,
