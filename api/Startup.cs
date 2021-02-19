@@ -26,7 +26,7 @@ namespace api
             services.AddControllers();
             services.AddDbContext<ApiContext>(p =>
                 p.UseNpgsql(
-                    $"Server={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Uid={Environment.GetEnvironmentVariable("GAS_POSGRES_USER")};Pwd={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};"));
+                    $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};"));
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Game Ads Studio API", Version = "v1" });
             });
