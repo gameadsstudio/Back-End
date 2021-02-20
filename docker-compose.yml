@@ -6,10 +6,14 @@ services:
             -   gas-db
         build:
             context: ./api
+        environment:
+            - GAS_DATABASE_SERVER=${GAS_DATABASE_SERVER}
+            - GAS_POSTGRES_DB=${GAS_POSTGRES_DB}
+            - GAS_POSTGRES_USER=${GAS_POSTGRES_USERNAME}
+            - GAS_POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         ports:
             - "5000:${GAS_PORT}"
         restart: unless-stopped
-
     gas-db:
         image: postgres:13.1-alpine
         restart: unless-stopped
