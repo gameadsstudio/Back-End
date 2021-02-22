@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers.Game
 {
-    [Route("/games")]
+    [Route("/v1/games")]
     [ApiController]
     public class GameController : ControllerBase
     {

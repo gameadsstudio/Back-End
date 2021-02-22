@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace api.Controllers.Campaign
 {
-    [Route("/campaigns")]
+    [Route("/v1/campaigns")]
     [ApiController]
     public class CampaignController : ControllerBase
     {

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace api.Controllers.Organization
 {
-    [Route("/organizations")]
+    [Route("/v1/organizations")]
     [ApiController]
     public class OrganizationController : ControllerBase
     {

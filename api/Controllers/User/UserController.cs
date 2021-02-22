@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace api.Controllers.User
 {
-    [Route("/users")]
+    [Route("/v1/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
