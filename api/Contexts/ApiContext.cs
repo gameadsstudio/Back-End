@@ -1,5 +1,4 @@
-﻿using System;
-using api.Models.Campaign;
+﻿using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.Organization;
 using api.Models.User;
