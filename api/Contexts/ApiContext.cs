@@ -1,4 +1,5 @@
-﻿using api.Models.Campaign;
+﻿using System;
+using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.Organization;
 using api.Models.User;
@@ -15,10 +16,10 @@ namespace api.Contexts
         {
         }
 
-        public virtual DbSet<UserModel> User { get; set; }
-        public virtual DbSet<CampaignModel> Campaign { get; set; }
-        public virtual DbSet<GameModel> Game { get; set; }
-        public virtual DbSet<OrganizationModel> Organization { get; set; }
+        public DbSet<UserModel> User { get; set; }
+        public DbSet<CampaignModel> Campaign { get; set; }
+        public DbSet<GameModel> Game { get; set; }
+        public DbSet<OrganizationModel> Organization { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
