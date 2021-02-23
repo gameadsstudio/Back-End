@@ -10,7 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\User\" />
-    <Folder Include="Migrations" />
     <Folder Include="Models\User\" />
     <Folder Include="Business\User\" />
     <Folder Include="Models\Game\" />

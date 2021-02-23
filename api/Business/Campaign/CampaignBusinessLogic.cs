@@ -2,6 +2,7 @@
 using api.Configuration;
 using api.Contexts;
 using api.Models.Campaign;
+using api.Models.Organization;
 using api.Repositories.Campaign;
 using Microsoft.Extensions.Options;
 
@@ -22,7 +23,6 @@ namespace api.Business.Campaign
         {
             var campaign = new CampaignModel
             {
-                OrganizationId = Guid.Parse(newCampaign.OrganizationId),
                 Name = newCampaign.Name,
                 AgeMin = newCampaign.AgeMin,
                 AgeMax = newCampaign.AgeMax,
@@ -31,7 +31,12 @@ namespace api.Business.Campaign
                 DateBegin = newCampaign.DateBegin,
                 DateEnd = newCampaign.DateEnd,
                 DateCreation = DateTime.Now,
-                DateUpdate = DateTime.Now
+                DateUpdate = DateTime.Now,
+                // TODO : fetch from org BL then add organization to this model
+                Organization = new OrganizationModel
+                {
+                    Id = Guid.Parse(newCampaign.OrganizationId)
+                }
             };
 
             throw new NotImplementedException();

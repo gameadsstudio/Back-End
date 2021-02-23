@@ -2,6 +2,7 @@
 using api.Configuration;
 using api.Contexts;
 using api.Models.Game;
+using api.Models.Organization;
 using api.Repositories.Game;
 using Microsoft.Extensions.Options;
 
@@ -22,13 +23,17 @@ namespace api.Business.Game
         {
             var game = new GameModel
             {
-                OrganizationId = Guid.Parse(newGame.OrganizationId),
                 MediaId = Guid.Parse(newGame.MediaId),
                 Name = newGame.Name,
                 Status = newGame.Status,
                 DateCreation = DateTime.Now,
                 DateLaunch = DateTime.Now,
-                DateUpdate = DateTime.Now
+                DateUpdate = DateTime.Now,
+                // TODO : fetch from OrganizationBL then add organization to this model
+                Organization = new OrganizationModel
+                {
+                    Id = Guid.Parse(newGame.OrganizationId)
+                }
             };
 
             throw new NotImplementedException();
