@@ -1,4 +1,5 @@
-﻿using api.Business.Organization;
+﻿using System.Net;
+using api.Business.Organization;
 using api.Configuration;
 using api.Contexts;
 using api.Models.Organization;
@@ -37,11 +38,14 @@ namespace api.Controllers.Organization
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var success = _business.AddNewOrganization(newOrganization);
+            var (organization, apiError) = _business.AddNewOrganization(newOrganization);
 
-            if (success != null)
-                return Created("Organizations", success);
-            return Conflict(new { message = "Couldn't create organization" });
+            if (apiError == null) return Created("", organization);
+            return apiError.StatusCode switch
+            {
+                HttpStatusCode.Conflict => Conflict(new {message = "Error : " + apiError.Message}),
+                _ => Created("", organization)
+            };
         }
 
         [AllowAnonymous]

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using api.Configuration;
 using api.Contexts;
+using api.Errors;
 using api.Models.Organization;
 using api.Models.User;
 using api.Repositories.Organization;
@@ -20,7 +22,7 @@ namespace api.Business.Organization
             _appSettings = appSettings.Value;
         }
 
-        public OrganizationModel AddNewOrganization(OrganizationCreationModel newOrganization)
+        public (OrganizationModel, ApiError) AddNewOrganization(OrganizationCreationModel newOrganization)
         {
             var organization = new OrganizationModel
             {
@@ -29,7 +31,13 @@ namespace api.Business.Organization
                 Type = newOrganization.Type
             };
 
-            throw new NotImplementedException();
+            // TODO : add authorization / authentication check + check for error
+
+            var repoOrg = _repository.AddNewOrganization(organization);
+            return repoOrg == null
+                ? ((OrganizationModel, ApiError)) (null,
+                    new ApiError(HttpStatusCode.Conflict, "Error while inserting in database"))
+                : (repoOrg, null);
         }
 
         public int DeleteOrganizationById(string id)
@@ -39,7 +47,8 @@ namespace api.Business.Organization
 
         public OrganizationModel GetOrganizationById(string id)
         {
-            throw new NotImplementedException();
+            // Todo : add auth check
+            return _repository.GetOrganizationById(id);
         }
 
         public OrganizationModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization)
@@ -52,7 +61,7 @@ namespace api.Business.Organization
         {
             throw new NotImplementedException();
         }
-        
+
         public List<UserModel> GetOrganizationUsers(string id)
         {
             throw new NotImplementedException();
