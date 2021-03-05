@@ -44,6 +44,7 @@ node_modules/
 
 .vs/
 .vscode/
+.idea/
 
 *.csproj.user
 *.code-workspace
@@ -57,3 +58,5 @@ node_modules/
 *.pid
 *.seed
 *.swp
+
+.env

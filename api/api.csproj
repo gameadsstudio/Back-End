@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <Content Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\User\" />
+    <Folder Include="Migrations" />
+    <Folder Include="Models\User\" />
+    <Folder Include="Business\User\" />
+    <Folder Include="Models\Game\" />
+    <Folder Include="Controllers\Game\" />
+    <Folder Include="Business\Game\" />
+    <Folder Include="Repositories\Game\" />
+    <Folder Include="Repositories\Campaign\" />
+    <Folder Include="Models\Campaign\" />
+    <Folder Include="Controllers\Campaign\" />
+    <Folder Include="Business\Campaign\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.2" />
+    <PackageReference Include="swashbuckle.aspnetcore" Version="5.6.1" />
+  </ItemGroup>
+</Project>

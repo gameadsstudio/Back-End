@@ -1,11 +1,45 @@
 version: "3"
 
-# comment to trigger auto deploy
-
 services:
     gas-api:
+        depends_on:
+            -   gas-db
         build:
-            context: ./GAME_ADS_STUDIO_API
-        container_name: "gas-api"
+            context: ./api
+        environment:
+            - GAS_DATABASE_SERVER=${GAS_DATABASE_SERVER}
+            - GAS_POSTGRES_DB=${GAS_POSTGRES_DB}
+            - GAS_POSTGRES_USER=${GAS_POSTGRES_USERNAME}
+            - GAS_POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
+            - ASPNETCORE_ENVIRONMENT=${GAS_ENVIRONMENT}
         ports:
-            - "8081:5000"
+            - "5000:${GAS_PORT}"
+        restart: unless-stopped
+
+    gas-db:
+        image: postgres:13.1-alpine
+        restart: unless-stopped
+        environment:
+            - POSTGRES_DB=${GAS_POSTGRES_DB}
+            - POSTGRES_USER=${GAS_POSTGRES_USERNAME}
+            - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
+        volumes:
+            - gas-db-data:/var/lib/postgresql/data
+
+    gas-pgadmin:
+        image: dpage/pgadmin4
+        restart: unless-stopped
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${GAS_DB_ADMIN_MAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${GAS_DB_ADMIN_PASSWORD}
+            PGADMIN_LISTEN_PORT: 80
+        ports:
+            - "80:${GAS_DB_ADMIN_PORT}"
+        logging:
+            driver: none
+
+volumes:
+    gas-db-data:
+        driver: local
+    pgadmin:
+        driver: local
