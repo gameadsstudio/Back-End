@@ -7,15 +7,15 @@ namespace api.Models.User
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        
+
         [Required]
         public string Username { get; set; }
 
         [Required]
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         public string Password { get; set; }
