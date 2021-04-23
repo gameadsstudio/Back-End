@@ -13,9 +13,9 @@ namespace api.Models.User
 
         public string Username { get; set; } // TODO: check id needed
 
-        public string Firstname { get; set; }
+        public string FirstName { get; set; }
 
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
 
         public string Password { get; set; }
 

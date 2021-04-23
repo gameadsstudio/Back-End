@@ -22,7 +22,9 @@ namespace api.Business.User
         {
             var user = new UserModel
             {
-                Username = newUser.Username, Firstname = newUser.Firstname, Lastname = newUser.Lastname
+                Username = newUser.Username,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
             };
 
             throw new NotImplementedException();
