@@ -1,12 +1,14 @@
-﻿using api.Models.User;
+﻿using System;
+using api.Models.User;
 
 namespace api.Repositories.User
 { 
     public interface IUserRepository
     {
-        int AddNewUser(UserModel user);
-        UserModel GetUserById(int id);
-        int UpdateUser(UserModel updatedUser, UserModel targetUser);
+        UserModel AddNewUser(UserModel user);
+        UserModel GetUserById(Guid id);
+        UserPublicModel[] GetUsers(int offset, int limit);
+        UserModel UpdateUser(UserModel updatedUser, UserModel targetUser);
         int DeleteUser(UserModel user);
     }
 }
