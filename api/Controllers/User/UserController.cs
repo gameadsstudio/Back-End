@@ -1,7 +1,10 @@
-﻿using api.Business.User;
+﻿using System;
+using api.Business.User;
 using api.Configuration;
 using api.Contexts;
+using api.Helpers;
 using api.Models.User;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -14,43 +17,49 @@ namespace api.Controllers.User
     {
         private readonly IUserBusinessLogic _business;
 
-        public UserController(ApiContext context, IOptions<AppSettings> appSettings)
+        public UserController(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
         {
-            _business = new UserBusinessLogic(context, appSettings);
+            _business = new UserBusinessLogic(context, appSettings, mapper);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult GetUser(string id)
         {
-            var userGet = _business.GetUserById(id);
+            var user = _business.GetUserById(id);
 
-            if (userGet != null)
-                return Ok(userGet);
-            return NotFound("User not found.");
+            return Ok(new {status = 200, user = user});
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] PagingDto paging)
+        {
+            var users = _business.GetUsers(PagingHelper.Check(paging));
+
+            return Ok(new
+            {
+                status = 200,
+                paging.page,
+                paging.pageSize,
+                users
+            });
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromForm] UserCreationModel newUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var user = _business.AddNewUser(newUser);
 
-            var success = _business.AddNewUser(newUser);
+            return Created("User", new {status = 201, user = user});
 
-            if (success != null)
-                return Created("User", success);
-            return Conflict(new { message = "Couldn't create User" });
         }
 
         [AllowAnonymous]
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] UserUpdateModel newUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             return Ok(_business.UpdateUserById(id, newUser));
         }
 
@@ -58,9 +67,6 @@ namespace api.Controllers.User
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromForm] UserUpdateModel newUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             return Ok(_business.UpdateUserById(id, newUser));
         }
 
@@ -68,15 +74,9 @@ namespace api.Controllers.User
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var success = _business.DeleteUserById(id);
+            _business.DeleteUserById(id);
 
-            return success switch
-            {
-                1 => Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(new {status = 200,});
         }
-
     }
 }

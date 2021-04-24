@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using api.Contexts;
 using api.Models.User;
 
@@ -6,7 +7,6 @@ namespace api.Repositories.User
 {
     public class UserRepository : IUserRepository
     {
-
         private readonly ApiContext _context;
 
         public UserRepository(ApiContext context)
@@ -14,7 +14,33 @@ namespace api.Repositories.User
             _context = context;
         }
 
-        public int AddNewUser(UserModel user)
+        public UserModel GetUserById(Guid id)
+        {
+            return _context.User.SingleOrDefault(a => a.Id == id);
+        }
+
+        public UserPublicModel[] GetUsers(int offset, int limit)
+        {
+            return _context.User.OrderBy(p => p.Id)
+                .Select(p => new UserPublicModel
+                {
+                    Id = p.Id,
+                    Username = p.Username,
+                    Email = p.Email
+                })
+                .Skip(offset)
+                .Take(limit)
+                .ToArray();
+        }
+
+        public UserModel AddNewUser(UserModel user)
+        {
+            _context.User.Add(user);
+            _context.SaveChanges();
+            return user;
+        }
+
+        public UserModel UpdateUser(UserModel updatedUser, UserModel targetUser)
         {
             throw new NotImplementedException();
         }
@@ -23,16 +49,5 @@ namespace api.Repositories.User
         {
             throw new NotImplementedException();
         }
-
-        public UserModel GetUserById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int UpdateUser(UserModel updatedUser, UserModel targetUser)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
