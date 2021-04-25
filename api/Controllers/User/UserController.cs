@@ -53,7 +53,7 @@ namespace api.Controllers.User
         {
             var user = _business.AddNewUser(newUser);
 
-            return Created("User", new {status = 201, user = user});
+            return Created("User", new {status = 201, user});
         }
 
         [HttpPatch("{id}")]
