@@ -30,7 +30,18 @@ namespace api.Business.User
 
         public IUserModel GetUserById(string id, Claim currentUser)
         {
-            var user = _repository.GetUserById(Guid.Parse(id));
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var user = _repository.GetUserById(guid);
 
             if (user == null)
             {
@@ -43,6 +54,29 @@ namespace api.Business.User
             }
 
             return _mapper.Map(user, new UserPublicModel());
+        }
+
+        public object GetSelf(Claim currentUser)
+        {
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(currentUser.Value);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var user = _repository.GetUserById(guid);
+
+            if (user == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Value}");
+            }
+
+            return _mapper.Map(user, new UserPrivateModel());
         }
 
         public (int, int, int, UserPublicModel[]) GetUsers(PagingDto paging)
@@ -64,10 +98,8 @@ namespace api.Business.User
 
             if (_repository.GetUserByEmail(user.Email) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"User with email: {user.Email} already exists");
+                throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
             }
-
 
             user.Password = HashHelper.HashPassword(user.Password);
             var result = _repository.AddNewUser(user);
@@ -97,17 +129,13 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound,
-                    $"Couldn't find user with Id: {id}");
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
-
 
             if (user.Id.ToString() != currentUser.Value)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot modify another user's account");
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot modify another user's account");
             }
-
 
             if (updatedUser.Username != null && _repository.GetUserByUsername(updatedUser.Username) != null)
             {
@@ -115,19 +143,15 @@ namespace api.Business.User
                     $"User with username: {updatedUser.Username} already exists");
             }
 
-
             if (updatedUser.Email != null && _repository.GetUserByEmail(updatedUser.Email) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"User with email: {updatedUser.Email} already exists");
+                throw new ApiError(HttpStatusCode.Conflict, $"User with email: {updatedUser.Email} already exists");
             }
-
 
             if (updatedUser.Password != null)
             {
                 updatedUser.Password = HashHelper.HashPassword(user.Password);
             }
-
 
             user = _mapper.Map(updatedUser, user);
             var result = _repository.UpdateUser(user);
@@ -157,7 +181,6 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.Forbidden, "Invalid password");
             }
 
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -168,7 +191,6 @@ namespace api.Business.User
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
             return tokenHandler.WriteToken(token);
         }
     }
