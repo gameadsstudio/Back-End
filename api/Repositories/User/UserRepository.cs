@@ -50,14 +50,6 @@ namespace api.Repositories.User
             return user;
         }
 
-        // public UserModel UpdateUser(UserUpdateModel updatedUser, UserModel targetUser)
-        // {
-        //     
-        //     _context.Entry(targetUser).CurrentValues.SetValues(updatedUser);
-        //     _context.SaveChanges();
-        //     return targetUser;
-        // }
-        
         public UserModel UpdateUser(UserModel updatedUser)
         {
 
