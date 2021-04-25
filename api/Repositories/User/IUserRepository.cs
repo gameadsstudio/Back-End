@@ -12,5 +12,6 @@ namespace api.Repositories.User
         UserPublicModel[] GetUsers(int offset, int limit);
         UserModel UpdateUser(UserModel updatedUser, UserModel targetUser);
         int DeleteUser(UserModel user);
+        int CountUsers();
     }
 }

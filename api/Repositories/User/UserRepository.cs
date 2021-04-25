@@ -59,5 +59,10 @@ namespace api.Repositories.User
         {
             throw new NotImplementedException();
         }
+
+        public int CountUsers()
+        {
+            return _context.User.Count();
+        }
     }
 }
