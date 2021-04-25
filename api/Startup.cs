@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using api.Business.Tag;
 using api.Business.User;
 using api.Configuration;
 using api.Contexts;
@@ -90,7 +91,9 @@ namespace api
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            // Business Logic
             services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
