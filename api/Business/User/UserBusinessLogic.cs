@@ -121,34 +121,28 @@ namespace api.Business.User
         public string Login(UserLoginModel loginModel)
         {
             UserModel user = null;
+            
             if (EmailHelper.IsValidEmail(loginModel.Identifier))
                 user = _repository.GetUserByEmail(loginModel.Identifier);
             else
                 user = _repository.GetUserByUsername(loginModel.Identifier);
 
             if (user == null)
-                throw new ApiError(HttpStatusCode.NotFound,
-                    "Couldn't find user with given identifier");
+                throw new ApiError(HttpStatusCode.NotFound,"Couldn't find user with given identifier");
 
-            if (!HashHelper.ValidatePassword(loginModel.Password,
-                user.Password))
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Invalid password");
+            if (!HashHelper.ValidatePassword(loginModel.Password, user.Password))
+                throw new ApiError(HttpStatusCode.Forbidden,"Invalid password");
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new(ClaimTypes.NameIdentifier,
-                        user.Id.ToString())
-                }),
+                Subject = new ClaimsIdentity(new Claim[] {new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())}),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            
             return tokenHandler.WriteToken(token);
             ;
         }
