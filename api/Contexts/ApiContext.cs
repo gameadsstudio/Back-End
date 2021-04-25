@@ -3,6 +3,7 @@ using System.Linq;
 using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.Organization;
+using api.Models.Tag;
 using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ namespace api.Contexts
         public DbSet<CampaignModel> Campaign { get; set; }
         public DbSet<GameModel> Game { get; set; }
         public DbSet<OrganizationModel> Organization { get; set; }
+        public DbSet<TagModel> Tag { get; set; }
 
         public override int SaveChanges()
         {
@@ -34,7 +36,7 @@ namespace api.Contexts
                 }
                 entry.Property("DateUpdate").CurrentValue = (DateTimeOffset)saveTime;
             }
-            return base.SaveChanges(); 
+            return base.SaveChanges();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,11 @@ namespace api.Contexts
             });
 
             modelBuilder.Entity<OrganizationModel>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<TagModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
