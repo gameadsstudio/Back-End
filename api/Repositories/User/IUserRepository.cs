@@ -7,6 +7,8 @@ namespace api.Repositories.User
     {
         UserModel AddNewUser(UserModel user);
         UserModel GetUserById(Guid id);
+        UserModel GetUserByUsername(string username);
+        UserModel GetUserByEmail(string email);
         UserPublicModel[] GetUsers(int offset, int limit);
         UserModel UpdateUser(UserModel updatedUser, UserModel targetUser);
         int DeleteUser(UserModel user);
