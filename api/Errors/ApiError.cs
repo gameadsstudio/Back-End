@@ -1,11 +1,12 @@
+using System;
 using System.Net;
 
 namespace api.Errors
 {
-    public class ApiError
+    public class ApiError : Exception
     {
         public HttpStatusCode StatusCode;
-        public string Message;
+        public new string Message;
 
         public ApiError(HttpStatusCode statusCode, string message)
         {
