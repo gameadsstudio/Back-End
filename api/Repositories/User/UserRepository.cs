@@ -50,14 +50,26 @@ namespace api.Repositories.User
             return user;
         }
 
-        public UserModel UpdateUser(UserModel updatedUser, UserModel targetUser)
+        // public UserModel UpdateUser(UserUpdateModel updatedUser, UserModel targetUser)
+        // {
+        //     
+        //     _context.Entry(targetUser).CurrentValues.SetValues(updatedUser);
+        //     _context.SaveChanges();
+        //     return targetUser;
+        // }
+        
+        public UserModel UpdateUser(UserModel updatedUser)
         {
-            throw new NotImplementedException();
+
+            _context.Update(updatedUser);
+            _context.SaveChanges();
+            return updatedUser;
         }
 
         public int DeleteUser(UserModel user)
         {
-            throw new NotImplementedException();
+            _context.User.Remove(user);
+            return _context.SaveChanges();
         }
 
         public int CountUsers()

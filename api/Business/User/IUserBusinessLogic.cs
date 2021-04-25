@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Security.Claims;
 using api.Helpers;
 using api.Models.User;
 
@@ -6,11 +6,11 @@ namespace api.Business.User
 {
     internal interface IUserBusinessLogic
     {
-        UserModel GetUserById(string id);
+        object GetUserById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, UserPublicModel[] users) GetUsers(PagingDto paging);
-        UserModel AddNewUser(UserCreationModel newUser);
-        UserModel UpdateUserById(string id, UserUpdateModel updatedUser);
-        int DeleteUserById(string id);
+        UserPrivateModel AddNewUser(UserCreationModel newUser);
+        UserPrivateModel UpdateUserById(string id, UserUpdateModel updatedUser, Claim currentUser);
+        int DeleteUserById(string id, Claim currentUser);
         string Login(UserLoginModel userLoginModel);
     }
 }

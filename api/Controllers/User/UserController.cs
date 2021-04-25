@@ -1,9 +1,8 @@
-﻿using System;
-using System.Net;
+﻿using System.Linq;
+using System.Security.Claims;
 using api.Business.User;
 using api.Configuration;
 using api.Contexts;
-using api.Errors;
 using api.Helpers;
 using api.Models.User;
 using AutoMapper;
@@ -24,16 +23,15 @@ namespace api.Controllers.User
         {
             _business = new UserBusinessLogic(context, appSettings, mapper);
         }
-
-        [AllowAnonymous]
+        
         [HttpGet("{id}")]
         public IActionResult GetUser(string id)
         {
-            var user = _business.GetUserById(id);
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var user = _business.GetUserById(id, currentUser);
             return Ok(new {status = 200, user});
         }
-
-        [AllowAnonymous]
+        
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging)
         {
@@ -57,23 +55,20 @@ namespace api.Controllers.User
 
             return Created("User", new {status = 201, user = user});
         }
-        
+
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] UserUpdateModel newUser)
         {
-            return Ok(_business.UpdateUserById(id, newUser));
-        }
-        
-        [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromForm] UserUpdateModel newUser)
-        {
-            return Ok(_business.UpdateUserById(id, newUser));
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            return Ok(_business.UpdateUserById(id, newUser, currentUser));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            _business.DeleteUserById(id);
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            _business.DeleteUserById(id, currentUser);
 
             return Ok(new {status = 200,});
         }
