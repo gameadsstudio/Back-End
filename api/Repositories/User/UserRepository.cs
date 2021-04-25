@@ -19,6 +19,16 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Id == id);
         }
 
+        public UserModel GetUserByUsername(string username)
+        {
+            return _context.User.SingleOrDefault(a => a.Username == username);
+        }
+        
+        public UserModel GetUserByEmail(string email)
+        {
+            return _context.User.SingleOrDefault(a => a.Email == email);
+        }
+        
         public UserPublicModel[] GetUsers(int offset, int limit)
         {
             return _context.User.OrderBy(p => p.Id)
