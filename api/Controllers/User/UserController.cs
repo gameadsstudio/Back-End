@@ -34,7 +34,7 @@ namespace api.Controllers.User
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging)
         {
-            var result = _business.GetUsers(PagingHelper.Check(paging));
+            var result = _business.GetUsers(paging);
 
             return Ok(new
             {
