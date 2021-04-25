@@ -12,7 +12,6 @@ using Microsoft.Extensions.Options;
 
 namespace api.Controllers.User
 {
-    [Authorize]
     [Route("/v1/users")]
     [ApiController]
     public class UserController : ControllerBase
