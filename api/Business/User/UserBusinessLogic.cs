@@ -47,6 +47,7 @@ namespace api.Business.User
 
         public (int, int, int, UserPublicModel[]) GetUsers(PagingDto paging)
         {
+            paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountUsers() / paging.PageSize + 1;
             var users = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, maxPage, users);
@@ -60,7 +61,6 @@ namespace api.Business.User
             {
                 throw new ApiError(HttpStatusCode.Conflict, $"User with username: {user.Username} already exists");
             }
-
 
             if (_repository.GetUserByEmail(user.Email) != null)
             {
