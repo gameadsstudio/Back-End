@@ -5,8 +5,8 @@ namespace api.Errors
 {
     public class ApiError : Exception
     {
-        public HttpStatusCode StatusCode;
         public new string Message;
+        public HttpStatusCode StatusCode;
 
         public ApiError(HttpStatusCode statusCode, string message)
         {
