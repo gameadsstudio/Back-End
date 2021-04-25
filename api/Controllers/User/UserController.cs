@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using api.Business.User;
-using api.Configuration;
-using api.Contexts;
 using api.Helpers;
 using api.Models.User;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace api.Controllers.User
 {
@@ -23,7 +18,7 @@ namespace api.Controllers.User
         {
             _business = userBusinessLogic;
         }
-        
+
         [HttpGet("self")]
         public IActionResult GetSelf()
         {
@@ -31,7 +26,7 @@ namespace api.Controllers.User
             var user = _business.GetSelf(currentUser);
             return Ok(new {status = 200, user});
         }
-        
+
         [HttpGet("{id}")]
         public IActionResult GetUser(string id)
         {

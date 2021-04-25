@@ -18,7 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -43,14 +42,14 @@ namespace api
                 p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
                     .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Game Ads Studio API", Version = "v1"});
             });
             services.AddSingleton(
                 new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); }).CreateMapper());
-            
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -90,7 +89,7 @@ namespace api
                     .Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
-            
+
             services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
         }
 
