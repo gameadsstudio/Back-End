@@ -1,5 +1,5 @@
 # ---- Build image ----
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
 
 WORKDIR /src
 
@@ -17,7 +17,7 @@ COPY . ./api/
 RUN dotnet publish ./api/*.csproj -c Release -o /app
 
 # ---- Runtime image ----
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
 
 WORKDIR /app
 
