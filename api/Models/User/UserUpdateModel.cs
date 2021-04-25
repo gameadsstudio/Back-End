@@ -4,15 +4,19 @@ namespace api.Models.User
 {
     public class UserUpdateModel
     {
-        [EmailAddress] public string Email { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
-        [MinLength(6)] public string Username { get; set; }
+        [MinLength(6)]
+        public string Username { get; set; }
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
-        [MinLength(8)] [MaxLength(128)] public string Password { get; set; }
+        [MinLength(8)]
+        [MaxLength(128)]
+        public string Password { get; set; }
 
         public string Alias { get; set; }
 
