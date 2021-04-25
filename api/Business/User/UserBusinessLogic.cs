@@ -28,7 +28,7 @@ namespace api.Business.User
             _mapper = mapper;
         }
 
-        public object GetUserById(string id, Claim currentUser)
+        public IUserModel GetUserById(string id, Claim currentUser)
         {
             var user = _repository.GetUserById(Guid.Parse(id));
 
