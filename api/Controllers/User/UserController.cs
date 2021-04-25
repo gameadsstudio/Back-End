@@ -18,9 +18,9 @@ namespace api.Controllers.User
     {
         private readonly IUserBusinessLogic _business;
 
-        public UserController(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
+        public UserController(IUserBusinessLogic userBusinessLogic)
         {
-            _business = new UserBusinessLogic(context, appSettings, mapper);
+            _business = userBusinessLogic;
         }
         
         [HttpGet("{id}")]

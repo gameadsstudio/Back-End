@@ -4,7 +4,7 @@ using api.Models.User;
 
 namespace api.Business.User
 {
-    internal interface IUserBusinessLogic
+    public interface IUserBusinessLogic
     {
         IUserModel GetUserById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, UserPublicModel[] users) GetUsers(PagingDto paging);
