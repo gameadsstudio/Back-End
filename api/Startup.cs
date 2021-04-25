@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using api.Business.User;
 using api.Configuration;
 using api.Contexts;
 using api.Mappings;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -36,10 +38,12 @@ namespace api
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             services.Configure<AppSettings>(Configuration.GetSection("Application"));
             services.AddControllers();
+
             services.AddDbContext<ApiContext>(p =>
                 p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
-                    .UseSnakeCaseNamingConvention());
+                    .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Game Ads Studio API", Version = "v1"});
@@ -86,6 +90,8 @@ namespace api
                     .Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
             });
+            
+            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
