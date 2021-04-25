@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using api.Business.User;
 using api.Configuration;
@@ -23,6 +24,14 @@ namespace api.Controllers.User
             _business = userBusinessLogic;
         }
         
+        [HttpGet("self")]
+        public IActionResult GetSelf()
+        {
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var user = _business.GetSelf(currentUser);
+            return Ok(new {status = 200, user});
+        }
+        
         [HttpGet("{id}")]
         public IActionResult GetUser(string id)
         {
@@ -30,7 +39,7 @@ namespace api.Controllers.User
             var user = _business.GetUserById(id, currentUser);
             return Ok(new {status = 200, user});
         }
-        
+
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging)
         {

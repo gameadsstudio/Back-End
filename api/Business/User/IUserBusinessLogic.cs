@@ -12,5 +12,6 @@ namespace api.Business.User
         UserPrivateModel UpdateUserById(string id, UserUpdateModel updatedUser, Claim currentUser);
         int DeleteUserById(string id, Claim currentUser);
         string Login(UserLoginModel userLoginModel);
+        object GetSelf(Claim currentUser);
     }
 }
