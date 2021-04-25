@@ -73,8 +73,8 @@ namespace api
                             context.Fail("Invalid token");
                         }
                         return Task.CompletedTask;
-                    },
-                    
+                    }
+
                 };
             });
         }

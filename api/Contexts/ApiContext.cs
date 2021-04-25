@@ -25,8 +25,8 @@ namespace api.Contexts
         public override int SaveChanges()
         {
             DateTime saveTime = DateTime.Now;
-            foreach (var entry in this.ChangeTracker.Entries()
-                .Where(e => e.State == (EntityState) EntityState.Added))
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added))
             {
                 if (entry.Property("DateCreation").CurrentValue == null || (DateTimeOffset)entry.Property("DateCreation").CurrentValue == DateTime.MinValue)
                 {

@@ -47,9 +47,9 @@ namespace api.Business.User
 
         public (int, int, int, UserPublicModel[]) GetUsers(PagingDto paging)
         {
-            var maxPage = _repository.CountUsers() / paging.pageSize + 1;
-            var users = _repository.GetUsers((paging.page - 1) * paging.pageSize, paging.pageSize);
-            return (paging.page, paging.pageSize, maxPage, users);
+            var maxPage = _repository.CountUsers() / paging.PageSize + 1;
+            var users = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            return (paging.Page, paging.PageSize, maxPage, users);
         }
 
         public UserPrivateModel AddNewUser(UserCreationModel newUser)
