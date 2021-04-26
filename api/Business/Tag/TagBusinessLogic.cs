@@ -35,11 +35,15 @@ namespace api.Business.Tag
         }
 
         public (int page, int pageSize, int maxPage, TagModel[] tags) GetTags(PagingDto paging, string name,
-            string description)
+            string description, bool noPaging)
         {
+            if (noPaging)
+            {
+                return (0, _repository.CountTags(), 0, _repository.GetAllTags());
+            }
             paging = PagingHelper.Check(paging);
             var (tags, maxPage) = _repository.SearchTagsByNameOrDescription((paging.Page - 1) * paging.PageSize,
-                paging.PageSize, name, description);
+                paging.PageSize, name ?? "", description ?? "");
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), tags);
         }
 

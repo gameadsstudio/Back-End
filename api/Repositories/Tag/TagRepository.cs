@@ -31,6 +31,16 @@ namespace api.Repositories.Tag
             return _context.Tag.SingleOrDefault(a => a.Name == name);
         }
 
+        public int CountTags()
+        {
+            return _context.Tag.Count();
+        }
+
+        public TagModel[] GetAllTags()
+        {
+            return _context.Tag.OrderBy(p => p.Id).ToArray();
+        }
+
         public (TagModel[], int) GetTags(int offset, int limit)
         {
             return (_context.Tag.OrderBy(p => p.Id)

@@ -30,10 +30,11 @@ namespace api.Controllers.Tag
         [HttpGet]
         public IActionResult GetAll(
             [FromQuery] PagingDto paging,
+            [FromQuery] bool noPaging,
             [FromQuery] string name,
             [FromQuery] string description)
         {
-            var result = _business.GetTags(paging, name, description);
+            var result = _business.GetTags(paging, name, description, noPaging);
 
             return Ok(new
             {
