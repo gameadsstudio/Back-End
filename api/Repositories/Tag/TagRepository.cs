@@ -43,26 +43,30 @@ namespace api.Repositories.Tag
         public (TagModel[], int) SearchTagsByNameOrDescription(int offset, int limit, string name, string description)
         {
             var tags = _context.Tag.OrderBy(p => p.Id)
-                .Where(p => p.Name.Contains(name) || p.Description.Contains(description))
+                .Where(p => p.Name.ToLower().Contains(name.ToLower()) ||
+                            p.Description.ToLower().Contains(description.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArray();
             var count = _context.Tag
                 .OrderBy(p => p.Id)
-                .Count(p => p.Name.Contains(name) || p.Description.Contains(description));
+                .Count(p => p.Name.ToLower().Contains(name.ToLower()) ||
+                            p.Description.ToLower().Contains(description.ToLower()));
             return (tags, count);
         }
 
         public (TagModel[], int) SearchTagsByNameAndDescription(int offset, int limit, string name, string description)
         {
             var tags = _context.Tag.OrderBy(p => p.Id)
-                .Where(p => p.Name.Contains(name) && p.Description.Contains(description))
+                .Where(p => p.Name.ToLower().Contains(name.ToLower()) &&
+                            p.Description.ToLower().Contains(description.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArray();
             var count = _context.Tag
                 .OrderBy(p => p.Id)
-                .Count(p => p.Name.Contains(name) && p.Description.Contains(description));
+                .Count(p => p.Name.ToLower().Contains(name.ToLower()) &&
+                            p.Description.ToLower().Contains(description.ToLower()));
             return (tags, count);
         }
 
