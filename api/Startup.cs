@@ -35,7 +35,7 @@ namespace api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
             services.Configure<AppSettings>(Configuration.GetSection("Application"));
             services.AddControllers();
 
