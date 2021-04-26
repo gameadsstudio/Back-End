@@ -47,6 +47,7 @@ namespace api.Business.Tag
         {
             // Todo: Check if user is admin
 
+            CheckTagExists(newTag.Name);
             var tag = _mapper.Map(newTag, new TagModel());
             return _repository.AddNewTag(tag);
         }
@@ -55,23 +56,26 @@ namespace api.Business.Tag
         {
             // Todo: Check if user is admin
 
-            var tag = GetTagById(id);
-
-            if (!string.IsNullOrEmpty(updatedTag.Name) && _repository.GetTagByName(updatedTag.Name) != null)
-            {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"Tag with name: {updatedTag.Name} already exists");
-            }
-
-            tag = _mapper.Map(updatedTag, tag);
+            CheckTagExists(updatedTag.Name);
+            var tag = _mapper.Map(updatedTag, GetTagById(id));
             return _repository.UpdateTag(tag);
         }
 
         public void DeleteTagById(string id, Claim currentUser)
         {
             // Todo: Check if user is admin
+
             var tag = GetTagById(id);
             _repository.DeleteTag(tag);
+        }
+
+        private void CheckTagExists(string name)
+        {
+            if (!string.IsNullOrEmpty(name) && _repository.GetTagByName(name) != null)
+            {
+                throw new ApiError(HttpStatusCode.Conflict,
+                    $"Tag with name: {name} already exists");
+            }
         }
     }
 }
