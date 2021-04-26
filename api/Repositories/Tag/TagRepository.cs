@@ -31,12 +31,39 @@ namespace api.Repositories.Tag
             return _context.Tag.SingleOrDefault(a => a.Name == name);
         }
 
-        public TagModel[] GetTags(int offset, int limit)
+        public (TagModel[], int) GetTags(int offset, int limit)
         {
-            return _context.Tag.OrderBy(p => p.Id)
+            return (_context.Tag.OrderBy(p => p.Id)
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToArray(),
+                _context.Tag.Count());
+        }
+
+        public (TagModel[], int) SearchTagsByNameOrDescription(int offset, int limit, string name, string description)
+        {
+            var tags = _context.Tag.OrderBy(p => p.Id)
+                .Where(p => p.Name.Contains(name) || p.Description.Contains(description))
                 .Skip(offset)
                 .Take(limit)
                 .ToArray();
+            var count = _context.Tag
+                .OrderBy(p => p.Id)
+                .Count(p => p.Name.Contains(name) || p.Description.Contains(description));
+            return (tags, count);
+        }
+
+        public (TagModel[], int) SearchTagsByNameAndDescription(int offset, int limit, string name, string description)
+        {
+            var tags = _context.Tag.OrderBy(p => p.Id)
+                .Where(p => p.Name.Contains(name) && p.Description.Contains(description))
+                .Skip(offset)
+                .Take(limit)
+                .ToArray();
+            var count = _context.Tag
+                .OrderBy(p => p.Id)
+                .Count(p => p.Name.Contains(name) && p.Description.Contains(description));
+            return (tags, count);
         }
 
         public TagModel UpdateTag(TagModel updatedTag)
