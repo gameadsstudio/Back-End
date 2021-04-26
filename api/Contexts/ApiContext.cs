@@ -36,6 +36,11 @@ namespace api.Contexts
                 }
                 entry.Property("DateUpdate").CurrentValue = (DateTimeOffset)saveTime;
             }
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Modified))
+            {
+                entry.Property("DateUpdate").CurrentValue = (DateTimeOffset)saveTime;
+            }
             return base.SaveChanges();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
