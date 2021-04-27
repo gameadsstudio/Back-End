@@ -15,6 +15,7 @@ namespace api.Models.AdContainer
         public string VersionId { get; set; }
         */
 
+        [Required]
         public string OrgId { get; set; }
 
         [Required]

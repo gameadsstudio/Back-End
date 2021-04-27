@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using api.Business.AdContainer;
@@ -26,10 +27,13 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] PagingDto paging)
+        public IActionResult GetAll(
+            [FromQuery] PagingDto paging,
+            [FromQuery] [Required] string orgId
+            )
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var (page, pagesize, maxPage, adContainers) = _business.GetAdContainers(paging, currentUser);
+            var (page, pagesize, maxPage, adContainers) = _business.GetAdContainers(paging, orgId, currentUser);
 
             return Ok(new
             {
