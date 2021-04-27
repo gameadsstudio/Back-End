@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using api.Contexts;
 using api.Models.Organization;
+using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Organization
@@ -9,33 +10,52 @@ namespace api.Repositories.Organization
     public class OrganizationRepository : IOrganizationRepository
     {
         private readonly ApiContext _context;
-        private readonly DbSet<OrganizationModel> _repository;
 
         public OrganizationRepository(ApiContext context)
         {
             _context = context;
-            _repository = _context.Organization;
         }
 
         public OrganizationModel AddNewOrganization(OrganizationModel organization)
         {
-            _repository.Add(organization);
-            return _context.SaveChanges() == 1 ? GetOrganizationById(organization.Id.ToString()) : null;
+            _context.Organization.Add(organization);
+            _context.SaveChanges();
+            return organization;
+        }
+
+        public OrganizationModel GetOrganizationByName(string name)
+        {
+            return _context.Organization.SingleOrDefault(a => a.Name == name);
+        }
+
+        public OrganizationModel GetOrganizationByPublicEmail(string email)
+        {
+            return _context.Organization.SingleOrDefault(a => a.PublicEmail == email);
+        }
+
+        public OrganizationModel GetOrganizationByPrivateEmail(string email)
+        {
+            return _context.Organization.SingleOrDefault(a => a.PrivateEmail == email);
         }
 
         public int DeleteOrganization(OrganizationModel organization)
         {
-            throw new NotImplementedException();
+            _context.Organization.Attach(organization);
+            _context.Organization.Remove(organization);
+            _context.SaveChanges();
+            return 1;
         }
 
         public OrganizationModel GetOrganizationById(string id)
         {
-            return _repository.SingleOrDefault(e => e.Id.ToString() == id);
+            return _context.Organization.SingleOrDefault(e => e.Id.ToString() == id);
         }
 
-        public int UpdateOrganization(OrganizationModel updatedOrganization, OrganizationModel targetOrganization)
+        public OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization)
         {
-            throw new NotImplementedException();
+            _context.Update(updatedOrganization);
+            _context.SaveChanges();
+            return updatedOrganization;
         }
     }
 }

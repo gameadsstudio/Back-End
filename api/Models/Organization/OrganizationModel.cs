@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Models.Campaign;
 using api.Models.Game;
+using api.Models.User;
 
 namespace api.Models.Organization
 {
@@ -34,11 +35,13 @@ namespace api.Models.Organization
 
         public string DefaultAuthorization { get; set; } // Todo : document
 
-        public DateTimeOffset CreationDate { get; set; }
+        public DateTimeOffset DateCreation { get; set; }
 
-        public DateTimeOffset ModificationDate { get; set; }
+        public DateTimeOffset DateUpdate { get; set; }
 
         public List<CampaignModel> Campaigns { get; set; }
+
+        public List<UserModel> Users { get; set; }
 
         public List<GameModel> Games { get; set; }
     }

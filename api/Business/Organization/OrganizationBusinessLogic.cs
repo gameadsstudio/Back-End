@@ -7,48 +7,99 @@ using api.Errors;
 using api.Models.Organization;
 using api.Models.User;
 using api.Repositories.Organization;
+using api.Repositories.User;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using AutoMapper;
 
 namespace api.Business.Organization
 {
     public class OrganizationBusinessLogic : IOrganizationBusinessLogic
     {
-        private readonly IOrganizationRepository _repository;
         private readonly AppSettings _appSettings;
+        private readonly IMapper _mapper;
+        private readonly IOrganizationRepository _repository;
+        private readonly IUserRepository userRepository;
 
-        public OrganizationBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings)
+
+        public OrganizationBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
         {
             _repository = new OrganizationRepository(context);
+            userRepository = new UserRepository(context);
             _appSettings = appSettings.Value;
+            _mapper = mapper;
         }
 
-        public (OrganizationModel, ApiError) AddNewOrganization(OrganizationCreationModel newOrganization)
+        public OrganizationPrivateModel AddNewOrganization(OrganizationCreationModel newOrganization, Claim currentUser)
         {
-            var organization = new OrganizationModel
+            Console.Write("Coucou");
+            var organization = _mapper.Map(newOrganization, new OrganizationModel());
+
+            if (_repository.GetOrganizationByName(organization.Name) != null)
             {
-                Name = newOrganization.Name,
-                PrivateEmail = newOrganization.PrivateEmail,
-                Type = newOrganization.Type
-            };
+                throw new ApiError(HttpStatusCode.Conflict, $"Organization with name: {organization.Name} already exists");
+            }
 
-            // TODO : add authorization / authentication check + check for error
+            if (_repository.GetOrganizationByPublicEmail(organization.PublicEmail) != null)
+            {
+                throw new ApiError(HttpStatusCode.Conflict, $"Organization with public email: {organization.PublicEmail} already exists");
+            }
 
-            var repoOrg = _repository.AddNewOrganization(organization);
-            return repoOrg == null
-                ? ((OrganizationModel, ApiError)) (null,
-                    new ApiError(HttpStatusCode.Conflict, "Error while inserting in database"))
-                : (repoOrg, null);
+            if (_repository.GetOrganizationByPrivateEmail(organization.PrivateEmail) != null)
+            {
+                throw new ApiError(HttpStatusCode.Conflict, $"Organization with prvate email: {organization.PrivateEmail} already exists");
+            }
+
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(currentUser.Value);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var user = userRepository.GetUserById(guid);
+
+            organization.Users = new List<UserModel> { user };
+
+            var result = _repository.AddNewOrganization(organization);
+
+            return _mapper.Map(result, new OrganizationPrivateModel());
         }
 
-        public int DeleteOrganizationById(string id)
+        public int DeleteOrganizationById(string id, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var organization = _repository.GetOrganizationById(id);
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    
+                    return _repository.DeleteOrganization(organization);
+                }
+            }
+            return 2;
         }
 
-        public OrganizationModel GetOrganizationById(string id)
+        public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
         {
             // Todo : add auth check
-            return _repository.GetOrganizationById(id);
+
+            var organization = _repository.GetOrganizationById(id);
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    return _mapper.Map(organization, new OrganizationPrivateModel());
+                }
+            }
+
+            return _mapper.Map(organization, new OrganizationPublicModel());
         }
 
         public OrganizationModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization)
@@ -57,9 +108,36 @@ namespace api.Business.Organization
         }
 
         // Todo : change return type
-        public int AddUserToOrganization(string id, string userId)
+        public int AddUserToOrganization(string id, string userId, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var organization = _repository.GetOrganizationById(id);
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    Guid guid;
+
+                    try
+                    {
+                        guid = Guid.Parse(currentUser.Value);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+                    }
+
+                    var newUser = userRepository.GetUserById(guid);
+
+                    organization.Users.Add(newUser);
+
+                    _repository.UpdateOrganization(organization);
+
+                    return 1;
+                }
+            }
+
+            return 2;
         }
 
         public List<UserModel> GetOrganizationUsers(string id)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Models.Organization;
 
 namespace api.Models.User
 {
@@ -34,5 +35,8 @@ namespace api.Models.User
         public DateTimeOffset DateCreation { get; set; }
 
         public DateTimeOffset DateUpdate { get; set; }
+
+        [ForeignKey("OrgId")]
+        public OrganizationModel Organization { get; set; }
     }
 }

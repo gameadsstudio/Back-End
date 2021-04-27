@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using api.Business.Advertisements;
 using api.Business.Tag;
 using api.Business.User;
+using api.Business.Organization;
 using api.Configuration;
 using api.Contexts;
 using api.Mappings;
@@ -40,6 +41,7 @@ namespace api
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
             services.Configure<AppSettings>(Configuration.GetSection("Application"));
             services.AddControllers();
+            
 
             services.AddDbContext<ApiContext>(p =>
                 p.UseNpgsql(
