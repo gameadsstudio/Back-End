@@ -45,19 +45,9 @@ namespace api.Controllers.Organization
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] OrganizationUpdateModel newOrganization)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(_business.UpdateOrganizationById(id, newOrganization));
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromForm] OrganizationUpdateModel newOrganization)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            return Ok(_business.UpdateOrganizationById(id, newOrganization));
+            return Ok(_business.UpdateOrganizationById(id, newOrganization, currentUser));
         }
 
         [HttpDelete("{id}")]
@@ -93,7 +83,9 @@ namespace api.Controllers.Organization
         [HttpGet("{id}/users")]
         public IActionResult GetOrganizationUsers(string id)
         {
-            var users = _business.GetOrganizationUsers(id);
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            var users = _business.GetOrganizationUsers(id, currentUser);
 
             if (users != null)
                 return Ok(users);
@@ -103,7 +95,9 @@ namespace api.Controllers.Organization
         [HttpDelete("{id}/users/{userId}")]
         public IActionResult DeleteUserFromOrganization(string id, string userId)
         {
-            var success = _business.DeleteUserFromOrganization(id, userId);
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            var success = _business.DeleteUserFromOrganization(id, userId, currentUser);
 
             return success switch
             {

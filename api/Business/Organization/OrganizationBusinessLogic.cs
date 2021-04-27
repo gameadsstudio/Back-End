@@ -32,7 +32,6 @@ namespace api.Business.Organization
 
         public OrganizationPrivateModel AddNewOrganization(OrganizationCreationModel newOrganization, Claim currentUser)
         {
-            Console.Write("Coucou");
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
             if (_repository.GetOrganizationByName(organization.Name) != null)
@@ -102,9 +101,28 @@ namespace api.Business.Organization
             return _mapper.Map(organization, new OrganizationPublicModel());
         }
 
-        public OrganizationModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization)
+        public OrganizationModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser)
         {
-            throw new NotImplementedException("");
+            var organization = _repository.GetOrganizationById(id);
+
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    var organizationMapped = _mapper.Map(updatedOrganization, organization);
+
+                    var result = _repository.UpdateOrganization(organizationMapped);
+
+                    return result;
+                }
+            }
+
+            throw new ApiError(HttpStatusCode.NotModified, "Cannot modify organization");
         }
 
         // Todo : change return type
@@ -120,7 +138,7 @@ namespace api.Business.Organization
 
                     try
                     {
-                        guid = Guid.Parse(currentUser.Value);
+                        guid = Guid.Parse(userId);
                     }
                     catch (Exception e)
                     {
@@ -140,13 +158,50 @@ namespace api.Business.Organization
             return 2;
         }
 
-        public List<UserModel> GetOrganizationUsers(string id)
+        public List<UserModel> GetOrganizationUsers(string id, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var organization = _repository.GetOrganizationById(id);
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    return organization.Users;
+                }
+            }
+
+            return null;
         }
-        public int DeleteUserFromOrganization(string id, string userId)
+        public int DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var organization = _repository.GetOrganizationById(id);
+
+            foreach (UserModel user in organization.Users)
+            {
+                if (user.Id.ToString() == currentUser.Value)
+                {
+                    Guid guid;
+
+                    try
+                    {
+                        guid = Guid.Parse(userId);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+                    }
+
+                    var newUser = userRepository.GetUserById(guid);
+
+                    organization.Users.Remove(newUser);
+
+                    _repository.UpdateOrganization(organization);
+
+                    return 1;
+                }
+            }
+
+            return 2;
         }
     }
 }
