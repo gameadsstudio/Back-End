@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using api.Business.Advertisements;
+using api.Business.AdContainer;
 using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
@@ -101,6 +102,7 @@ namespace api
             services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
             services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)

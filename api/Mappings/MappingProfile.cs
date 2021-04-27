@@ -1,4 +1,5 @@
 using api.Models.Advertisement;
+using api.Models.AdContainer;
 using api.Models.Tag;
 using api.Models.User;
 using api.Models.Organization;
@@ -23,12 +24,16 @@ namespace api.Mappings
             CreateMap<AdvertisementModel, AdvertisementCreationDto>().ReverseMap();
             CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<AdvertisementModel, AdvertisementPublicDto>().ReverseMap();
-            
+
             // Organization
             CreateMap<OrganizationModel, OrganizationCreationDto>().ReverseMap();
             CreateMap<OrganizationModel, OrganizationUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<OrganizationModel, OrganizationPrivateDto>().ReverseMap();
             CreateMap<OrganizationModel, OrganizationPublicDto>().ReverseMap();
+
+            // AdContainer
+            CreateMap<AdContainerModel, AdContainerCreationModel>().ReverseMap();
+            CreateMap<AdContainerModel, AdContainerUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
         }
     }
 }
