@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -21,14 +22,14 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public ActionResult<AdContainerModel> Get(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.GetAdContainerById(id, currentUser));
         }
 
         [HttpGet]
-        public IActionResult GetAll(
+        public ActionResult<IEnumerable<AdContainerModel>> GetAll(
             [FromQuery] PagingDto paging,
             [FromQuery] [Required] string orgId
             )
@@ -47,7 +48,7 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] AdContainerCreationModel newAdContainer)
+        public ActionResult<AdContainerModel> Post([FromForm] AdContainerCreationModel newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             var success = _business.AddNewAdContainer(newAdContainer, currentUser);
@@ -55,7 +56,7 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] AdContainerUpdateModel newAdContainer)
+        public ActionResult<AdContainerModel> Patch(string id, [FromForm] AdContainerUpdateModel newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.UpdateAdContainerById(id, newAdContainer, currentUser));
