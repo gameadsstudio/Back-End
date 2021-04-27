@@ -2,6 +2,7 @@
 using System.Linq;
 using api.Enums;
 using api.Models.Advertisement;
+using api.Models.AdContainer;
 using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.Organization;
@@ -26,6 +27,7 @@ namespace api.Contexts
         public DbSet<OrganizationModel> Organization { get; set; }
         public DbSet<TagModel> Tag { get; set; }
         public DbSet<AdvertisementModel> Advertisement { get; set; }
+        public DbSet<AdContainerModel> AdContainer { get; set; }
 
         public override int SaveChanges()
         {
@@ -48,6 +50,7 @@ namespace api.Contexts
             }
             return base.SaveChanges();
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>(entity =>
@@ -86,7 +89,7 @@ namespace api.Contexts
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
-            
+
             modelBuilder.Entity<AdvertisementModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -94,6 +97,11 @@ namespace api.Contexts
                     .HasConversion(
                         v => v.ToString(),
                         v => (AdvertisementStatus) Enum.Parse(typeof(AdvertisementStatus), v));
+            });
+
+            modelBuilder.Entity<AdContainerModel>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
         }
     }
