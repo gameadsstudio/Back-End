@@ -91,11 +91,15 @@ namespace api
                     };
                 });
             services.AddMvc(o =>
-                {
-                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                    o.Filters.Add(new AuthorizeFilter(policy));
-                })
-                .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                o.Filters.Add(new AuthorizeFilter(policy));
+            }).AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
             // Business Logic
             services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();

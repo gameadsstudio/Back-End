@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using api.Enum.AdContainer;
 using api.Models.Tag;
 
 namespace api.Models.AdContainer

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers.AdContainer
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("/v1/ad-containers")]
     public class AdContainerController : ControllerBase
     {
