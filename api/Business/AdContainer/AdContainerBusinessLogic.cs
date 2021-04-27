@@ -19,7 +19,7 @@ namespace api.Business.AdContainer
             _mapper = mapper;
         }
 
-        public AdContainerModel GetAdContainerById(string id)
+        public AdContainerModel GetAdContainerById(string id, Claim currentUser)
         {
             throw new System.NotImplementedException();
         }
