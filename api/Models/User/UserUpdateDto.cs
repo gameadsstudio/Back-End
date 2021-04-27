@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using api.Models.Organization;
 
 namespace api.Models.User
 {
@@ -25,5 +27,8 @@ namespace api.Models.User
         public string Level { get; set; }
 
         public string Status { get; set; }
+
+        [ForeignKey("OrgId")]
+        public OrganizationModel Organization { get; set; }
     }
 }

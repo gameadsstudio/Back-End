@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
@@ -9,49 +10,16 @@ using api.Contexts;
 namespace api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20210427145722_AddUserListToOrganizationPrivateModel")]
+    partial class AddUserListToOrganizationPrivateModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("api.Models.Advertisement.AdvertisementModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<int>("AgeMax")
-                        .HasColumnType("integer")
-                        .HasColumnName("age_max");
-
-                    b.Property<int>("AgeMin")
-                        .HasColumnType("integer")
-                        .HasColumnName("age_min");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("pk_advertisement");
-
-                    b.ToTable("advertisement");
-                });
 
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
                 {
@@ -211,36 +179,6 @@ namespace api.Migrations
                         .HasName("pk_organization");
 
                     b.ToTable("organization");
-                });
-
-            modelBuilder.Entity("api.Models.Tag.TagModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_tag");
-
-                    b.ToTable("tag");
                 });
 
             modelBuilder.Entity("api.Models.User.UserModel", b =>

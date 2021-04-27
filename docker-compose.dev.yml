@@ -19,6 +19,8 @@ services:
         volumes:
             - ./api:/app
         restart: unless-stopped
+        networks:
+            back-tier:
 
     gas-db:
         image: postgres:13.1-alpine
@@ -29,6 +31,8 @@ services:
             - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         volumes:
             - gas-db-data:/var/lib/postgresql/data
+        networks:
+            back-tier:
 
     gas-pgadmin:
         image: dpage/pgadmin4
@@ -41,6 +45,11 @@ services:
             - "80:${GAS_DB_ADMIN_PORT}"
         logging:
             driver: none
+        networks:
+            back-tier:
+
+networks:
+    back-tier:
 
 volumes:
     gas-db-data:

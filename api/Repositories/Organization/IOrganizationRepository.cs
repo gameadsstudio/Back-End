@@ -1,4 +1,5 @@
 using api.Models.Organization;
+using api.Models.User;
 
 namespace api.Repositories.Organization
 {
@@ -6,7 +7,10 @@ namespace api.Repositories.Organization
     {
         OrganizationModel AddNewOrganization(OrganizationModel organization);
         OrganizationModel GetOrganizationById(string id);
-        int UpdateOrganization(OrganizationModel updatedOrganization, OrganizationModel targetOrganization);
+        OrganizationModel GetOrganizationByName(string name);
+        OrganizationModel GetOrganizationByPublicEmail(string email);
+        OrganizationModel GetOrganizationByPrivateEmail(string email);
+        OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         int DeleteOrganization(OrganizationModel organization);
     }
 }

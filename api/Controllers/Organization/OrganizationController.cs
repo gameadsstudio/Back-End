@@ -1,11 +1,13 @@
 ﻿using System.Net;
 using api.Business.Organization;
+using System.Security.Claims;
 using api.Configuration;
 using api.Contexts;
 using api.Models.Organization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace api.Controllers.Organization
 {
@@ -15,40 +17,31 @@ namespace api.Controllers.Organization
     {
         private readonly IOrganizationBusinessLogic _business;
 
-        public OrganizationController(ApiContext context, IOptions<AppSettings> appSettings)
+        public OrganizationController(IOrganizationBusinessLogic organizationBusinessLogic)
         {
-            _business = new OrganizationBusinessLogic(context, appSettings);
+            _business = organizationBusinessLogic;
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult GetOrganization(string id)
         {
-            var organizationGet = _business.GetOrganizationById(id);
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            if (organizationGet != null)
-                return Ok(organizationGet);
-            return NotFound("Organization not found.");
+            var organization = _business.GetOrganizationById(id, currentUser);
+
+            return Ok(new { status = 200, organization });
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromForm] OrganizationCreationModel newOrganization)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var (organization, apiError) = _business.AddNewOrganization(newOrganization);
+            var organization = _business.AddNewOrganization(newOrganization, currentUser);
 
-            if (apiError == null) return Created("", organization);
-            return apiError.StatusCode switch
-            {
-                HttpStatusCode.Conflict => Conflict(new {message = "Error : " + apiError.Message}),
-                _ => Created("", organization)
-            };
+            return Created("Organization", new { status = 201, organization });
         }
 
-        [AllowAnonymous]
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] OrganizationUpdateModel newOrganization)
         {
@@ -58,7 +51,6 @@ namespace api.Controllers.Organization
             return Ok(_business.UpdateOrganizationById(id, newOrganization));
         }
 
-        [AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromForm] OrganizationUpdateModel newOrganization)
         {
@@ -68,18 +60,12 @@ namespace api.Controllers.Organization
             return Ok(_business.UpdateOrganizationById(id, newOrganization));
         }
 
-        [AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            return Ok(_business.DeleteOrganizationById(id));
-        }
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-        [AllowAnonymous]
-        [HttpPost("{id}/users/{userId}")]
-        public IActionResult AddUserToOrganization(string id, string userId)
-        {
-            var success = _business.AddUserToOrganization(id, userId);
+            var success = _business.DeleteOrganizationById(id, currentUser);
 
             return success switch
             {
@@ -89,7 +75,21 @@ namespace api.Controllers.Organization
             };
         }
 
-        [AllowAnonymous]
+        [HttpPost("{id}/users/{userId}")]
+        public IActionResult AddUserToOrganization(string id, string userId)
+        {
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            var success = _business.AddUserToOrganization(id, userId, currentUser);
+
+            return success switch
+            {
+                1 => Ok(),
+                2 => Unauthorized(),
+                _ => BadRequest()
+            };
+        }
+
         [HttpGet("{id}/users")]
         public IActionResult GetOrganizationUsers(string id)
         {
@@ -100,7 +100,6 @@ namespace api.Controllers.Organization
             return NotFound("Organization not found.");
         }
 
-        [AllowAnonymous]
         [HttpDelete("{id}/users/{userId}")]
         public IActionResult DeleteUserFromOrganization(string id, string userId)
         {
