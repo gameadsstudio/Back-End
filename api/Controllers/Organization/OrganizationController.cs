@@ -27,9 +27,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var organization = _business.GetOrganizationById(id, currentUser);
-
-            return Ok(new { status = 200, organization });
+            return Ok(_business.GetOrganizationById(id, currentUser));
         }
 
         [HttpPost]

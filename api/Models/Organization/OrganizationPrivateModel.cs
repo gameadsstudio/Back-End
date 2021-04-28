@@ -36,7 +36,7 @@ namespace api.Models.Organization
 
         public List<CampaignModel> Campaigns { get; set; }
 
-        public List<UserModel> Users { get; set; }
+        public List<UserPublicModel> Users { get; set; }
 
         public List<GameModel> Games { get; set; }
     }
