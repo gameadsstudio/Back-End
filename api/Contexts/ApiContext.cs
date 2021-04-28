@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using api.Models.Advertisement;
 using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.Organization;
@@ -23,6 +24,7 @@ namespace api.Contexts
         public DbSet<GameModel> Game { get; set; }
         public DbSet<OrganizationModel> Organization { get; set; }
         public DbSet<TagModel> Tag { get; set; }
+        public DbSet<AdvertisementModel> Advertisement { get; set; }
 
         public override int SaveChanges()
         {
@@ -66,6 +68,11 @@ namespace api.Contexts
             });
 
             modelBuilder.Entity<TagModel>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            });
+            
+            modelBuilder.Entity<AdvertisementModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
