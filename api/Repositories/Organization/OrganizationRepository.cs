@@ -28,22 +28,16 @@ namespace api.Repositories.Organization
             return _context.Organization.SingleOrDefault(a => a.Name == name);
         }
 
-        public OrganizationModel GetOrganizationByPublicEmail(string email)
-        {
-            return _context.Organization.SingleOrDefault(a => a.PublicEmail == email);
-        }
-
         public OrganizationModel GetOrganizationByPrivateEmail(string email)
         {
             return _context.Organization.SingleOrDefault(a => a.PrivateEmail == email);
         }
 
-        public int DeleteOrganization(OrganizationModel organization)
+        public OrganizationModel DeleteOrganization(OrganizationModel organization)
         {
-            _context.Organization.Attach(organization);
             _context.Organization.Remove(organization);
             _context.SaveChanges();
-            return 1;
+            return organization;
         }
 
         public OrganizationModel GetOrganizationById(string id)

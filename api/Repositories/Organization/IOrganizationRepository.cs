@@ -8,9 +8,8 @@ namespace api.Repositories.Organization
         OrganizationModel AddNewOrganization(OrganizationModel organization);
         OrganizationModel GetOrganizationById(string id);
         OrganizationModel GetOrganizationByName(string name);
-        OrganizationModel GetOrganizationByPublicEmail(string email);
         OrganizationModel GetOrganizationByPrivateEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
-        int DeleteOrganization(OrganizationModel organization);
+        OrganizationModel DeleteOrganization(OrganizationModel organization);
     }
 }
