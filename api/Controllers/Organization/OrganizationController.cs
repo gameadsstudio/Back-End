@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using api.Helpers;
 
 namespace api.Controllers.Organization
 {
@@ -28,6 +29,21 @@ namespace api.Controllers.Organization
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
             return Ok(_business.GetOrganizationById(id, currentUser));
+        }
+
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] PagingDto paging)
+        {
+            var result = _business.GetOrganizations(paging);
+
+            return Ok(new
+            {
+                status = 200,
+                page = result.Item1,
+                pagesize = result.Item2,
+                maxPage = result.Item3,
+                organizations = result.Item4
+            });
         }
 
         [HttpPost]

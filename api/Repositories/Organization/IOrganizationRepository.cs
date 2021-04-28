@@ -11,5 +11,7 @@ namespace api.Repositories.Organization
         OrganizationModel GetOrganizationByPrivateEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         OrganizationModel DeleteOrganization(OrganizationModel organization);
+        public OrganizationPublicModel[] GetOrganizations(int offset, int limit);
+        public int CountOrganizations();
     }
 }
