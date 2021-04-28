@@ -10,9 +10,9 @@ namespace api.Business.Organization
         OrganizationPrivateModel AddNewOrganization(OrganizationCreationModel newOrganization, Claim currentUser);
         IOrganizationModel GetOrganizationById(string id, Claim currentUser);
         OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser);
-        OrganizationModel DeleteOrganizationById(string id, Claim currentUser);
+        void DeleteOrganizationById(string id, Claim currentUser);
         OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser);
         List<UserModel> GetOrganizationUsers(string id, Claim currentUser);
-        OrganizationModel DeleteUserFromOrganization(string id, string userId, Claim currentUser);
+        void DeleteUserFromOrganization(string id, string userId, Claim currentUser);
     }
 }

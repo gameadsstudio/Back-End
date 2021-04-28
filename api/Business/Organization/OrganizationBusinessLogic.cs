@@ -70,7 +70,7 @@ namespace api.Business.Organization
             return _mapper.Map(result, new OrganizationPrivateModel());
         }
 
-        public OrganizationModel DeleteOrganizationById(string id, Claim currentUser)
+        public void DeleteOrganizationById(string id, Claim currentUser)
         {
             Guid guid;
 
@@ -85,14 +85,18 @@ namespace api.Business.Organization
 
             var organization = _repository.GetOrganizationById(guid);
 
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
+
             foreach (UserModel user in organization.Users)
             {
                 if (user.Id.ToString() == currentUser.Value)
                 {
-                    return _repository.DeleteOrganization(organization);
+                    _repository.DeleteOrganization(organization);
                 }
             }
-            throw new ApiError(HttpStatusCode.NotModified, "Cannot remove organization");
         }
 
         public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
@@ -222,7 +226,7 @@ namespace api.Business.Organization
 
             return null;
         }
-        public OrganizationModel DeleteUserFromOrganization(string id, string userId, Claim currentUser)
+        public void DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
             Guid orgId;
 
@@ -236,6 +240,11 @@ namespace api.Business.Organization
             }
 
             var organization = _repository.GetOrganizationById(orgId);
+
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
 
             foreach (UserModel user in organization.Users)
             {
@@ -254,15 +263,16 @@ namespace api.Business.Organization
 
                     var newUser = userRepository.GetUserById(guid);
 
+                    if (newUser == null)
+                    {
+                        throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {userId}");
+                    }
+
                     organization.Users.Remove(newUser);
 
-                    
-
-                    return _repository.UpdateOrganization(organization);
+                    _repository.UpdateOrganization(organization);
                 }
             }
-
-            throw new ApiError(HttpStatusCode.NotModified, "Cannot remove user to organization");
         }
     }
 }

@@ -55,7 +55,9 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(_business.DeleteOrganizationById(id, currentUser));
+            _business.DeleteOrganizationById(id, currentUser);
+
+            return Ok(new { status = 200 });
         }
 
         [HttpPost("{id}/users/{userId}")]
@@ -83,7 +85,9 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(_business.DeleteUserFromOrganization(id, userId, currentUser));
+            _business.DeleteUserFromOrganization(id, userId, currentUser);
+
+            return Ok(new { status = 200 });
         }
     }
 }
