@@ -72,7 +72,18 @@ namespace api.Business.Organization
 
         public OrganizationModel DeleteOrganizationById(string id, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(id);
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(guid);
 
             foreach (UserModel user in organization.Users)
             {
@@ -86,9 +97,18 @@ namespace api.Business.Organization
 
         public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
         {
-            // Todo : add auth check
+            Guid guid;
 
-            var organization = _repository.GetOrganizationById(id);
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(guid);
 
             foreach (UserModel user in organization.Users)
             {
@@ -103,7 +123,18 @@ namespace api.Business.Organization
 
         public OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(id);
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(guid);
 
             if (organization == null)
             {
@@ -125,10 +156,20 @@ namespace api.Business.Organization
             throw new ApiError(HttpStatusCode.NotModified, "Cannot modify organization");
         }
 
-        // Todo : change return type
         public OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(id);
+            Guid orgId;
+
+            try
+            {
+                orgId = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(orgId);
 
             foreach (UserModel user in organization.Users)
             {
@@ -158,7 +199,18 @@ namespace api.Business.Organization
 
         public List<UserModel> GetOrganizationUsers(string id, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(id);
+            Guid guid;
+
+            try
+            {
+                guid = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(guid);
 
             foreach (UserModel user in organization.Users)
             {
@@ -172,7 +224,18 @@ namespace api.Business.Organization
         }
         public OrganizationModel DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(id);
+            Guid orgId;
+
+            try
+            {
+                orgId = Guid.Parse(id);
+            }
+            catch (Exception e)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+            }
+
+            var organization = _repository.GetOrganizationById(orgId);
 
             foreach (UserModel user in organization.Users)
             {

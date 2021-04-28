@@ -31,7 +31,7 @@ namespace api.Business.Game
                 DateCreation = DateTime.Now,
                 DateLaunch = DateTime.Now,
                 DateUpdate = DateTime.Now,
-                Organization = _organizationRepository.GetOrganizationById(newGame.OrganizationId),
+                //Organization = _organizationRepository.GetOrganizationById(newGame.OrganizationId),
             };
 
             if (game.Organization == null)
