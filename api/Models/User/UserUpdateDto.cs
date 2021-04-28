@@ -27,8 +27,5 @@ namespace api.Models.User
         public string Level { get; set; }
 
         public string Status { get; set; }
-
-        [ForeignKey("OrgId")]
-        public OrganizationModel Organization { get; set; }
     }
 }

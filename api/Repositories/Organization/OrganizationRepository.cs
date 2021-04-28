@@ -40,9 +40,9 @@ namespace api.Repositories.Organization
             return organization;
         }
 
-        public OrganizationModel GetOrganizationById(string id)
+        public OrganizationModel GetOrganizationById(Guid id)
         {
-            return _context.Organization.SingleOrDefault(e => e.Id.ToString() == id);
+            return _context.Organization.SingleOrDefault(e => e.Id == id);
         }
 
         public OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization)
