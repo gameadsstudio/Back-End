@@ -151,6 +151,8 @@ namespace api.Business.Organization
                 {
                     var organizationMapped = _mapper.Map(updatedOrganization, organization);
 
+                    organizationMapped.DateUpdate = DateTime.UtcNow;
+
                     var result = _repository.UpdateOrganization(organizationMapped);
 
                     return _mapper.Map(result, new OrganizationPrivateModel());
