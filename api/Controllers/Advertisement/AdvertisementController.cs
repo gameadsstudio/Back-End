@@ -39,7 +39,7 @@ namespace api.Controllers.Advertisement
                 advertisements = result.Item4
             });
         }
-        
+
         [HttpPost]
         public IActionResult Post([FromForm] AdvertisementCreationModel newAdvertisement)
         {

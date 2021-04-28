@@ -28,10 +28,7 @@ namespace api.Repositories.Advertisement
 
         public AdvertisementModel[] GetAdvertisements(int offset, int limit)
         {
-            return _context.Advertisement.OrderBy(p => p.Id)
-                .Skip(offset)
-                .Take(limit)
-                .ToArray();
+            return _context.Advertisement.OrderBy(p => p.Id).Skip(offset).Take(limit).ToArray();
         }
 
         public AdvertisementModel UpdateAdvertisement(AdvertisementModel advertisement)
