@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using api.Models.Campaign;
-using api.Models.User;
-using api.Models.Game;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace api.Models.Organization
 {
