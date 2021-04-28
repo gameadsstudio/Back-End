@@ -1,11 +1,8 @@
 using System.Linq;
 using System.Security.Claims;
 using api.Business.Advertisements;
-using api.Business.User;
 using api.Helpers;
 using api.Models.Advertisement;
-using api.Models.User;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.Advertisement
@@ -42,8 +39,7 @@ namespace api.Controllers.Advertisement
                 advertisements = result.Item4
             });
         }
-
-        [AllowAnonymous]
+        
         [HttpPost]
         public IActionResult Post([FromForm] AdvertisementCreationModel newAdvertisement)
         {
