@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums.User;
 using api.Models.Organization;
+using api.Enums;
 
 namespace api.Models.User
 {
@@ -13,6 +14,9 @@ namespace api.Models.User
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
+        [EnumDataType(typeof(UserRole))]
+        public UserRole Role { get; set; }
 
         public string Username { get; set; } // TODO: check id needed
 

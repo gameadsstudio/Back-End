@@ -114,7 +114,7 @@ namespace api
             if (env.IsDevelopment())
             {
                 // Delete the whole database each time the API will be launched
-                context.Database.EnsureDeleted();
+                // context.Database.EnsureDeleted();
                 app.UseDeveloperExceptionPage();
             }
 
