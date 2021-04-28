@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
 
@@ -18,39 +17,6 @@ namespace api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("api.Models.Advertisement.AdvertisementModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<int>("AgeMax")
-                        .HasColumnType("integer")
-                        .HasColumnName("age_max");
-
-                    b.Property<int>("AgeMin")
-                        .HasColumnType("integer")
-                        .HasColumnName("age_min");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("pk_advertisement");
-
-                    b.ToTable("advertisement");
-                });
 
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
                 {
