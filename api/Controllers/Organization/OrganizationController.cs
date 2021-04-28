@@ -55,14 +55,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var success = _business.DeleteOrganizationById(id, currentUser);
-
-            return success switch
-            {
-                1 => Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(_business.DeleteOrganizationById(id, currentUser));
         }
 
         [HttpPost("{id}/users/{userId}")]
@@ -70,14 +63,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var success = _business.AddUserToOrganization(id, userId, currentUser);
-
-            return success switch
-            {
-                1 => Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(_business.AddUserToOrganization(id, userId, currentUser));
         }
 
         [HttpGet("{id}/users")]
@@ -97,14 +83,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var success = _business.DeleteUserFromOrganization(id, userId, currentUser);
-
-            return success switch
-            {
-                1 => Ok("Deleted user from organization successfully"),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(_business.DeleteUserFromOrganization(id, userId, currentUser));
         }
     }
 }

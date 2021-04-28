@@ -30,9 +30,9 @@ namespace api.Models.Organization
 
         public string DefaultAuthorization { get; set; }
 
-        public DateTimeOffset CreationDate { get; set; }
+        public DateTimeOffset DateCreation { get; set; }
 
-        public DateTimeOffset ModificationDate { get; set; }
+        public DateTimeOffset DateUpdate { get; set; }
 
         public List<CampaignModel> Campaigns { get; set; }
 

@@ -34,14 +34,15 @@ namespace api.Business.Organization
         {
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
+
+            if (!(organization.Type == "Developers" || organization.Type == "Advertisers"))
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, $"Organization type must be Developers or Advertisers");
+            }
+
             if (_repository.GetOrganizationByName(organization.Name) != null)
             {
                 throw new ApiError(HttpStatusCode.Conflict, $"Organization with name: {organization.Name} already exists");
-            }
-
-            if (_repository.GetOrganizationByPublicEmail(organization.PublicEmail) != null)
-            {
-                throw new ApiError(HttpStatusCode.Conflict, $"Organization with public email: {organization.PublicEmail} already exists");
             }
 
             if (_repository.GetOrganizationByPrivateEmail(organization.PrivateEmail) != null)
@@ -69,7 +70,7 @@ namespace api.Business.Organization
             return _mapper.Map(result, new OrganizationPrivateModel());
         }
 
-        public int DeleteOrganizationById(string id, Claim currentUser)
+        public OrganizationModel DeleteOrganizationById(string id, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(id);
 
@@ -77,11 +78,10 @@ namespace api.Business.Organization
             {
                 if (user.Id.ToString() == currentUser.Value)
                 {
-                    
                     return _repository.DeleteOrganization(organization);
                 }
             }
-            return 2;
+            throw new ApiError(HttpStatusCode.NotModified, "Cannot remove organization");
         }
 
         public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
@@ -101,7 +101,7 @@ namespace api.Business.Organization
             return _mapper.Map(organization, new OrganizationPublicModel());
         }
 
-        public OrganizationModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser)
+        public OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(id);
 
@@ -118,7 +118,7 @@ namespace api.Business.Organization
 
                     var result = _repository.UpdateOrganization(organizationMapped);
 
-                    return result;
+                    return _mapper.Map(result, new OrganizationPrivateModel());
                 }
             }
 
@@ -126,7 +126,7 @@ namespace api.Business.Organization
         }
 
         // Todo : change return type
-        public int AddUserToOrganization(string id, string userId, Claim currentUser)
+        public OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(id);
 
@@ -149,13 +149,11 @@ namespace api.Business.Organization
 
                     organization.Users.Add(newUser);
 
-                    _repository.UpdateOrganization(organization);
-
-                    return 1;
+                    return _repository.UpdateOrganization(organization);
                 }
             }
 
-            return 2;
+            throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to organization");
         }
 
         public List<UserModel> GetOrganizationUsers(string id, Claim currentUser)
@@ -172,7 +170,7 @@ namespace api.Business.Organization
 
             return null;
         }
-        public int DeleteUserFromOrganization(string id, string userId, Claim currentUser)
+        public OrganizationModel DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(id);
 
@@ -195,13 +193,13 @@ namespace api.Business.Organization
 
                     organization.Users.Remove(newUser);
 
-                    _repository.UpdateOrganization(organization);
+                    
 
-                    return 1;
+                    return _repository.UpdateOrganization(organization);
                 }
             }
 
-            return 2;
+            throw new ApiError(HttpStatusCode.NotModified, "Cannot remove user to organization");
         }
     }
 }
