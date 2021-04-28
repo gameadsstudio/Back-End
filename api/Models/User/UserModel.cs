@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -40,5 +41,7 @@ namespace api.Models.User
         [JsonIgnore]
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
+        //public List<OrganizationModel> Users { get; set; }
+        //public ICollection<OrganizationModel> Organizations { get; set; }
     }
 }

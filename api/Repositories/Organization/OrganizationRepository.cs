@@ -51,5 +51,27 @@ namespace api.Repositories.Organization
             _context.SaveChanges();
             return updatedOrganization;
         }
+
+        public OrganizationPublicModel[] GetOrganizations(int offset, int limit)
+        {
+            return _context.Organization.OrderBy(p => p.Id)
+                .Select(p => new OrganizationPublicModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    PublicEmail = p.PublicEmail,
+                    Localization = p.Localization,
+                    LogoUrl = p.LogoUrl,
+                    WebsiteUrl = p.WebsiteUrl
+                })
+                .Skip(offset)
+                .Take(limit)
+                .ToArray();
+        }
+
+        public int CountOrganizations()
+        {
+            return _context.Organization.Count();
+        }
     }
 }

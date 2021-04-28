@@ -6,6 +6,7 @@ using api.Contexts;
 using api.Errors;
 using api.Models.Organization;
 using api.Models.User;
+using api.Helpers;
 using api.Repositories.Organization;
 using api.Repositories.User;
 using Microsoft.Extensions.Options;
@@ -68,6 +69,14 @@ namespace api.Business.Organization
             var result = _repository.AddNewOrganization(organization);
 
             return _mapper.Map(result, new OrganizationPrivateModel());
+        }
+
+        public (int, int, int, OrganizationPublicModel[]) GetOrganizations(PagingDto paging)
+        {
+            paging = PagingHelper.Check(paging);
+            var maxPage = _repository.CountOrganizations() / paging.PageSize + 1;
+            var organizations = _repository.GetOrganizations((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            return (paging.Page, paging.PageSize, maxPage, organizations);
         }
 
         public void DeleteOrganizationById(string id, Claim currentUser)
