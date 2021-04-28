@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using api.Business.Tag;
 using api.Contexts;
 using api.Errors;
 using api.Helpers;
 using api.Models.AdContainer;
+using api.Models.Tag;
 using api.Repositories.AdContainer;
 using AutoMapper;
 
@@ -15,14 +19,17 @@ namespace api.Business.AdContainer
     {
         private readonly IMapper _mapper;
         private readonly IAdContainerRepository _repository;
+        private readonly ITagBusinessLogic _tagBusinessLogic;
         // private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
 
         public AdContainerBusinessLogic(
             ApiContext context,
-            IMapper mapper)
+            IMapper mapper,
+            ITagBusinessLogic tagBusinessLogic)
            // IOrganizationBusinessLogic organizationBusinessLogic)
         {
             _repository = new AdContainerRepository(context);
+            _tagBusinessLogic = tagBusinessLogic;
             // _organizationBusinessLogic = organizationBusinessLogic;
             _mapper = mapper;
         }
@@ -65,6 +72,7 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
+            adContainer.Tags = ResolveTags(newAdContainer.Tags);
             /*
              * Todo : Add Organization and version to model
              */
@@ -77,6 +85,10 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerById(id, currentUser));
+            if (updatedAdContainer.Tags.Count > 0)
+            {
+                adContainer.Tags = ResolveTags(updatedAdContainer.Tags);
+            }
             return _repository.UpdateAdContainer(adContainer);
         }
 
@@ -86,6 +98,11 @@ namespace api.Business.AdContainer
 
             var adContainer = GetAdContainerById(id, currentUser);
             _repository.DeleteAdContainer(adContainer);
+        }
+
+        private List<TagModel> ResolveTags(List<string> tagNames)
+        {
+            return tagNames.Select(tagName => _tagBusinessLogic.GetTabByName(tagName)).ToList();
         }
     }
 }

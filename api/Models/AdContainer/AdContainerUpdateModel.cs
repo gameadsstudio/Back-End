@@ -15,7 +15,7 @@ namespace api.Models.AdContainer
 
         public string OrgId { get; set; }
 
-        public List<TagModel> Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         public AdContainerType? Type { get; set; }
 
