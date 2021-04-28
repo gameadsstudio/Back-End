@@ -58,7 +58,9 @@ namespace api.Contexts
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
                 entity.Property(e => e.Role)
-                    .HasConversion(x => x.ToString(), x => (UserRole) Enum.Parse(typeof(UserRole), x));
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (UserRole) Enum.Parse(typeof(UserRole), v));
             });
 
             modelBuilder.Entity<CampaignModel>(entity =>
