@@ -9,6 +9,7 @@ using api.Models.User;
 using api.Helpers;
 using api.Repositories.Organization;
 using api.Repositories.User;
+using api.Business.User;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using AutoMapper;
@@ -48,7 +49,7 @@ namespace api.Business.Organization
 
             if (_repository.GetOrganizationByPrivateEmail(organization.PrivateEmail) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict, $"Organization with prvate email: {organization.PrivateEmail} already exists");
+                throw new ApiError(HttpStatusCode.Conflict, $"Organization with private email: {organization.PrivateEmail} already exists");
             }
 
             Guid guid;
@@ -63,6 +64,8 @@ namespace api.Business.Organization
             }
 
             var user = userRepository.GetUserById(guid);
+
+        
 
             organization.Users = new List<UserModel> { user };
 
@@ -212,7 +215,7 @@ namespace api.Business.Organization
             throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to organization");
         }
 
-        public List<UserModel> GetOrganizationUsers(string id, Claim currentUser)
+        public ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser)
         {
             Guid guid;
 

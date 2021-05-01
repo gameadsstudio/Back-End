@@ -18,7 +18,7 @@ namespace api.Repositories.Organization
 
         public OrganizationModel AddNewOrganization(OrganizationModel organization)
         {
-            _context.Organization.Add(organization);
+            _context.Organization.AddRange(organization);
             _context.SaveChanges();
             return organization;
         }
