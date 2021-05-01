@@ -38,10 +38,10 @@ namespace api.Models.User
 
         public DateTimeOffset DateUpdate { get; set; }
 
-        [JsonIgnore]
-        [ForeignKey("OrgId")]
-        public OrganizationModel Organization { get; set; }
+        //[JsonIgnore]
+        //[ForeignKey("OrgId")]
+        //public OrganizationModel Organization { get; set; }
         //public List<OrganizationModel> Users { get; set; }
-        //public ICollection<OrganizationModel> Organizations { get; set; }
+        public ICollection<OrganizationModel> Organizations { get; set; }
     }
 }
