@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using api.Contexts;
 using api.Models.Tag;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Tag
 {
@@ -12,6 +13,7 @@ namespace api.Repositories.Tag
         public TagRepository(ApiContext context)
         {
             _context = context;
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public TagModel AddNewTag(TagModel tag)

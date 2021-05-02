@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Enum.AdContainer;
-using api.Models.Tag;
 
 namespace api.Models.AdContainer
 {
@@ -20,7 +19,7 @@ namespace api.Models.AdContainer
         public string OrgId { get; set; }
 
         [Required]
-        public List<string> Tags { get; set; }
+        public List<string> TagNames { get; set; }
 
         [Required]
         public AdContainerType Type { get; set; }
