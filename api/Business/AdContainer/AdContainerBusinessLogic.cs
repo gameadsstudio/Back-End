@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ using api.Models.AdContainer;
 using api.Models.Tag;
 using api.Repositories.AdContainer;
 using AutoMapper;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Query.ExpressionTranslators.Internal;
 
 namespace api.Business.AdContainer
 {
@@ -72,7 +74,7 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
-            adContainer.Tags = ResolveTags(newAdContainer.Tags);
+            adContainer.Tags = ResolveTags(newAdContainer.TagNames);
             /*
              * Todo : Add Organization and version to model
              */
@@ -85,9 +87,9 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerById(id, currentUser));
-            if (updatedAdContainer.Tags.Count > 0)
+            if (updatedAdContainer.TagNames.Count > 0)
             {
-                adContainer.Tags = ResolveTags(updatedAdContainer.Tags);
+                adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
             return _repository.UpdateAdContainer(adContainer);
         }
@@ -102,7 +104,7 @@ namespace api.Business.AdContainer
 
         private List<TagModel> ResolveTags(List<string> tagNames)
         {
-            return tagNames.Select(tagName => _tagBusinessLogic.GetTabByName(tagName)).ToList();
+            return tagNames.Select(tagName => _tagBusinessLogic.GetTagByName(tagName)).ToList();
         }
     }
 }
