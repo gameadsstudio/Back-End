@@ -36,10 +36,14 @@ namespace api.Business.AdContainer
             _mapper = mapper;
         }
 
-        public AdContainerModel GetAdContainerById(string id, Claim currentUser)
+        public AdContainerPublicModel GetPublicAdContainerById(string id, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
+            return _mapper.Map(GetAdContainerById(id, currentUser), new AdContainerPublicModel());
+        }
 
+        private AdContainerModel GetAdContainerById(string id, Claim currenUser)
+        {
             try
             {
                 return _repository.GetAdContainerById(Guid.Parse(id)) ??
@@ -69,7 +73,7 @@ namespace api.Business.AdContainer
             }
         }
 
-        public AdContainerSimpleModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser)
+        public AdContainerPublicModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -79,10 +83,10 @@ namespace api.Business.AdContainer
              * Todo : Add Organization and version to model
              */
             // adContainer.Organization = _organizationBusinessLogic.GetOrganizationById(Guid.Parse(newAdContainer.OrgId));
-            return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerSimpleModel());
+            return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicModel());
         }
 
-        public AdContainerModel UpdateAdContainerById(string id, AdContainerUpdateModel updatedAdContainer, Claim currentUser)
+        public AdContainerPublicModel UpdateAdContainerById(string id, AdContainerUpdateModel updatedAdContainer, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -91,7 +95,7 @@ namespace api.Business.AdContainer
             {
                 adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
-            return _repository.UpdateAdContainer(adContainer);
+            return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicModel());
         }
 
         public void DeleteAdContainerById(string id, Claim currentUser)

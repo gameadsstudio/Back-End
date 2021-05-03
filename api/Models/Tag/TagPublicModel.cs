@@ -2,7 +2,7 @@ using System;
 
 namespace api.Models.Tag
 {
-    public class TagSimpleModel
+    public class TagPublicModel
     {
         public Guid Id { get; set; }
 
