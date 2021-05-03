@@ -25,8 +25,11 @@ namespace api.Models.AdContainer
         public VersionModel Version { get; set; }
         */
 
-        [Required]
-        [ForeignKey("OrgId")]
+        /*
+        ** Todo: uncomment when organizations are implemented
+        ** [Required]
+        ** [ForeignKey("OrgId")]
+        */
         public OrganizationModel Organization { get; set; }
 
         public ICollection<TagModel> Tags { get; set; }
