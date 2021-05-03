@@ -16,6 +16,8 @@ namespace api.Repositories.AdContainer
 
         public AdContainerModel AddNewAdContainer(AdContainerModel adContainer)
         {
+            var tags = adContainer.Tags.Select(tag => _context.Tag.Local.Single(x => x.Id == tag.Id)).ToList();
+            adContainer.Tags = tags;
             _context.AdContainer.Add(adContainer);
             _context.SaveChanges();
             return adContainer;
