@@ -6,7 +6,7 @@ using api.Models.Tag;
 
 namespace api.Models.AdContainer
 {
-    public class AdContainerSimpleModel
+    public class AdContainerPublicModel
     {
         public Guid Id { get; set; }
 
@@ -19,7 +19,7 @@ namespace api.Models.AdContainer
 
         public OrganizationModel Organization { get; set; }
 
-        public ICollection<TagSimpleModel> Tags { get; set; }
+        public ICollection<TagPublicModel> Tags { get; set; }
 
         public AdContainerType Type { get; set; }
 

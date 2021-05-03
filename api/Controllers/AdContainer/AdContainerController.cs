@@ -25,7 +25,7 @@ namespace api.Controllers.AdContainer
         public ActionResult<AdContainerModel> Get(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(_business.GetAdContainerById(id, currentUser));
+            return Ok(_business.GetPublicAdContainerById(id, currentUser));
         }
 
         [HttpGet]
