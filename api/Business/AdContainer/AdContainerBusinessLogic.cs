@@ -69,7 +69,7 @@ namespace api.Business.AdContainer
             }
         }
 
-        public AdContainerModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser)
+        public AdContainerSimpleModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -79,7 +79,7 @@ namespace api.Business.AdContainer
              * Todo : Add Organization and version to model
              */
             // adContainer.Organization = _organizationBusinessLogic.GetOrganizationById(Guid.Parse(newAdContainer.OrgId));
-            return _repository.AddNewAdContainer(adContainer);
+            return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerSimpleModel());
         }
 
         public AdContainerModel UpdateAdContainerById(string id, AdContainerUpdateModel updatedAdContainer, Claim currentUser)
