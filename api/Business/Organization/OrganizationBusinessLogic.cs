@@ -159,27 +159,26 @@ namespace api.Business.Organization
             return _mapper.Map(organization.Users, new List<UserPublicDto>());
         }
 
-        public void DeleteUserFromOrganization(string id, string userId, Claim currentUser)
+        public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            var organization = (OrganizationPrivateDto)GetOrganizationById(id, currentUser);
 
-            if (organization == null)
+            if (organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot remove a user from an organization which you are not part of");
             }
 
-            if (organization.Users.All(x => x.Id.ToString() != currentUser.Value)) return;
+            var userToDelete = (UserPublicDto)_userBusinessLogic.GetUserById(userId, currentUser);
 
-            var userToDelete = _userBusinessLogic.GetUserById(userId, currentUser);
-
-            if (userToDelete == null)
+            if (organization.Users.All(x => x.Id != userToDelete.Id))
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {userId}");
+                throw new ApiError(HttpStatusCode.NotFound, $"Not user with Id: {userToDelete.Id} found in organization");
             }
+            
+            organization.Users.RemoveAll(x => x.Id == userToDelete.Id);
 
-            organization.Users.Remove(_mapper.Map(userToDelete, new UserModel()));
-
-            _repository.UpdateOrganization(organization);
+            return _mapper.Map(_repository.UpdateOrganization(_mapper.Map(organization, new OrganizationModel())), new OrganizationPrivateDto());
         }
     }
 }
