@@ -3,6 +3,7 @@ using System.Linq;
 using api.Contexts;
 using api.Models.Organization;
 using api.Models.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Organization
 {
@@ -43,7 +44,7 @@ namespace api.Repositories.Organization
 
         public OrganizationModel GetOrganizationById(Guid id)
         {
-            return _context.Organization.SingleOrDefault(e => e.Id == id);
+            return _context.Organization.Include(p => p.Users).SingleOrDefault(e => e.Id == id);
         }
 
         public OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization)
