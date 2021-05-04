@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using api.Contexts;
 using api.Models.AdContainer;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.AdContainer
 {
@@ -25,12 +26,16 @@ namespace api.Repositories.AdContainer
 
         public AdContainerModel GetAdContainerById(Guid id)
         {
-            return _context.AdContainer.SingleOrDefault(a => a.Id == id);
+            return _context.AdContainer
+                .Include(a => a.Tags)
+                .SingleOrDefault(a => a.Id == id);
         }
 
         public AdContainerModel GetAdContainerByName(string name)
         {
-            return _context.AdContainer.SingleOrDefault(a => a.Name == name);
+            return _context.AdContainer
+                .Include(a => a.Tags)
+                .SingleOrDefault(a => a.Name == name);
         }
 
         public int CountAdContainers()
@@ -41,6 +46,7 @@ namespace api.Repositories.AdContainer
         public (AdContainerModel[], int) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId)
         {
             return (_context.AdContainer.OrderBy(p => p.Id)
+                    .Include(a => a.Tags)
                     .Where(p => p.Organization.Id == orgId)
                     .Skip(offset)
                     .Take(limit)
