@@ -107,9 +107,9 @@ namespace api
 
             // Auto migrate database on startup
             context.Database.Migrate();
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
