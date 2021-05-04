@@ -100,9 +100,9 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            _business.DeleteUserFromOrganization(id, userId, currentUser);
+            var organization = _business.DeleteUserFromOrganization(id, userId, currentUser);
 
-            return Ok(new { status = 200 });
+            return Ok(new { status = 200, organization });
         }
     }
 }
