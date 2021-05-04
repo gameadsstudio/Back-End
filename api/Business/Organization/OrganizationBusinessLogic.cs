@@ -10,6 +10,7 @@ using api.Helpers;
 using api.Repositories.Organization;
 using api.Business.User;
 using System.Security.Claims;
+using System.Text.Json;
 using AutoMapper;
 
 namespace api.Business.Organization
@@ -127,6 +128,11 @@ namespace api.Business.Organization
             if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to organization");
+            }
+
+            if (organization.Users.Any(x => x.Id.ToString() == userId))
+            {
+                throw new ApiError(HttpStatusCode.Conflict, "User already in organization");
             }
 
             var newUser = _userBusinessLogic.GetUserById(userId, currentUser);

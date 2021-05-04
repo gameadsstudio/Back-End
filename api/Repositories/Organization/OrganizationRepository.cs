@@ -49,9 +49,12 @@ namespace api.Repositories.Organization
 
         public OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization)
         {
-            _context.Update(updatedOrganization);
+            var users = updatedOrganization.Users.Select(user => _context.User.Local.Single(x => x.Id == user.Id)).ToList();
+            var organization = _context.Organization.Local.Single(x => x.Id == updatedOrganization.Id);
+            organization.Users = users;
+            _context.Update(organization);
             _context.SaveChanges();
-            return updatedOrganization;
+            return organization;
         }
 
         public OrganizationPublicDto[] GetOrganizations(int offset, int limit)
