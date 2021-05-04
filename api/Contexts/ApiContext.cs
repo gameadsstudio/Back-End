@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using api.Enums;
 using api.Models.Advertisement;
 using api.Models.Campaign;
 using api.Models.Game;
@@ -75,6 +76,10 @@ namespace api.Contexts
             modelBuilder.Entity<AdvertisementModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Status)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (AdvertisementStatus) Enum.Parse(typeof(AdvertisementStatus), v));
             });
         }
     }
