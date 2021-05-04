@@ -1,22 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace api.Models.User
 {
-    public class UserUpdateModel
+    public class UserPrivateDto : IUserDto
     {
-        [EmailAddress]
-        public string Email { get; set; }
+        public Guid Id { get; set; }
 
-        [MinLength(6)]
         public string Username { get; set; }
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
-        [MinLength(8)]
-        [MaxLength(128)]
-        public string Password { get; set; }
+        public string Email { get; set; }
 
         public string Alias { get; set; }
 
@@ -25,5 +21,11 @@ namespace api.Models.User
         public string Level { get; set; }
 
         public string Status { get; set; }
+
+        public string DateStatus { get; set; }
+
+        public DateTimeOffset DateCreation { get; set; }
+
+        public DateTimeOffset DateUpdate { get; set; }
     }
 }

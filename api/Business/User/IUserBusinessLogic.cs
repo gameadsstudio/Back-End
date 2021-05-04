@@ -8,11 +8,11 @@ namespace api.Business.User
     public interface IUserBusinessLogic
     {
         Object GetUserById(string id, Claim currentUser);
-        (int page, int pageSize, int maxPage, UserPublicModel[] users) GetUsers(PagingDto paging);
-        UserPrivateModel AddNewUser(UserCreationModel newUser);
-        UserPrivateModel UpdateUserById(string id, UserUpdateModel updatedUser, Claim currentUser);
+        (int page, int pageSize, int maxPage, UserPublicDto[] users) GetUsers(PagingDto paging);
+        UserPrivateDto AddNewUser(UserCreationDto newUser);
+        UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser);
         int DeleteUserById(string id, Claim currentUser);
-        string Login(UserLoginModel userLoginModel);
+        string Login(UserLoginDto userLoginDto);
         object GetSelf(Claim currentUser);
     }
 }

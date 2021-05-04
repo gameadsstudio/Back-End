@@ -2,7 +2,7 @@
 
 namespace api.Models.User
 {
-    public class UserCreationModel
+    public class UserCreationDto
     {
         [Required]
         [EmailAddress]

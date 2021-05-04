@@ -29,10 +29,10 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public UserPublicModel[] GetUsers(int offset, int limit)
+        public UserPublicDto[] GetUsers(int offset, int limit)
         {
             return _context.User.OrderBy(p => p.Id)
-                .Select(p => new UserPublicModel
+                .Select(p => new UserPublicDto
                 {
                     Id = p.Id,
                     Username = p.Username,
