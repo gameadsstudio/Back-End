@@ -48,7 +48,7 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpPost]
-        public ActionResult<AdContainerModel> Post([FromForm] AdContainerCreationModel newAdContainer)
+        public ActionResult<AdContainerModel> Post([FromForm] AdContainerCreationDto newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             var success = _business.AddNewAdContainer(newAdContainer, currentUser);
@@ -56,7 +56,7 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<AdContainerModel> Patch(string id, [FromForm] AdContainerUpdateModel newAdContainer)
+        public ActionResult<AdContainerModel> Patch(string id, [FromForm] AdContainerUpdateDto newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.UpdateAdContainerById(id, newAdContainer, currentUser));

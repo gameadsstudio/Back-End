@@ -6,7 +6,7 @@ using api.Models.Tag;
 
 namespace api.Models.AdContainer
 {
-    public class AdContainerPublicModel
+    public class AdContainerPublicDto
     {
         public Guid Id { get; set; }
 
