@@ -88,10 +88,11 @@ namespace api.Controllers.Organization
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
             var users = _business.GetOrganizationUsers(id, currentUser);
-
-            if (users != null)
-                return Ok(users);
-            return NotFound("Organization not found.");
+            
+            return Ok(new
+            {
+                users,
+            });
         }
 
         [HttpDelete("{id}/users/{userId}")]

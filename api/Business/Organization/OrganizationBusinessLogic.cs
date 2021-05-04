@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -135,7 +135,17 @@ namespace api.Business.Organization
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
-            return organization.Users.Any(user => user.Id.ToString() == currentUser.Value) ? organization.Users : null;
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
+            
+            if (organization.Users != null && organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "User does not belong in the organization");
+            }
+
+            return organization.Users;
         }
 
         public void DeleteUserFromOrganization(string id, string userId, Claim currentUser)
