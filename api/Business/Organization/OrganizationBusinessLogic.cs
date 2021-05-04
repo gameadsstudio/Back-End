@@ -120,7 +120,7 @@ namespace api.Business.Organization
             return _mapper.Map(result, new OrganizationPrivateDto());
         }
 
-        public OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser)
+        public OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
@@ -133,7 +133,7 @@ namespace api.Business.Organization
 
             organization.Users.Add(_mapper.Map(newUser, new UserModel()));
 
-            return _repository.UpdateOrganization(organization);
+            return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
 
         public ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser)

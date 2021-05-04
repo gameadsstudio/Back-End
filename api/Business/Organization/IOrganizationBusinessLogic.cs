@@ -13,7 +13,7 @@ namespace api.Business.Organization
         public (int, int, int, OrganizationPublicDto[]) GetOrganizations(PagingDto paging);
         OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, Claim currentUser);
         void DeleteOrganizationById(string id, Claim currentUser);
-        OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser);
+        OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser);
         ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser);
         void DeleteUserFromOrganization(string id, string userId, Claim currentUser);
     }
