@@ -136,7 +136,7 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser)
+        public ICollection<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
@@ -150,7 +150,7 @@ namespace api.Business.Organization
                 throw new ApiError(HttpStatusCode.Forbidden, "User does not belong in the organization");
             }
 
-            return organization.Users;
+            return _mapper.Map(organization.Users, new List<UserPublicDto>());
         }
 
         public void DeleteUserFromOrganization(string id, string userId, Claim currentUser)
