@@ -66,18 +66,7 @@ namespace api.Business.Organization
 
         public void DeleteOrganizationById(string id, Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(guid);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization == null)
             {
@@ -92,18 +81,7 @@ namespace api.Business.Organization
 
         public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(guid);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
             {
@@ -116,18 +94,7 @@ namespace api.Business.Organization
         public OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization,
             Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(guid);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization == null)
             {
@@ -150,18 +117,7 @@ namespace api.Business.Organization
 
         public OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser)
         {
-            Guid orgId;
-
-            try
-            {
-                orgId = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(orgId);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
@@ -177,36 +133,14 @@ namespace api.Business.Organization
 
         public ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(guid);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             return organization.Users.Any(user => user.Id.ToString() == currentUser.Value) ? organization.Users : null;
         }
 
         public void DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
-            Guid orgId;
-
-            try
-            {
-                orgId = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var organization = _repository.GetOrganizationById(orgId);
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization == null)
             {
