@@ -21,13 +21,13 @@ namespace api.Business.Organization
         private readonly AppSettings _appSettings;
         private readonly IMapper _mapper;
         private readonly IOrganizationRepository _repository;
-        private readonly IUserRepository userRepository;
+        private readonly IUserBusinessLogic _userBusinessLogic;
 
 
-        public OrganizationBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
+        public OrganizationBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper, IUserBusinessLogic userBusinessLogic)
         {
             _repository = new OrganizationRepository(context);
-            userRepository = new UserRepository(context);
+            _userBusinessLogic = userBusinessLogic;
             _appSettings = appSettings.Value;
             _mapper = mapper;
         }
@@ -52,26 +52,11 @@ namespace api.Business.Organization
                 throw new ApiError(HttpStatusCode.Conflict, $"Organization with private email: {organization.PrivateEmail} already exists");
             }
 
-            Guid guid;
+            var user = _userBusinessLogic.GetUserById(currentUser.Value.ToString(), currentUser);
 
-            try
-            {
-                guid = Guid.Parse(currentUser.Value);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
+            organization.Users = new List<UserModel> { _mapper.Map(user, new UserModel()) };
 
-            var user = userRepository.GetUserById(guid);
-
-        
-
-            organization.Users = new List<UserModel> { user };
-
-            var result = _repository.AddNewOrganization(organization);
-
-            return _mapper.Map(result, new OrganizationPrivateModel());
+            return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateModel());
         }
 
         public (int, int, int, OrganizationPublicModel[]) GetOrganizations(PagingDto paging)
@@ -193,20 +178,9 @@ namespace api.Business.Organization
             {
                 if (user.Id.ToString() == currentUser.Value)
                 {
-                    Guid guid;
+                    var newUser = _userBusinessLogic.GetUserById(userId, currentUser);
 
-                    try
-                    {
-                        guid = Guid.Parse(userId);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-                    }
-
-                    var newUser = userRepository.GetUserById(guid);
-
-                    organization.Users.Add(newUser);
+                    organization.Users.Add(_mapper.Map(newUser, new UserModel()));
 
                     return _repository.UpdateOrganization(organization);
                 }
@@ -264,25 +238,14 @@ namespace api.Business.Organization
             {
                 if (user.Id.ToString() == currentUser.Value)
                 {
-                    Guid guid;
+                    var userToDelete = _userBusinessLogic.GetUserById(userId, currentUser);
 
-                    try
-                    {
-                        guid = Guid.Parse(userId);
-                    }
-                    catch (Exception e)
-                    {
-                        throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-                    }
-
-                    var newUser = userRepository.GetUserById(guid);
-
-                    if (newUser == null)
+                    if (userToDelete == null)
                     {
                         throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {userId}");
                     }
 
-                    organization.Users.Remove(newUser);
+                    organization.Users.Remove(_mapper.Map(userToDelete, new UserModel()));
 
                     _repository.UpdateOrganization(organization);
                 }

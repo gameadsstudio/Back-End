@@ -2,6 +2,7 @@
 using System.Linq;
 using api.Contexts;
 using api.Models.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.User
 {
@@ -12,6 +13,7 @@ namespace api.Repositories.User
         public UserRepository(ApiContext context)
         {
             _context = context;
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public UserModel GetUserById(Guid id)

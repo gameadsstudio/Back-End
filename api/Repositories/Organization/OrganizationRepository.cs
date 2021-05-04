@@ -3,7 +3,6 @@ using System.Linq;
 using api.Contexts;
 using api.Models.Organization;
 using api.Models.User;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Organization
 {
@@ -18,7 +17,9 @@ namespace api.Repositories.Organization
 
         public OrganizationModel AddNewOrganization(OrganizationModel organization)
         {
-            _context.Organization.AddRange(organization);
+            var users = organization.Users.Select(user => _context.User.Local.Single(x => x.Id == user.Id)).ToList();
+            organization.Users = users;
+            _context.Organization.Add(organization);
             _context.SaveChanges();
             return organization;
         }
