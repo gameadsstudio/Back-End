@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -83,6 +83,11 @@ namespace api.Business.Organization
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
+            
             if (organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
             {
                 return _mapper.Map(organization, new OrganizationPrivateDto());
