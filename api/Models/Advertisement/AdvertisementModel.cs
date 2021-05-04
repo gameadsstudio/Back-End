@@ -10,14 +10,21 @@ namespace api.Models.Advertisement
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+        
         // [ForeignKey("AdvertisementTypeId")]
         // public AdvertisementTypeModel AdvertisementType { get; set; }
+        
         // [ForeignKey("CampaignId")]
         // public CampaignModel Campaign { get; set; }
+        
         public int AgeMin { get; set; }
+        
         public int AgeMax { get; set; }
+        
         public String Status { get; set; }
+        
         public DateTimeOffset DateCreation { get; set; }
+        
         public DateTimeOffset DateUpdate { get; set; }
     }
 }

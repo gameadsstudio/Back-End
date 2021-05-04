@@ -3,12 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Models.Advertisement
 {
-    public class AdvertisementUpdateModel
+    public class AdvertisementCreationDto
     {
-        [RangeAttribute(0, 120)]
+        [Required, RangeAttribute(0, 120)]
         public int AgeMin { get; set; }
-        [RangeAttribute(0, 120)]
+        
+        [Required, RangeAttribute(0, 120)]
         public int AgeMax { get; set; }
+        
+        [Required]
         public String Status { get; set; }
     }
 }

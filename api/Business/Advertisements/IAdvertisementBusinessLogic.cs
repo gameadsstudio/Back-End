@@ -8,8 +8,8 @@ namespace api.Business.Advertisements
     {
         AdvertisementModel GetAdvertisementById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, AdvertisementModel[] advertisements) GetAdvertisements(PagingDto paging);
-        AdvertisementModel AddNewAdvertisement(AdvertisementCreationModel newAdvertisement);
-        AdvertisementModel UpdateAdvertisementById(string id, AdvertisementUpdateModel updatedAdvertisement, Claim currentUser);
+        AdvertisementModel AddNewAdvertisement(AdvertisementCreationDto newAdvertisement);
+        AdvertisementModel UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement, Claim currentUser);
         int DeleteAdvertisementById(string id, Claim currentUser);
     }
 }
