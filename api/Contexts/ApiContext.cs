@@ -33,6 +33,8 @@ namespace api.Contexts
             foreach (var entry in ChangeTracker.Entries()
                 .Where(e => e.State == EntityState.Added))
             {
+                if (entry.Metadata.FindProperty("DateCreation") == null)
+                    continue;
                 if (entry.Property("DateCreation").CurrentValue == null || (DateTimeOffset)entry.Property("DateCreation").CurrentValue == DateTime.MinValue)
                 {
                     entry.Property("DateCreation").CurrentValue = (DateTimeOffset)saveTime;
