@@ -1,6 +1,6 @@
 namespace api.Models.User
 {
-    public interface IUserModel
+    public interface IUserDto
     {
         
     }

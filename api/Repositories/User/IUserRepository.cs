@@ -9,7 +9,7 @@ namespace api.Repositories.User
         UserModel GetUserById(Guid id);
         UserModel GetUserByUsername(string username);
         UserModel GetUserByEmail(string email);
-        UserPublicModel[] GetUsers(int offset, int limit);
+        UserPublicDto[] GetUsers(int offset, int limit);
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();

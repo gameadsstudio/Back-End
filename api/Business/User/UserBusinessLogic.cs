@@ -50,10 +50,10 @@ namespace api.Business.User
 
             if (user.Id.ToString() == currentUser.Value)
             {
-                return _mapper.Map(user, new UserPrivateModel());
+                return _mapper.Map(user, new UserPrivateDto());
             }
 
-            return _mapper.Map(user, new UserPublicModel());
+            return _mapper.Map(user, new UserPublicDto());
         }
 
         public object GetSelf(Claim currentUser)
@@ -76,10 +76,10 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Value}");
             }
 
-            return _mapper.Map(user, new UserPrivateModel());
+            return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int, int, int, UserPublicModel[]) GetUsers(PagingDto paging)
+        public (int, int, int, UserPublicDto[]) GetUsers(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountUsers() / paging.PageSize + 1;
@@ -87,7 +87,7 @@ namespace api.Business.User
             return (paging.Page, paging.PageSize, maxPage, users);
         }
 
-        public UserPrivateModel AddNewUser(UserCreationModel newUser)
+        public UserPrivateDto AddNewUser(UserCreationDto newUser)
         {
             var user = _mapper.Map(newUser, new UserModel());
 
@@ -103,7 +103,7 @@ namespace api.Business.User
 
             user.Password = HashHelper.HashPassword(user.Password);
             var result = _repository.AddNewUser(user);
-            return _mapper.Map(result, new UserPrivateModel());
+            return _mapper.Map(result, new UserPrivateDto());
         }
 
         public int DeleteUserById(string id, Claim currentUser)
@@ -123,7 +123,7 @@ namespace api.Business.User
             return _repository.DeleteUser(user);
         }
 
-        public UserPrivateModel UpdateUserById(string id, UserUpdateModel updatedUser, Claim currentUser)
+        public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser)
         {
             var user = _repository.GetUserById(Guid.Parse(id));
 
@@ -155,20 +155,20 @@ namespace api.Business.User
 
             user = _mapper.Map(updatedUser, user);
             var result = _repository.UpdateUser(user);
-            return _mapper.Map(result, new UserPrivateModel());
+            return _mapper.Map(result, new UserPrivateDto());
         }
 
-        public string Login(UserLoginModel loginModel)
+        public string Login(UserLoginDto loginDto)
         {
             UserModel user;
 
-            if (EmailHelper.IsValidEmail(loginModel.Identifier))
+            if (EmailHelper.IsValidEmail(loginDto.Identifier))
             {
-                user = _repository.GetUserByEmail(loginModel.Identifier);
+                user = _repository.GetUserByEmail(loginDto.Identifier);
             }
             else
             {
-                user = _repository.GetUserByUsername(loginModel.Identifier);
+                user = _repository.GetUserByUsername(loginDto.Identifier);
             }
 
             if (user == null)
@@ -176,7 +176,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, "Couldn't find user with given identifier");
             }
 
-            if (!HashHelper.ValidatePassword(loginModel.Password, user.Password))
+            if (!HashHelper.ValidatePassword(loginDto.Password, user.Password))
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Invalid password");
             }

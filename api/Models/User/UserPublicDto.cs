@@ -2,7 +2,7 @@ using System;
 
 namespace api.Models.User
 {
-    public class UserPublicModel : IUserModel
+    public class UserPublicDto : IUserDto
     {
         public Guid Id { get; set; }
         public string Username { get; set; }

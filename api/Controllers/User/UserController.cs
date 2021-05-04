@@ -52,7 +52,7 @@ namespace api.Controllers.User
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromForm] UserCreationModel newUser)
+        public IActionResult Post([FromForm] UserCreationDto newUser)
         {
             var user = _business.AddNewUser(newUser);
 
@@ -60,7 +60,7 @@ namespace api.Controllers.User
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] UserUpdateModel newUser)
+        public IActionResult Patch(string id, [FromForm] UserUpdateDto newUser)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.UpdateUserById(id, newUser, currentUser));
@@ -78,9 +78,9 @@ namespace api.Controllers.User
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromForm] UserLoginModel loginModel)
+        public IActionResult Login([FromForm] UserLoginDto loginDto)
         {
-            var token = _business.Login(loginModel);
+            var token = _business.Login(loginDto);
 
             return Ok(new {status = 200, token});
         }
