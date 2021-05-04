@@ -41,7 +41,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] AdvertisementCreationModel newAdvertisement)
+        public IActionResult Post([FromForm] AdvertisementCreationDto newAdvertisement)
         {
             var advertisement = _business.AddNewAdvertisement(newAdvertisement);
 
@@ -49,7 +49,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] AdvertisementUpdateModel newAdvertisement)
+        public IActionResult Patch(string id, [FromForm] AdvertisementUpdateDto newAdvertisement)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(new

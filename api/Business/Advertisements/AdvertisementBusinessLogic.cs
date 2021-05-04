@@ -41,14 +41,14 @@ namespace api.Business.Advertisements
             return (paging.Page, paging.PageSize, maxPage, advertisements);
         }
 
-        public AdvertisementModel AddNewAdvertisement(AdvertisementCreationModel newAdvertisement)
+        public AdvertisementModel AddNewAdvertisement(AdvertisementCreationDto newAdvertisement)
         {
             var advertisement = _mapper.Map(newAdvertisement, new AdvertisementModel());
 
             return _repository.AddNewAdvertisement(advertisement);
         }
 
-        public AdvertisementModel UpdateAdvertisementById(string id, AdvertisementUpdateModel updatedAdvertisement,
+        public AdvertisementModel UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
             Claim currentUser)
         {
             var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));

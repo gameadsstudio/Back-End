@@ -18,8 +18,8 @@ namespace api.Mappings
             CreateMap<TagModel, TagUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             
             // Advertisement
-            CreateMap<AdvertisementModel, AdvertisementCreationModel>().ReverseMap();
-            CreateMap<AdvertisementModel, AdvertisementUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));;
+            CreateMap<AdvertisementModel, AdvertisementCreationDto>().ReverseMap();
+            CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));;
         }
     }
 }
