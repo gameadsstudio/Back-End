@@ -54,10 +54,10 @@ namespace api.Repositories.Organization
             return updatedOrganization;
         }
 
-        public OrganizationPublicModel[] GetOrganizations(int offset, int limit)
+        public OrganizationPublicDto[] GetOrganizations(int offset, int limit)
         {
             return _context.Organization.OrderBy(p => p.Id)
-                .Select(p => new OrganizationPublicModel
+                .Select(p => new OrganizationPublicDto
                 {
                     Id = p.Id,
                     Name = p.Name,

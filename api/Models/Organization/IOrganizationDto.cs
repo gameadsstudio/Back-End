@@ -1,5 +1,5 @@
 ﻿namespace api.Models.Organization
 {
-    public interface IOrganizationModel
+    public interface IOrganizationDto
     {}
 }

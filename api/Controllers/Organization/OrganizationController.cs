@@ -47,7 +47,7 @@ namespace api.Controllers.Organization
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] OrganizationCreationModel newOrganization)
+        public IActionResult Post([FromForm] OrganizationCreationDto newOrganization)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
@@ -57,7 +57,7 @@ namespace api.Controllers.Organization
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] OrganizationUpdateModel newOrganization)
+        public IActionResult Patch(string id, [FromForm] OrganizationUpdateDto newOrganization)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 

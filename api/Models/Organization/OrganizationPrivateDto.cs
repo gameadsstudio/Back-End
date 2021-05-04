@@ -8,7 +8,7 @@ using api.Models.User;
 
 namespace api.Models.Organization
 {
-    public class OrganizationPrivateModel : IOrganizationModel
+    public class OrganizationPrivateDto : IOrganizationDto
     {
         public Guid Id { get; set; }
 

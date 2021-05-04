@@ -2,7 +2,7 @@
 
 namespace api.Models.Organization
 {
-    public class OrganizationCreationModel
+    public class OrganizationCreationDto
     {
         [Required]
         public string Name { get; set; }
