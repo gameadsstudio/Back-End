@@ -6,10 +6,10 @@ namespace api.Business.AdContainer
 {
     public interface IAdContainerBusinessLogic
     {
-        AdContainerPublicModel GetPublicAdContainerById(string id, Claim currentUser);
+        AdContainerPublicDto GetPublicAdContainerById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, AdContainerModel[] tags) GetAdContainers(PagingDto paging, string orgId, Claim currentUser);
-        AdContainerPublicModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser);
-        AdContainerPublicModel UpdateAdContainerById(string id, AdContainerUpdateModel updatedAdContainer,
+        AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser);
+        AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
             Claim currentUser);
         void DeleteAdContainerById(string id, Claim currentUser);
     }

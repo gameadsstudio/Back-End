@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -12,7 +11,6 @@ using api.Models.AdContainer;
 using api.Models.Tag;
 using api.Repositories.AdContainer;
 using AutoMapper;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.ExpressionTranslators.Internal;
 
 namespace api.Business.AdContainer
 {
@@ -36,13 +34,13 @@ namespace api.Business.AdContainer
             _mapper = mapper;
         }
 
-        public AdContainerPublicModel GetPublicAdContainerById(string id, Claim currentUser)
+        public AdContainerPublicDto GetPublicAdContainerById(string id, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
-            return _mapper.Map(GetAdContainerById(id, currentUser), new AdContainerPublicModel());
+            return _mapper.Map(GetAdContainerById(id, currentUser), new AdContainerPublicDto());
         }
 
-        private AdContainerModel GetAdContainerById(string id, Claim currenUser)
+        private AdContainerModel GetAdContainerById(string id, Claim currentUser)
         {
             try
             {
@@ -73,7 +71,7 @@ namespace api.Business.AdContainer
             }
         }
 
-        public AdContainerPublicModel AddNewAdContainer(AdContainerCreationModel newAdContainer, Claim currentUser)
+        public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -83,10 +81,10 @@ namespace api.Business.AdContainer
              * Todo : Add Organization and version to model
              */
             // adContainer.Organization = _organizationBusinessLogic.GetOrganizationById(Guid.Parse(newAdContainer.OrgId));
-            return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicModel());
+            return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicDto());
         }
 
-        public AdContainerPublicModel UpdateAdContainerById(string id, AdContainerUpdateModel updatedAdContainer, Claim currentUser)
+        public AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -95,7 +93,7 @@ namespace api.Business.AdContainer
             {
                 adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
-            return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicModel());
+            return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicDto());
         }
 
         public void DeleteAdContainerById(string id, Claim currentUser)

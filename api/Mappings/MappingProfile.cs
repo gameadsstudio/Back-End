@@ -32,9 +32,9 @@ namespace api.Mappings
             CreateMap<OrganizationModel, OrganizationPublicDto>().ReverseMap();
 
             // AdContainer
-            CreateMap<AdContainerModel, AdContainerCreationModel>().ReverseMap();
-            CreateMap<AdContainerPublicModel, AdContainerModel>().ReverseMap();
-            CreateMap<AdContainerModel, AdContainerUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<AdContainerModel, AdContainerCreationDto>().ReverseMap();
+            CreateMap<AdContainerPublicDto, AdContainerModel>().ReverseMap();
+            CreateMap<AdContainerModel, AdContainerUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
         }
     }
 }
