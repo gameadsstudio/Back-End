@@ -28,7 +28,6 @@ namespace api.Mappings
             CreateMap<OrganizationModel, OrganizationUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<OrganizationModel, OrganizationPrivateModel>().ReverseMap();
             CreateMap<OrganizationModel, OrganizationPublicModel>().ReverseMap();
-            CreateMap<OrganizationModel, IOrganizationModel>().ReverseMap();
         }
     }
 }

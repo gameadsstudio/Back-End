@@ -8,10 +8,10 @@ namespace api.Business.Organization
 {
     public interface IOrganizationBusinessLogic
     {
-        OrganizationPrivateModel AddNewOrganization(OrganizationCreationModel newOrganization, Claim currentUser);
-        IOrganizationModel GetOrganizationById(string id, Claim currentUser);
-        public (int, int, int, OrganizationPublicModel[]) GetOrganizations(PagingDto paging);
-        OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization, Claim currentUser);
+        OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, Claim currentUser);
+        IOrganizationDto GetOrganizationById(string id, Claim currentUser);
+        public (int, int, int, OrganizationPublicDto[]) GetOrganizations(PagingDto paging);
+        OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, Claim currentUser);
         void DeleteOrganizationById(string id, Claim currentUser);
         OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser);
         ICollection<UserModel> GetOrganizationUsers(string id, Claim currentUser);

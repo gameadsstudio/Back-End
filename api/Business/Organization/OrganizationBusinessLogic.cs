@@ -28,7 +28,7 @@ namespace api.Business.Organization
             _mapper = mapper;
         }
 
-        public OrganizationPrivateModel AddNewOrganization(OrganizationCreationModel newOrganization, Claim currentUser)
+        public OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, Claim currentUser)
         {
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
@@ -53,10 +53,10 @@ namespace api.Business.Organization
 
             organization.Users = new List<UserModel> {_mapper.Map(user, new UserModel())};
 
-            return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateModel());
+            return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public (int, int, int, OrganizationPublicModel[]) GetOrganizations(PagingDto paging)
+        public (int, int, int, OrganizationPublicDto[]) GetOrganizations(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountOrganizations() / paging.PageSize + 1;
@@ -79,19 +79,19 @@ namespace api.Business.Organization
             }
         }
 
-        public IOrganizationModel GetOrganizationById(string id, Claim currentUser)
+        public IOrganizationDto GetOrganizationById(string id, Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
             {
-                return _mapper.Map(organization, new OrganizationPrivateModel());
+                return _mapper.Map(organization, new OrganizationPrivateDto());
             }
 
-            return _mapper.Map(organization, new OrganizationPublicModel());
+            return _mapper.Map(organization, new OrganizationPublicDto());
         }
 
-        public OrganizationPrivateModel UpdateOrganizationById(string id, OrganizationUpdateModel updatedOrganization,
+        public OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization,
             Claim currentUser)
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
@@ -112,7 +112,7 @@ namespace api.Business.Organization
 
             var result = _repository.UpdateOrganization(organizationMapped);
 
-            return _mapper.Map(result, new OrganizationPrivateModel());
+            return _mapper.Map(result, new OrganizationPrivateDto());
         }
 
         public OrganizationModel AddUserToOrganization(string id, string userId, Claim currentUser)
