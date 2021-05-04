@@ -16,9 +16,10 @@ namespace api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+<<<<<<< 38f2756cf00f5b9b8cd0e8935bb96f42b024e7d2
             modelBuilder.Entity("api.Models.Advertisement.AdvertisementModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -53,6 +54,8 @@ namespace api.Migrations
                     b.ToTable("advertisement");
                 });
 
+=======
+>>>>>>> feature/organizations -> Reset migrations to dev branch state
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -161,13 +164,9 @@ namespace api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("DateCreation")
+                    b.Property<DateTimeOffset>("CreationDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
+                        .HasColumnName("creation_date");
 
                     b.Property<string>("DefaultAuthorization")
                         .HasColumnType("text")
@@ -180,6 +179,10 @@ namespace api.Migrations
                     b.Property<string>("LogoUrl")
                         .HasColumnType("text")
                         .HasColumnName("logo_url");
+
+                    b.Property<DateTimeOffset>("ModificationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modification_date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -302,23 +305,6 @@ namespace api.Migrations
                         .HasName("pk_user");
 
                     b.ToTable("user");
-                });
-
-            modelBuilder.Entity("OrganizationModelUserModel", b =>
-                {
-                    b.HasOne("api.Models.Organization.OrganizationModel", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationsId")
-                        .HasConstraintName("fk_organization_model_user_model_organization_organizations_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.User.UserModel", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .HasConstraintName("fk_organization_model_user_model_user_users_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
