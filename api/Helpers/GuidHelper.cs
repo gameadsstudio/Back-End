@@ -12,7 +12,7 @@ namespace api.Helpers
             {
                 return Guid.Parse(id);
             }
-            catch (Exception e)
+            catch (FormatException e)
             {
                 throw new ApiError(HttpStatusCode.BadRequest, e.Message);
             }
