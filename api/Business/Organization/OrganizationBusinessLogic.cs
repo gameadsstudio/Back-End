@@ -62,7 +62,7 @@ namespace api.Business.Organization
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
+            if (organization.Users != null && organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
             {
                 _repository.DeleteOrganization(organization);
             }
@@ -77,7 +77,7 @@ namespace api.Business.Organization
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
+            if (organization.Users != null && organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
             {
                 return _mapper.Map(organization, new OrganizationPrivateDto());
             }
@@ -102,7 +102,7 @@ namespace api.Business.Organization
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
+            if (organization.Users == null || organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.NotModified,
                     "Cannot modify an organization which you are not a part of");
