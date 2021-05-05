@@ -3,28 +3,24 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using api.Configuration;
 using api.Contexts;
 using api.Errors;
 using api.Helpers;
 using api.Models.User;
 using api.Repositories.User;
 using AutoMapper;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Business.User
 {
     public class UserBusinessLogic : IUserBusinessLogic
     {
-        private readonly AppSettings _appSettings;
         private readonly IMapper _mapper;
         private readonly IUserRepository _repository;
 
-        public UserBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
+        public UserBusinessLogic(ApiContext context, IMapper mapper)
         {
             _repository = new UserRepository(context);
-            _appSettings = appSettings.Value;
             _mapper = mapper;
         }
 
