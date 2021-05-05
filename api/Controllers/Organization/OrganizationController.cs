@@ -1,12 +1,7 @@
-﻿using System.Net;
-using api.Business.Organization;
+﻿using api.Business.Organization;
 using System.Security.Claims;
-using api.Configuration;
-using api.Contexts;
 using api.Models.Organization;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Linq;
 using api.Helpers;
 
