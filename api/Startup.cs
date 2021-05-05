@@ -41,10 +41,9 @@ namespace api
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
             services.Configure<AppSettings>(Configuration.GetSection("Application"));
             services.AddControllers();
-            
 
-            services.AddDbContext<ApiContext>(p =>
-                p.UseNpgsql(
+            services.AddDbContext<ApiContext>(
+                p => p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
                     .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
 
@@ -56,47 +55,46 @@ namespace api
                 new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); }).CreateMapper());
 
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-                x.Events = new JwtBearerEvents()
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
                 {
-                    OnTokenValidated = context =>
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
                     {
-                        var dbcontext = context.HttpContext.RequestServices.GetRequiredService<ApiContext>();
-                        var principal = context.Principal;
-
-                        var claim = principal?.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-                        if (claim == null || dbcontext.User.SingleOrDefault(a => a.Id == new Guid(claim.Value)) == null)
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                    x.Events = new JwtBearerEvents()
+                    {
+                        OnTokenValidated = context =>
                         {
-                            context.Fail("Invalid token");
-                        }
+                            var dbcontext = context.HttpContext.RequestServices.GetRequiredService<ApiContext>();
+                            var principal = context.Principal;
 
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                            var claim = principal?.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+                            if (claim == null || dbcontext.User.SingleOrDefault(a => a.Id == new Guid(claim.Value)) ==
+                                null)
+                            {
+                                context.Fail("Invalid token");
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
             services.AddMvc(o =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                o.Filters.Add(new AuthorizeFilter(policy));
-            }).AddJsonOptions(opts =>
-            {
-                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+                {
+                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                    o.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
             services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
