@@ -9,7 +9,7 @@ namespace api.Repositories.Advertisement
         AdvertisementModel GetAdvertisementById(Guid id);
         AdvertisementModel[] GetAdvertisements(int offset, int limit);
         AdvertisementModel UpdateAdvertisement(AdvertisementModel updatedUser);
-        void DeleteAdvertisement(AdvertisementModel user);
+        int DeleteAdvertisement(AdvertisementModel user);
         int CountAdvertisements();
     }
 }
