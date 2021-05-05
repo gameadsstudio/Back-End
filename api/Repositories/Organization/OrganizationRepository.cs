@@ -18,8 +18,6 @@ namespace api.Repositories.Organization
 
         public OrganizationModel AddNewOrganization(OrganizationModel organization)
         {
-            var users = organization.Users.Select(user => _context.User.Local.Single(x => x.Id == user.Id)).ToList();
-            organization.Users = users;
             _context.Organization.Add(organization);
             _context.SaveChanges();
             return organization;
