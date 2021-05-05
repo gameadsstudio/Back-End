@@ -24,10 +24,10 @@ namespace api.Mappings
             CreateMap<AdvertisementModel, AdvertisementPublicDto>().ReverseMap();
             
             // Organization
-            CreateMap<OrganizationModel, OrganizationCreationModel>().ReverseMap();
-            CreateMap<OrganizationModel, OrganizationUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
-            CreateMap<OrganizationModel, OrganizationPrivateModel>().ReverseMap();
-            CreateMap<OrganizationModel, OrganizationPublicModel>().ReverseMap();
+            CreateMap<OrganizationModel, OrganizationCreationDto>().ReverseMap();
+            CreateMap<OrganizationModel, OrganizationUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<OrganizationModel, OrganizationPrivateDto>().ReverseMap();
+            CreateMap<OrganizationModel, OrganizationPublicDto>().ReverseMap();
         }
     }
 }
