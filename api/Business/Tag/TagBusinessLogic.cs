@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -40,17 +41,17 @@ namespace api.Business.Tag
                    throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found");
         }
 
-        public (int page, int pageSize, int maxPage, TagPublicDto[] tags) GetTags(PagingDto paging, string name,
+        public (int page, int pageSize, int maxPage, List<TagPublicDto> tags) GetTags(PagingDto paging, string name,
             string description, bool noPaging)
         {
             if (noPaging)
             {
-                return (0, _repository.CountTags(), 0, _repository.GetAllTags().Select(tag => _mapper.Map(tag, new TagPublicDto())).ToArray());
+                return (0, _repository.CountTags(), 0, _mapper.Map(_repository.GetAllTags(), new List<TagPublicDto>()));
             }
             paging = PagingHelper.Check(paging);
             var (tags, maxPage) = _repository.SearchTagsByNameOrDescription((paging.Page - 1) * paging.PageSize,
                 paging.PageSize, name ?? "", description ?? "");
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), tags.Select(tag => _mapper.Map(tag, new TagPublicDto())).ToArray());
+            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), _mapper.Map(tags, new List<TagPublicDto>()));
         }
 
         public TagPublicDto AddNewTag(TagCreationDto newTag, Claim currentUser)
