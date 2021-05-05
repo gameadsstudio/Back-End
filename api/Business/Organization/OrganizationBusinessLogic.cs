@@ -33,11 +33,6 @@ namespace api.Business.Organization
         {
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
-            if (!(organization.Type == "Developers" || organization.Type == "Advertisers"))
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, $"Organization type must be Developers or Advertisers");
-            }
-
             if (_repository.GetOrganizationByName(organization.Name) != null)
             {
                 throw new ApiError(HttpStatusCode.Conflict,

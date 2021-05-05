@@ -68,6 +68,18 @@ namespace api.Contexts
             modelBuilder.Entity<OrganizationModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.State)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (OrganizationState) Enum.Parse(typeof(OrganizationState), v));
+                entity.Property(e => e.Type)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (OrganizationType) Enum.Parse(typeof(OrganizationType), v));
+                entity.Property(e => e.DefaultAuthorization)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (OrganizationUserAuthorization) Enum.Parse(typeof(OrganizationUserAuthorization), v));
             });
 
             modelBuilder.Entity<TagModel>(entity =>

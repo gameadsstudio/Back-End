@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.Enums;
 
 namespace api.Models.Organization
 {
@@ -12,6 +13,6 @@ namespace api.Models.Organization
         public string PrivateEmail { get; set; }
 
         [Required]
-        public string Type { get; set; }
+        public OrganizationType Type { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Enums;
 using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.User;
@@ -24,11 +25,11 @@ namespace api.Models.Organization
 
         public string WebsiteUrl { get; set; }
 
-        public string Type { get; set; }
+        public OrganizationType Type { get; set; }
 
-        public string State { get; set; }
+        public OrganizationState State { get; set; }
 
-        public string DefaultAuthorization { get; set; }
+        public OrganizationUserAuthorization DefaultAuthorization { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
