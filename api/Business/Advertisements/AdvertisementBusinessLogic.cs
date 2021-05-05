@@ -23,14 +23,21 @@ namespace api.Business.Advertisements
 
         public AdvertisementPublicDto GetAdvertisementById(string id, Claim currentUser)
         {
-            var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
+            var advertisement = GetAdvertisementModelById(id);
 
+            return _mapper.Map(advertisement, new AdvertisementPublicDto());
+        }
+
+        public AdvertisementModel GetAdvertisementModelById(string id)
+        {
+            var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
+            
             if (advertisement == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find advertisement with Id: {id}");
             }
 
-            return _mapper.Map(advertisement, new AdvertisementPublicDto());
+            return advertisement;
         }
 
         public (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(
@@ -52,12 +59,7 @@ namespace api.Business.Advertisements
         public AdvertisementPublicDto UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
             Claim currentUser)
         {
-            var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
-
-            if (advertisement == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find advertisement with Id: {id}");
-            }
+            var advertisement = GetAdvertisementModelById(id);
 
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
 
@@ -66,12 +68,7 @@ namespace api.Business.Advertisements
 
         public void DeleteAdvertisementById(string id, Claim currentUser)
         {
-            var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
-
-            if (advertisement == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
-            }
+            var advertisement = GetAdvertisementModelById(id);
 
             _repository.DeleteAdvertisement(advertisement);
         }

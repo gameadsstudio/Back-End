@@ -8,6 +8,7 @@ namespace api.Business.Advertisements
     public interface IAdvertisementBusinessLogic
     {
         AdvertisementPublicDto GetAdvertisementById(string id, Claim currentUser);
+        AdvertisementModel GetAdvertisementModelById(string id);
         (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(PagingDto paging);
         AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement);
         AdvertisementPublicDto UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement, Claim currentUser);
