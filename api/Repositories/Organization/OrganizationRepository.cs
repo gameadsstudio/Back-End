@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using api.Contexts;
 using api.Models.Organization;
-using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Organization

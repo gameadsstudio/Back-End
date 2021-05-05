@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using api.Contexts;
@@ -10,7 +9,6 @@ using api.Helpers;
 using api.Repositories.Organization;
 using api.Business.User;
 using System.Security.Claims;
-using System.Text.Json;
 using AutoMapper;
 
 namespace api.Business.Organization

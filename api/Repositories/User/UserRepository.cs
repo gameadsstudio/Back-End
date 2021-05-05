@@ -2,7 +2,6 @@
 using System.Linq;
 using api.Contexts;
 using api.Models.User;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.User
 {
