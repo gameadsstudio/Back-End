@@ -130,9 +130,9 @@ namespace api.Business.Organization
                 throw new ApiError(HttpStatusCode.Conflict, "User already in organization");
             }
 
-            var newUser = _userBusinessLogic.GetUserById(userId, currentUser);
+            var user = _userBusinessLogic.GetUserModelById(userId);
 
-            organization.Users.Add(_mapper.Map(newUser, new UserModel()));
+            organization.Users.Add(user);
 
             return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
@@ -164,7 +164,7 @@ namespace api.Business.Organization
                     "Cannot remove a user from an organization which you are not part of");
             }
 
-            var userToDelete = (UserPublicDto)_userBusinessLogic.GetUserById(userId, currentUser);
+            var userToDelete = _userBusinessLogic.GetUserModelById(userId);
 
             if (organization.Users.All(x => x.Id != userToDelete.Id))
             {
