@@ -160,7 +160,7 @@ namespace api.Business.Organization
 
             var userToDelete = _userBusinessLogic.GetUserModelById(userId);
 
-            if (organization.Users.All(x => x.Id != userToDelete.Id))
+            if (organization.Users == null || organization.Users.All(x => x.Id != userToDelete.Id))
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"No user with Id: {userToDelete.Id} found in organization");
             }
