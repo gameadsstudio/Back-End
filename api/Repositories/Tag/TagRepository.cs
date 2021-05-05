@@ -28,7 +28,7 @@ namespace api.Repositories.Tag
 
         public TagModel GetTagByName(string name)
         {
-            return _context.Tag.SingleOrDefault(a => a.Name == name);
+            return _context.Tag.SingleOrDefault(a => a.Name.ToLower() == name.ToLower());
         }
 
         public int CountTags()

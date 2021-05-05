@@ -15,9 +15,10 @@ namespace api.Mappings
             CreateMap<UserModel, UserPublicDto>().ReverseMap();
 
             // Tag
-            CreateMap<TagModel, TagCreationModel>().ReverseMap();
-            CreateMap<TagModel, TagUpdateModel>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
-            
+            CreateMap<TagModel, TagCreationDto>().ReverseMap();
+            CreateMap<TagModel, TagPublicDto>().ReverseMap();
+            CreateMap<TagModel, TagUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+
             // Advertisement
             CreateMap<AdvertisementModel, AdvertisementCreationDto>().ReverseMap();
             CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));

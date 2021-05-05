@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using api.Contexts;
@@ -21,55 +21,61 @@ namespace api.Business.Tag
             _mapper = mapper;
         }
 
-        public TagModel GetTagById(string id)
+        public TagPublicDto GetTagById(string id)
         {
-            try
-            {
-                return _repository.GetTagById(Guid.Parse(id)) ??
-                       throw new ApiError(HttpStatusCode.NotFound, $"Could not find tag with Id: {id}");
-            }
-            catch (FormatException e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
+            return _mapper.Map(_repository.GetTagById(GuidHelper.StringToGuidConverter(id)) ??
+                throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found"),
+                new TagPublicDto());
         }
 
-        public (int page, int pageSize, int maxPage, TagModel[] tags) GetTags(PagingDto paging, string name,
+        public TagModel GetTagModelByName(string name)
+        {
+            return _repository.GetTagByName(name) ??
+                   throw new ApiError(HttpStatusCode.NotFound, $"Tag with name {name} not found");
+        }
+
+        private TagModel GetTagModelById(string id)
+        {
+            return _repository.GetTagById(GuidHelper.StringToGuidConverter(id)) ??
+                   throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found");
+        }
+
+        public (int page, int pageSize, int maxPage, TagPublicDto[] tags) GetTags(PagingDto paging, string name,
             string description, bool noPaging)
         {
             if (noPaging)
             {
-                return (0, _repository.CountTags(), 0, _repository.GetAllTags());
+                return (0, _repository.CountTags(), 0, _repository.GetAllTags().Select(tag => _mapper.Map(tag, new TagPublicDto())).ToArray());
             }
             paging = PagingHelper.Check(paging);
             var (tags, maxPage) = _repository.SearchTagsByNameOrDescription((paging.Page - 1) * paging.PageSize,
                 paging.PageSize, name ?? "", description ?? "");
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), tags);
+            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), tags.Select(tag => _mapper.Map(tag, new TagPublicDto())).ToArray());
         }
 
-        public TagModel AddNewTag(TagCreationModel newTag, Claim currentUser)
+        public TagPublicDto AddNewTag(TagCreationDto newTag, Claim currentUser)
         {
             // Todo: Check if user is admin
 
             CheckTagExists(newTag.Name);
             var tag = _mapper.Map(newTag, new TagModel());
-            return _repository.AddNewTag(tag);
+            return _mapper.Map(_repository.AddNewTag(tag), new TagPublicDto());
         }
 
-        public TagModel UpdateTagById(string id, TagUpdateModel updatedTag, Claim currentUser)
+        public TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, Claim currentUser)
         {
             // Todo: Check if user is admin
 
             CheckTagExists(updatedTag.Name);
-            var tag = _mapper.Map(updatedTag, GetTagById(id));
-            return _repository.UpdateTag(tag);
+            var tag = _mapper.Map(updatedTag, GetTagModelById(id));
+            return _mapper.Map(_repository.UpdateTag(tag), new TagPublicDto());
         }
 
         public void DeleteTagById(string id, Claim currentUser)
         {
             // Todo: Check if user is admin
 
-            var tag = GetTagById(id);
+            var tag = GetTagModelById(id);
             _repository.DeleteTag(tag);
         }
 

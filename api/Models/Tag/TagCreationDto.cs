@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Models.Tag
 {
-    public class TagCreationModel
+    public class TagCreationDto
     {
         [Required]
         [MinLength(2)]

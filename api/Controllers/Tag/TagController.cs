@@ -47,7 +47,7 @@ namespace api.Controllers.Tag
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] TagCreationModel newTag)
+        public IActionResult Post([FromForm] TagCreationDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             var success = _business.AddNewTag(newTag, currentUser);
@@ -55,7 +55,7 @@ namespace api.Controllers.Tag
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] TagUpdateModel newTag)
+        public IActionResult Patch(string id, [FromForm] TagUpdateDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.UpdateTagById(id, newTag, currentUser));

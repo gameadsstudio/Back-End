@@ -1,6 +1,6 @@
 namespace api.Models.Tag
 {
-    public class TagUpdateModel
+    public class TagUpdateDto
     {
         public string Name { get; set; }
 
