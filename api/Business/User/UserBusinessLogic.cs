@@ -54,7 +54,14 @@ namespace api.Business.User
 
         public UserModel GetUserModelById(string id)
         {
-            return _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
+            var user = _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
+            
+            if (user == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
+            }
+            
+            return user;
         }
         
         public object GetSelf(Claim currentUser)
