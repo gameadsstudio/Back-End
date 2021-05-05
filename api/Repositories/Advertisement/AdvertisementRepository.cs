@@ -38,10 +38,10 @@ namespace api.Repositories.Advertisement
             return advertisement;
         }
 
-        public int DeleteAdvertisement(AdvertisementModel advertisement)
+        public void DeleteAdvertisement(AdvertisementModel advertisement)
         {
             _context.Advertisement.Remove(advertisement);
-            return _context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public int CountAdvertisements()

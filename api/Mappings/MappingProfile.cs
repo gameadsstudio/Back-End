@@ -19,7 +19,8 @@ namespace api.Mappings
             
             // Advertisement
             CreateMap<AdvertisementModel, AdvertisementCreationDto>().ReverseMap();
-            CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));;
+            CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<AdvertisementModel, AdvertisementPublicDto>().ReverseMap();
         }
     }
 }

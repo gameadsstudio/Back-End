@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Security.Claims;
 using api.Contexts;
@@ -20,7 +21,7 @@ namespace api.Business.Advertisements
             _mapper = mapper;
         }
 
-        public AdvertisementModel GetAdvertisementById(string id, Claim currentUser)
+        public AdvertisementPublicDto GetAdvertisementById(string id, Claim currentUser)
         {
             var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
 
@@ -29,26 +30,26 @@ namespace api.Business.Advertisements
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find advertisement with Id: {id}");
             }
 
-            return advertisement;
+            return _mapper.Map(advertisement, new AdvertisementPublicDto());
         }
 
-        public (int page, int pageSize, int maxPage, AdvertisementModel[] advertisements) GetAdvertisements(
+        public (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(
             PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountAdvertisements() / paging.PageSize + 1;
             var advertisements = _repository.GetAdvertisements((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage, advertisements);
+            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(advertisements, new List<AdvertisementPublicDto>()));
         }
 
-        public AdvertisementModel AddNewAdvertisement(AdvertisementCreationDto newAdvertisement)
+        public AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement)
         {
             var advertisement = _mapper.Map(newAdvertisement, new AdvertisementModel());
 
-            return _repository.AddNewAdvertisement(advertisement);
+            return _mapper.Map(_repository.AddNewAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
-        public AdvertisementModel UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
+        public AdvertisementPublicDto UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
             Claim currentUser)
         {
             var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
@@ -60,10 +61,10 @@ namespace api.Business.Advertisements
 
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
 
-            return _repository.UpdateAdvertisement(advertisement);
+            return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
-        public int DeleteAdvertisementById(string id, Claim currentUser)
+        public void DeleteAdvertisementById(string id, Claim currentUser)
         {
             var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
 
@@ -72,7 +73,7 @@ namespace api.Business.Advertisements
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            return _repository.DeleteAdvertisement(advertisement);
+            _repository.DeleteAdvertisement(advertisement);
         }
     }
 }
