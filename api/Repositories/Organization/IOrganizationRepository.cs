@@ -10,8 +10,8 @@ namespace api.Repositories.Organization
         OrganizationModel GetOrganizationByName(string name);
         OrganizationModel GetOrganizationByPrivateEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
-        OrganizationModel DeleteOrganization(OrganizationModel organization);
-        public OrganizationPublicDto[] GetOrganizations(int offset, int limit);
+        void DeleteOrganization(OrganizationModel organization);
+        public OrganizationModel[] GetOrganizations(int offset, int limit);
         public int CountOrganizations();
     }
 }

@@ -45,45 +45,41 @@ namespace api.Business.Organization
                     $"Organization with private email: {organization.PrivateEmail} already exists");
             }
 
-            var user = _userBusinessLogic.GetUserById(currentUser.Value, currentUser);
+            var user = _userBusinessLogic.GetUserModelById(currentUser.Value);
 
-            organization.Users = new List<UserModel> {_mapper.Map(user, new UserModel())};
+            organization.Users = new List<UserModel> {user};
 
             return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public (int, int, int, OrganizationPublicDto[]) GetOrganizations(PagingDto paging)
+        public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountOrganizations() / paging.PageSize + 1;
             var organizations = _repository.GetOrganizations((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage, organizations);
+            return (paging.Page, paging.PageSize, maxPage,
+                _mapper.Map(organizations, new List<OrganizationPublicDto>()));
         }
 
         public void DeleteOrganizationById(string id, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
-
-            if (organization == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
-            }
+            var organization = GetOrganizationModelById(id);
 
             if (organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
             {
                 _repository.DeleteOrganization(organization);
             }
+            else
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot delete an organization which you are not a part of");
+            }
         }
 
         public IOrganizationDto GetOrganizationById(string id, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            var organization = GetOrganizationModelById(id);
 
-            if (organization == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
-            }
-            
             if (organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
             {
                 return _mapper.Map(organization, new OrganizationPrivateDto());
@@ -107,21 +103,14 @@ namespace api.Business.Organization
         public OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization,
             Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
-
-            if (organization == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
-            }
+            var organization = GetOrganizationModelById(id);
 
             if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.NotModified, "Cannot modify organization");
+                throw new ApiError(HttpStatusCode.NotModified, "Cannot modify an organization which you are not a part of");
             }
 
             var organizationMapped = _mapper.Map(updatedOrganization, organization);
-
-            organizationMapped.DateUpdate = DateTime.UtcNow;
 
             var result = _repository.UpdateOrganization(organizationMapped);
 
@@ -130,9 +119,9 @@ namespace api.Business.Organization
 
         public OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            var organization = GetOrganizationModelById(id);
 
-            if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
+            if (organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to organization");
             }
@@ -151,14 +140,9 @@ namespace api.Business.Organization
 
         public ICollection<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            var organization = GetOrganizationModelById(id);
 
-            if (organization == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
-            }
-            
-            if (organization.Users != null && organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
+            if (organization.Users != null && organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "User does not belong in the organization");
             }
