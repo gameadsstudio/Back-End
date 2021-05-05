@@ -144,7 +144,7 @@ namespace api.Business.Organization
 
             if (organization.Users != null && organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "User does not belong in the organization");
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get users from an organization which you are not a part of");
             }
 
             return _mapper.Map(organization.Users, new List<UserPublicDto>());
@@ -157,7 +157,7 @@ namespace api.Business.Organization
             if (organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot remove a user from an organization which you are not part of");
+                    "Cannot remove a user from an organization which you are not a part of");
             }
 
             var userToDelete = _userBusinessLogic.GetUserModelById(userId);
