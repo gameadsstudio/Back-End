@@ -19,7 +19,6 @@ namespace api.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-<<<<<<< 38f2756cf00f5b9b8cd0e8935bb96f42b024e7d2
             modelBuilder.Entity("api.Models.Advertisement.AdvertisementModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -54,8 +53,6 @@ namespace api.Migrations
                     b.ToTable("advertisement");
                 });
 
-=======
->>>>>>> feature/organizations -> Reset migrations to dev branch state
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
                 {
                     b.Property<Guid>("Id")
