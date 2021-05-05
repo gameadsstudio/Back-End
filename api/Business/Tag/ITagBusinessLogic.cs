@@ -6,11 +6,12 @@ namespace api.Business.Tag
 {
     public interface ITagBusinessLogic
     {
-        TagModel GetTagById(string id);
-        (int page, int pageSize, int maxPage, TagModel[] tags) GetTags(PagingDto paging, string name,
+        TagPublicDto GetTagById(string id);
+        (int page, int pageSize, int maxPage, TagPublicDto[] tags) GetTags(PagingDto paging, string name,
             string description, bool noPaging);
-        TagModel AddNewTag(TagCreationModel newTag, Claim currentUser);
-        TagModel UpdateTagById(string id, TagUpdateModel updatedTag, Claim currentUser);
+        TagPublicDto AddNewTag(TagCreationDto newTag, Claim currentUser);
+        TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, Claim currentUser);
+        TagModel GetTagModelByName(string name);
         void DeleteTagById(string id, Claim currentUser);
     }
 }
