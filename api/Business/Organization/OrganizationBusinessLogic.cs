@@ -92,6 +92,18 @@ namespace api.Business.Organization
             return _mapper.Map(organization, new OrganizationPublicDto());
         }
 
+        public OrganizationModel GetOrganizationModelById(string id)
+        {
+            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            
+            if (organization == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+            }
+
+            return organization;
+        }
+
         public OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization,
             Claim currentUser)
         {
@@ -156,7 +168,7 @@ namespace api.Business.Organization
 
         public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, Claim currentUser)
         {
-            var organization = (OrganizationPrivateDto)GetOrganizationById(id, currentUser);
+            var organization = GetOrganizationModelById(id);
 
             if (organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
@@ -168,10 +180,10 @@ namespace api.Business.Organization
 
             if (organization.Users.All(x => x.Id != userToDelete.Id))
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Not user with Id: {userToDelete.Id} found in organization");
+                throw new ApiError(HttpStatusCode.NotFound, $"No user with Id: {userToDelete.Id} found in organization");
             }
             
-            organization.Users.RemoveAll(x => x.Id == userToDelete.Id);
+            organization.Users.Remove(userToDelete);
 
             return _mapper.Map(_repository.UpdateOrganization(_mapper.Map(organization, new OrganizationModel())), new OrganizationPrivateDto());
         }

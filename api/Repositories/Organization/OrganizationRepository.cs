@@ -49,6 +49,7 @@ namespace api.Repositories.Organization
 
         public OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization)
         {
+            _context.Update(updatedOrganization);
             _context.SaveChanges();
             return updatedOrganization;
         }
