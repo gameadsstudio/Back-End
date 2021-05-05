@@ -19,8 +19,7 @@ namespace api.Business.Organization
         private readonly IOrganizationRepository _repository;
         private readonly IUserBusinessLogic _userBusinessLogic;
 
-        public OrganizationBusinessLogic(ApiContext context, IMapper mapper,
-            IUserBusinessLogic userBusinessLogic)
+        public OrganizationBusinessLogic(ApiContext context, IMapper mapper, IUserBusinessLogic userBusinessLogic)
         {
             _repository = new OrganizationRepository(context);
             _userBusinessLogic = userBusinessLogic;
@@ -89,7 +88,7 @@ namespace api.Business.Organization
         public OrganizationModel GetOrganizationModelById(string id)
         {
             var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
-            
+
             if (organization == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
@@ -105,7 +104,8 @@ namespace api.Business.Organization
 
             if (organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.NotModified, "Cannot modify an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.NotModified,
+                    "Cannot modify an organization which you are not a part of");
             }
 
             var organizationMapped = _mapper.Map(updatedOrganization, organization);
@@ -142,7 +142,8 @@ namespace api.Business.Organization
 
             if (organization.Users != null && organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get users from an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get users from an organization which you are not a part of");
             }
 
             return _mapper.Map(organization.Users, new List<UserPublicDto>());
@@ -152,7 +153,7 @@ namespace api.Business.Organization
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users.All(x => x.Id.ToString() != currentUser.Value))
+            if (organization.Users == null || organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot remove a user from an organization which you are not a part of");
@@ -160,14 +161,16 @@ namespace api.Business.Organization
 
             var userToDelete = _userBusinessLogic.GetUserModelById(userId);
 
-            if (organization.Users == null || organization.Users.All(x => x.Id != userToDelete.Id))
+            if (organization.Users.All(x => x.Id != userToDelete.Id))
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"No user with Id: {userToDelete.Id} found in organization");
+                throw new ApiError(HttpStatusCode.NotFound,
+                    $"No user with Id: {userToDelete.Id} found in organization");
             }
-            
+
             organization.Users.Remove(userToDelete);
 
-            return _mapper.Map(_repository.UpdateOrganization(_mapper.Map(organization, new OrganizationModel())), new OrganizationPrivateDto());
+            return _mapper.Map(_repository.UpdateOrganization(_mapper.Map(organization, new OrganizationModel())),
+                new OrganizationPrivateDto());
         }
     }
 }
