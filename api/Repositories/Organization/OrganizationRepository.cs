@@ -35,11 +35,10 @@ namespace api.Repositories.Organization
             return _context.Organization.SingleOrDefault(a => a.PrivateEmail == email);
         }
 
-        public OrganizationModel DeleteOrganization(OrganizationModel organization)
+        public void DeleteOrganization(OrganizationModel organization)
         {
             _context.Organization.Remove(organization);
             _context.SaveChanges();
-            return organization;
         }
 
         public OrganizationModel GetOrganizationById(Guid id)
@@ -54,18 +53,9 @@ namespace api.Repositories.Organization
             return updatedOrganization;
         }
 
-        public OrganizationPublicDto[] GetOrganizations(int offset, int limit)
+        public OrganizationModel[] GetOrganizations(int offset, int limit)
         {
             return _context.Organization.OrderBy(p => p.Id)
-                .Select(p => new OrganizationPublicDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    PublicEmail = p.PublicEmail,
-                    Localization = p.Localization,
-                    LogoUrl = p.LogoUrl,
-                    WebsiteUrl = p.WebsiteUrl
-                })
                 .Skip(offset)
                 .Take(limit)
                 .ToArray();
