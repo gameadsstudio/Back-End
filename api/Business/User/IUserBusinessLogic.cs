@@ -8,6 +8,7 @@ namespace api.Business.User
     public interface IUserBusinessLogic
     {
         Object GetUserById(string id, Claim currentUser);
+        UserModel GetUserModelById(string id);
         (int page, int pageSize, int maxPage, UserPublicDto[] users) GetUsers(PagingDto paging);
         UserPrivateDto AddNewUser(UserCreationDto newUser);
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser);

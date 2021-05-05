@@ -56,6 +56,11 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPublicDto());
         }
 
+        public UserModel GetUserModelById(string id)
+        {
+            return _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
+        }
+        
         public object GetSelf(Claim currentUser)
         {
             Guid guid;
