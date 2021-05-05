@@ -1,5 +1,6 @@
 using api.Models.Organization;
 using System;
+using System.Collections.Generic;
 
 namespace api.Repositories.Organization
 {
@@ -11,7 +12,7 @@ namespace api.Repositories.Organization
         OrganizationModel GetOrganizationByPrivateEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         void DeleteOrganization(OrganizationModel organization);
-        OrganizationModel[] GetOrganizations(int offset, int limit);
+        List<OrganizationModel> GetOrganizations(int offset, int limit);
         int CountOrganizations();
     }
 }

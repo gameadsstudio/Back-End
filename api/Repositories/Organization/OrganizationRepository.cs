@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Organization;
@@ -50,12 +51,12 @@ namespace api.Repositories.Organization
             return updatedOrganization;
         }
 
-        public OrganizationModel[] GetOrganizations(int offset, int limit)
+        public List<OrganizationModel> GetOrganizations(int offset, int limit)
         {
             return _context.Organization.OrderBy(p => p.Id)
                 .Skip(offset)
                 .Take(limit)
-                .ToArray();
+                .ToList();
         }
 
         public int CountOrganizations()
