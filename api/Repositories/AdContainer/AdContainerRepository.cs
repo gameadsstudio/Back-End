@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.AdContainer;
-using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.AdContainer
@@ -43,7 +43,7 @@ namespace api.Repositories.AdContainer
             return _context.AdContainer.Count();
         }
 
-        public (AdContainerModel[], int) GetAdContainersByOrganizationId(int offset, int limit,
+        public (List<AdContainerModel>, int) GetAdContainersByOrganizationId(int offset, int limit,
             Guid orgId, Guid userId)
         {
             var query = _context.AdContainer.OrderBy(p => p.Id)
@@ -53,7 +53,7 @@ namespace api.Repositories.AdContainer
 
             return (query.Skip(offset)
                         .Take(limit)
-                        .ToArray(),
+                        .ToList(),
                     query.Count());
         }
 

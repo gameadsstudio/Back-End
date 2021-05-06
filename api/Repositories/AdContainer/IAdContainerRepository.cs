@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using api.Models.AdContainer;
 
 namespace api.Repositories.AdContainer
@@ -9,7 +10,7 @@ namespace api.Repositories.AdContainer
         AdContainerModel GetAdContainerById(Guid id);
         AdContainerModel GetAdContainerByName(string name);
         int CountAdContainers();
-        (AdContainerModel[], int) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId, Guid userId);
+        (List<AdContainerModel>, int) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId, Guid userId);
         AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer);
         int DeleteAdContainer(AdContainerModel adContainer);
     }
