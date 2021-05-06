@@ -38,9 +38,13 @@ namespace api.Business.AdContainer
 
         public AdContainerPublicDto GetAdContainerById(string id, Claim currentUser)
         {
-            // Todo : check if user is in the specified org OR the user is admin
-
-            return _mapper.Map(GetAdContainerModelById(id), new AdContainerPublicDto());
+            // Todo : check if user is admin
+            var adContainer = GetAdContainerModelById(id);
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id.ToString(), currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+            }
+            return _mapper.Map(adContainer, new AdContainerPublicDto());
         }
 
         private AdContainerModel GetAdContainerModelById(string id)
@@ -53,21 +57,25 @@ namespace api.Business.AdContainer
             PagingDto paging,
             string orgId, Claim currentUser)
         {
-            // Todo : check if user is in the specified org OR the user is admin
+            // Todo : check if the user is admin
 
             paging = PagingHelper.Check(paging);
             var (adContainers, maxPage) = _repository.GetAdContainersByOrganizationId(
                 (paging.Page - 1) * paging.PageSize,
                 paging.PageSize,
-                GuidHelper.StringToGuidConverter(orgId));
+                GuidHelper.StringToGuidConverter(orgId), GuidHelper.StringToGuidConverter(currentUser.Value));
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
                 _mapper.Map(adContainers, new List<AdContainerPublicDto>()));
         }
 
         public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser)
         {
-            // Todo : check if user is in the specified org OR the user is admin
+            // Todo : check if user is admin
 
+            if (!_organizationBusinessLogic.IsUserInOrganization(newAdContainer.OrgId, currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot create an ad container for an organization you're not part of");
+            }
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
             adContainer.Tags = ResolveTags(newAdContainer.TagNames);
             /*
@@ -80,15 +88,20 @@ namespace api.Business.AdContainer
         public AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
             Claim currentUser)
         {
-            // Todo : check if user is in the specified org OR the user is admin
+            // Todo : check if user is admin
 
-            var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerModelById(id));
+            var adContainer = GetAdContainerModelById(id);
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id.ToString(), currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+            }
+            var updated = _mapper.Map(updatedAdContainer, adContainer);
             if (updatedAdContainer.TagNames != null)
             {
-                adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
+                updated.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
 
-            return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicDto());
+            return _mapper.Map(_repository.UpdateAdContainer(updated), new AdContainerPublicDto());
         }
 
         public void DeleteAdContainerById(string id, Claim currentUser)
@@ -96,6 +109,10 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = GetAdContainerModelById(id);
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id.ToString(), currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+            }
             _repository.DeleteAdContainer(adContainer);
         }
 

@@ -17,5 +17,6 @@ namespace api.Business.Organization
         OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser);
         ICollection<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser);
         OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, Claim currentUser);
+        bool IsUserInOrganization(string orgId, string userId);
     }
 }
