@@ -106,7 +106,7 @@ namespace api.Business.AdContainer
 
         public void DeleteAdContainerById(string id, Claim currentUser)
         {
-            // Todo : check if user is in the specified org OR the user is admin
+            // Todo : check if user is admin
 
             var adContainer = GetAdContainerModelById(id);
             if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id.ToString(), currentUser.Value))
