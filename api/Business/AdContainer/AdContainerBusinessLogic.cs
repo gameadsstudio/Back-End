@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using api.Business.Organization;
 using api.Business.Tag;
 using api.Contexts;
 using api.Errors;
@@ -20,17 +22,17 @@ namespace api.Business.AdContainer
         private readonly IAdContainerRepository _repository;
 
         private readonly ITagBusinessLogic _tagBusinessLogic;
-        // private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
+        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
 
         public AdContainerBusinessLogic(
-                ApiContext context,
-                IMapper mapper,
-                ITagBusinessLogic tagBusinessLogic)
-            // IOrganizationBusinessLogic organizationBusinessLogic)
+            ApiContext context,
+            IMapper mapper,
+            ITagBusinessLogic tagBusinessLogic,
+            IOrganizationBusinessLogic organizationBusinessLogic)
         {
             _repository = new AdContainerRepository(context);
             _tagBusinessLogic = tagBusinessLogic;
-            // _organizationBusinessLogic = organizationBusinessLogic;
+            _organizationBusinessLogic = organizationBusinessLogic;
             _mapper = mapper;
         }
 
@@ -47,7 +49,8 @@ namespace api.Business.AdContainer
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
         }
 
-        public (int page, int pageSize, int maxPage, List<AdContainerPublicDto> adContainers) GetAdContainers(PagingDto paging,
+        public (int page, int pageSize, int maxPage, List<AdContainerPublicDto> adContainers) GetAdContainers(
+            PagingDto paging,
             string orgId, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
@@ -68,9 +71,9 @@ namespace api.Business.AdContainer
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
             adContainer.Tags = ResolveTags(newAdContainer.TagNames);
             /*
-             * Todo : Add Organization and version to model
+             * Todo : Add version to model
              */
-            // adContainer.Organization = _organizationBusinessLogic.GetOrganizationById(Guid.Parse(newAdContainer.OrgId));
+            adContainer.Organization = _organizationBusinessLogic.GetOrganizationModelById(newAdContainer.OrgId);
             return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicDto());
         }
 
@@ -80,7 +83,7 @@ namespace api.Business.AdContainer
             // Todo : check if user is in the specified org OR the user is admin
 
             var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerModelById(id));
-            if (updatedAdContainer.TagNames.Count > 0)
+            if (updatedAdContainer.TagNames != null)
             {
                 adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
@@ -98,7 +101,9 @@ namespace api.Business.AdContainer
 
         private List<TagModel> ResolveTags(List<string> tagNames)
         {
-            return tagNames.Select(tagName => _tagBusinessLogic.GetTagModelByName(tagName)).ToList();
+            return (from tagName in tagNames
+                where !String.IsNullOrEmpty(tagName)
+                select _tagBusinessLogic.GetTagModelByName(tagName)).ToList();
         }
     }
 }
