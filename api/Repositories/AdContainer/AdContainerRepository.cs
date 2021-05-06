@@ -26,6 +26,7 @@ namespace api.Repositories.AdContainer
         {
             return _context.AdContainer
                 .Include(a => a.Tags)
+                .Include(a => a.Organization)
                 .SingleOrDefault(a => a.Id == id);
         }
 
@@ -54,6 +55,7 @@ namespace api.Repositories.AdContainer
 
         public AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer)
         {
+            _context.AdContainer.Update(updatedAdContainer);
             _context.SaveChanges();
             return updatedAdContainer;
         }
