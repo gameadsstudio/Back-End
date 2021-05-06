@@ -47,7 +47,7 @@ namespace api.Business.Tag
                 return (0, _repository.CountTags(), 0, _mapper.Map(_repository.GetAllTags(), new List<TagPublicDto>()));
             }
             paging = PagingHelper.Check(paging);
-            var (tags, maxPage) = _repository.SearchTagsByNameDescription((paging.Page - 1) * paging.PageSize,
+            var (tags, maxPage) = _repository.SearchTags((paging.Page - 1) * paging.PageSize,
                 paging.PageSize, filters);
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), _mapper.Map(tags, new List<TagPublicDto>()));
         }
