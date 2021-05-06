@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Tag;
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Tag
 {
