@@ -2,6 +2,7 @@ using System.Linq;
 using System.Security.Claims;
 using api.Business.Tag;
 using api.Helpers;
+using api.Models.Common;
 using api.Models.Tag;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,20 +29,20 @@ namespace api.Controllers.Tag
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult<TagPublicDto[]> GetAll(
+        public ActionResult<GetAllDto<TagPublicDto>> GetAll(
             [FromQuery] PagingDto paging,
             [FromQuery] bool noPaging,
             [FromQuery] TagFiltersDto filters)
         {
-            var result = _business.GetTags(paging, filters, noPaging);
+            var (page, pageSize, maxPage, tags) = _business.GetTags(paging, filters, noPaging);
 
-            return Ok(new
+            return Ok(new GetAllDto<TagPublicDto>()
             {
-                status = 200,
-                page = result.Item1,
-                pagesize = result.Item2,
-                maxPage = result.Item3,
-                tags = result.Item4
+                Status = 200,
+                Page = page,
+                PageSize = pageSize,
+                MaxPage = maxPage,
+                Result = tags
             });
         }
 

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using api.Business.AdContainer;
 using api.Helpers;
 using api.Models.AdContainer;
+using api.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.AdContainer
@@ -29,21 +29,21 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<AdContainerPublicDto>> GetAll(
+        public ActionResult<GetAllDto<AdContainerPublicDto>> GetAll(
             [FromQuery] PagingDto paging,
             [FromQuery] [Required] string orgId
             )
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var (page, pagesize, maxPage, adContainers) = _business.GetAdContainers(paging, orgId, currentUser);
+            var (page, pageSize, maxPage, adContainers) = _business.GetAdContainers(paging, orgId, currentUser);
 
-            return Ok(new
+            return Ok(new GetAllDto<AdContainerPublicDto>()
             {
-                status = 200,
-                page,
-                pagesize,
-                maxPage,
-                adContainers
+                Status = 200,
+                Page = page,
+                PageSize = pageSize,
+                MaxPage = maxPage,
+                Result = adContainers
             });
         }
 

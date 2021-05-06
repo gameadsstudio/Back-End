@@ -47,7 +47,7 @@ namespace api.Business.AdContainer
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
         }
 
-        public (int page, int pageSize, int maxPage, AdContainerModel[] tags) GetAdContainers(PagingDto paging,
+        public (int page, int pageSize, int maxPage, List<AdContainerPublicDto> adContainers) GetAdContainers(PagingDto paging,
             string orgId, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
@@ -57,7 +57,8 @@ namespace api.Business.AdContainer
                 (paging.Page - 1) * paging.PageSize,
                 paging.PageSize,
                 GuidHelper.StringToGuidConverter(orgId));
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), adContainers);
+            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
+                _mapper.Map(adContainers, new List<AdContainerPublicDto>()));
         }
 
         public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser)
