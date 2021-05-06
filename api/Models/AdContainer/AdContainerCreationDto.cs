@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using api.Enum.AdContainer;
+using api.Enums.AdContainer;
 
 namespace api.Models.AdContainer
 {
