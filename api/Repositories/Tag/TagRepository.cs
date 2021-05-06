@@ -51,31 +51,24 @@ namespace api.Repositories.Tag
                 _context.Tag.Count());
         }
 
-        public (List<TagModel>, int) SearchTagsByNameDescription(int offset, int limit, TagFiltersDto filters,
+        public (List<TagModel>, int) SearchTags(int offset, int limit, TagFiltersDto filters,
             bool strict = false)
         {
-            var tags = _context.Tag.OrderBy(p => p.Id);
-            IQueryable<TagModel> countQuery = _context.Tag
-                .OrderBy(p => p.Id);
+            IQueryable<TagModel> query = _context.Tag.OrderBy(p => p.Id);
 
             if (strict)
             {
-                return (tags.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
-                                        p.Description.ToLower().Contains(filters.Description.ToLower()))
-                        .Skip(offset)
-                        .Take(limit).ToList(),
-                    countQuery
-                        .Count(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
-                                    p.Description.ToLower().Contains(filters.Description.ToLower())));
+                query = query.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
+                                         p.Description.ToLower().Contains(filters.Description.ToLower()));
+            }
+            else
+            {
+                query = query.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
+                                         p.Description.ToLower().Contains(filters.Description.ToLower()));
             }
 
-            return (tags.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
-                                    p.Description.ToLower().Contains(filters.Description.ToLower()))
-                    .Skip(offset)
-                    .Take(limit).ToList(),
-                countQuery
-                    .Count(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
-                                p.Description.ToLower().Contains(filters.Description.ToLower())));
+            return (query.Skip(offset)
+                .Take(limit).ToList(), query.Count());
         }
 
         public TagModel UpdateTag(TagModel updatedTag)
