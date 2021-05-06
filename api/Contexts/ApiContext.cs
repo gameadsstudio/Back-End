@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using api.Enums;
+using api.Enums.AdContainer;
 using api.Models.Advertisement;
 using api.Models.AdContainer;
 using api.Models.Campaign;
@@ -102,6 +103,14 @@ namespace api.Contexts
             modelBuilder.Entity<AdContainerModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Type)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (AdContainerType) Enum.Parse(typeof(AdContainerType), v));
+                entity.Property(e => e.AspectRatio)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (AdContainerAspectRatio) Enum.Parse(typeof(AdContainerAspectRatio), v));
             });
         }
     }
