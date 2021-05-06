@@ -172,5 +172,12 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.UpdateOrganization(_mapper.Map(organization, new OrganizationModel())),
                 new OrganizationPrivateDto());
         }
+
+        public bool IsUserInOrganization(string orgId, string userId)
+        {
+            var org = GetOrganizationModelById(orgId);
+            var userGuid = GuidHelper.StringToGuidConverter(userId);
+            return org.Users?.Any(user => userGuid == user.Id) ?? false;
+        }
     }
 }

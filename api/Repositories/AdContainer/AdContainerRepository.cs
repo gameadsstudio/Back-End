@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using api.Contexts;
 using api.Models.AdContainer;
+using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.AdContainer
@@ -42,15 +43,18 @@ namespace api.Repositories.AdContainer
             return _context.AdContainer.Count();
         }
 
-        public (AdContainerModel[], int) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId)
+        public (AdContainerModel[], int) GetAdContainersByOrganizationId(int offset, int limit,
+            Guid orgId, Guid userId)
         {
-            return (_context.AdContainer.OrderBy(p => p.Id)
-                    .Include(a => a.Tags)
-                    .Where(p => p.Organization.Id == orgId)
-                    .Skip(offset)
-                    .Take(limit)
-                    .ToArray(),
-                _context.AdContainer.Count(p => p.Organization.Id == orgId));
+            var query = _context.AdContainer.OrderBy(p => p.Id)
+                .Include(a => a.Tags)
+                .Where(p => p.Organization.Id == orgId)
+                .Where(a => a.Organization.Users != null && a.Organization.Users.Any(u => u.Id == userId));
+
+            return (query.Skip(offset)
+                        .Take(limit)
+                        .ToArray(),
+                    query.Count());
         }
 
         public AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer)
