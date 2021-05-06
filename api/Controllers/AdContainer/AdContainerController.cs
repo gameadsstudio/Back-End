@@ -39,11 +39,11 @@ namespace api.Controllers.AdContainer
 
             return Ok(new GetAllDto<AdContainerPublicDto>()
             {
-                Status = 200,
                 Page = page,
                 PageSize = pageSize,
                 MaxPage = maxPage,
-                Result = adContainers
+                Count = adContainers.Count,
+                Items = adContainers
             });
         }
 
