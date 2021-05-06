@@ -12,7 +12,7 @@ namespace api.Repositories.Organization
         OrganizationModel GetOrganizationByPrivateEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         void DeleteOrganization(OrganizationModel organization);
-        List<OrganizationModel> GetOrganizations(int offset, int limit);
-        int CountOrganizations();
+        List<OrganizationModel> GetOrganizations(OrganizationFiltersDto filters, int offset, int limit);
+        int CountOrganizations(OrganizationFiltersDto filters);
     }
 }

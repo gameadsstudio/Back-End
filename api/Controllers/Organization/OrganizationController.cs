@@ -27,9 +27,9 @@ namespace api.Controllers.Organization
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] PagingDto paging)
+        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] OrganizationFiltersDto filters)
         {
-            var result = _business.GetOrganizations(paging);
+            var result = _business.GetOrganizations(paging, filters);
 
             return Ok(new
             {
