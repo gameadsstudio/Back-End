@@ -19,7 +19,7 @@ namespace api.Models.AdContainer
 
         public OrganizationModel Organization { get; set; }
 
-        public ICollection<TagPublicModel> Tags { get; set; }
+        public ICollection<TagPublicDto> Tags { get; set; }
 
         public AdContainerType Type { get; set; }
 
