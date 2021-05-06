@@ -34,15 +34,15 @@ namespace api.Business.AdContainer
             _mapper = mapper;
         }
 
-        public AdContainerPublicDto GetPublicAdContainerById(string id, Claim currentUser)
+        public AdContainerPublicDto GetAdContainerById(string id, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
-            return _mapper.Map(GetAdContainerById(id, currentUser), new AdContainerPublicDto());
+
+            return _mapper.Map(GetAdContainerModelById(id), new AdContainerPublicDto());
         }
 
-        private AdContainerModel GetAdContainerById(string id, Claim currentUser)
+        private AdContainerModel GetAdContainerModelById(string id)
         {
-            // Todo : check if current user has access to the ad container
             return _repository.GetAdContainerById(GuidHelper.StringToGuidConverter(id)) ??
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
         }
@@ -78,7 +78,7 @@ namespace api.Business.AdContainer
         {
             // Todo : check if user is in the specified org OR the user is admin
 
-            var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerById(id, currentUser));
+            var adContainer = _mapper.Map(updatedAdContainer, GetAdContainerModelById(id));
             if (updatedAdContainer.TagNames.Count > 0)
             {
                 adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
@@ -91,7 +91,7 @@ namespace api.Business.AdContainer
         {
             // Todo : check if user is in the specified org OR the user is admin
 
-            var adContainer = GetAdContainerById(id, currentUser);
+            var adContainer = GetAdContainerModelById(id);
             _repository.DeleteAdContainer(adContainer);
         }
 
