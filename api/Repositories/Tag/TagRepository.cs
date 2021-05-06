@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Tag;
@@ -13,7 +14,6 @@ namespace api.Repositories.Tag
         public TagRepository(ApiContext context)
         {
             _context = context;
-            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public TagModel AddNewTag(TagModel tag)
@@ -38,48 +38,45 @@ namespace api.Repositories.Tag
             return _context.Tag.Count();
         }
 
-        public TagModel[] GetAllTags()
+        public List<TagModel> GetAllTags()
         {
-            return _context.Tag.OrderBy(p => p.Id).ToArray();
+            return _context.Tag.OrderBy(p => p.Id).ToList();
         }
 
-        public (TagModel[], int) GetTags(int offset, int limit)
+        public (List<TagModel>, int) GetTags(int offset, int limit)
         {
             return (_context.Tag.OrderBy(p => p.Id)
                     .Skip(offset)
                     .Take(limit)
-                    .ToArray(),
+                    .ToList(),
                 _context.Tag.Count());
         }
 
-        public (TagModel[], int) SearchTagsByNameOrDescription(int offset, int limit, string name, string description)
+        public (List<TagModel>, int) SearchTagsByNameDescription(int offset, int limit, TagFiltersDto filters,
+            bool strict = false)
         {
-            var tags = _context.Tag.OrderBy(p => p.Id)
-                .Where(p => p.Name.ToLower().Contains(name.ToLower()) ||
-                            p.Description.ToLower().Contains(description.ToLower()))
-                .Skip(offset)
-                .Take(limit)
-                .ToArray();
-            var count = _context.Tag
-                .OrderBy(p => p.Id)
-                .Count(p => p.Name.ToLower().Contains(name.ToLower()) ||
-                            p.Description.ToLower().Contains(description.ToLower()));
-            return (tags, count);
-        }
+            var tags = _context.Tag.OrderBy(p => p.Id);
+            IQueryable<TagModel> countQuery = _context.Tag
+                .OrderBy(p => p.Id);
 
-        public (TagModel[], int) SearchTagsByNameAndDescription(int offset, int limit, string name, string description)
-        {
-            var tags = _context.Tag.OrderBy(p => p.Id)
-                .Where(p => p.Name.ToLower().Contains(name.ToLower()) &&
-                            p.Description.ToLower().Contains(description.ToLower()))
-                .Skip(offset)
-                .Take(limit)
-                .ToArray();
-            var count = _context.Tag
-                .OrderBy(p => p.Id)
-                .Count(p => p.Name.ToLower().Contains(name.ToLower()) &&
-                            p.Description.ToLower().Contains(description.ToLower()));
-            return (tags, count);
+            if (strict)
+            {
+                return (tags.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
+                                        p.Description.ToLower().Contains(filters.Description.ToLower()))
+                        .Skip(offset)
+                        .Take(limit).ToList(),
+                    countQuery
+                        .Count(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
+                                    p.Description.ToLower().Contains(filters.Description.ToLower())));
+            }
+
+            return (tags.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
+                                    p.Description.ToLower().Contains(filters.Description.ToLower()))
+                    .Skip(offset)
+                    .Take(limit).ToList(),
+                countQuery
+                    .Count(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
+                                p.Description.ToLower().Contains(filters.Description.ToLower())));
         }
 
         public TagModel UpdateTag(TagModel updatedTag)

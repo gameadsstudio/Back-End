@@ -33,7 +33,7 @@ namespace api.Mappings
 
             // AdContainer
             CreateMap<AdContainerModel, AdContainerCreationDto>().ReverseMap();
-            CreateMap<AdContainerPublicDto, AdContainerModel>().ReverseMap();
+            CreateMap<AdContainerModel, AdContainerPublicDto>().ReverseMap();
             CreateMap<AdContainerModel, AdContainerUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
         }
     }

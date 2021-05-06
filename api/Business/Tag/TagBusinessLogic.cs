@@ -40,16 +40,15 @@ namespace api.Business.Tag
                    throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found");
         }
 
-        public (int page, int pageSize, int maxPage, List<TagPublicDto> tags) GetTags(PagingDto paging, string name,
-            string description, bool noPaging)
+        public (int page, int pageSize, int maxPage, List<TagPublicDto> tags) GetTags(PagingDto paging, TagFiltersDto filters, bool noPaging)
         {
             if (noPaging)
             {
                 return (0, _repository.CountTags(), 0, _mapper.Map(_repository.GetAllTags(), new List<TagPublicDto>()));
             }
             paging = PagingHelper.Check(paging);
-            var (tags, maxPage) = _repository.SearchTagsByNameOrDescription((paging.Page - 1) * paging.PageSize,
-                paging.PageSize, name ?? "", description ?? "");
+            var (tags, maxPage) = _repository.SearchTagsByNameDescription((paging.Page - 1) * paging.PageSize,
+                paging.PageSize, filters);
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), _mapper.Map(tags, new List<TagPublicDto>()));
         }
 

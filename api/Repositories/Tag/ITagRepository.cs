@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using api.Models.Tag;
 
 namespace api.Repositories.Tag
@@ -9,10 +10,9 @@ namespace api.Repositories.Tag
         TagModel GetTagById(Guid id);
         TagModel GetTagByName(string name);
         int CountTags();
-        TagModel[] GetAllTags();
-        (TagModel[], int) GetTags(int offset, int limit);
-        public (TagModel[], int) SearchTagsByNameAndDescription(int offset, int limit, string name, string description);
-        public (TagModel[], int) SearchTagsByNameOrDescription(int offset, int limit, string name, string description);
+        List<TagModel> GetAllTags();
+        (List<TagModel>, int) GetTags(int offset, int limit);
+        public (List<TagModel>, int) SearchTagsByNameDescription(int offset, int limit, TagFiltersDto filters, bool strict = false);
         TagModel UpdateTag(TagModel updatedTag);
         int DeleteTag(TagModel tag);
     }
