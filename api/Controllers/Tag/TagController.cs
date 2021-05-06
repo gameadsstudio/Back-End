@@ -21,14 +21,14 @@ namespace api.Controllers.Tag
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public ActionResult<TagPublicDto> Get(string id)
         {
             return Ok(_business.GetTagById(id));
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult GetAll(
+        public ActionResult<TagPublicDto[]> GetAll(
             [FromQuery] PagingDto paging,
             [FromQuery] bool noPaging,
             [FromQuery] TagFiltersDto filters)
@@ -46,7 +46,7 @@ namespace api.Controllers.Tag
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] TagCreationDto newTag)
+        public ActionResult<TagPublicDto> Post([FromForm] TagCreationDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             var success = _business.AddNewTag(newTag, currentUser);
@@ -54,14 +54,14 @@ namespace api.Controllers.Tag
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] TagUpdateDto newTag)
+        public ActionResult<TagPublicDto> Patch(string id, [FromForm] TagUpdateDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             return Ok(_business.UpdateTagById(id, newTag, currentUser));
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public ActionResult<TagPublicDto> Delete(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
             _business.DeleteTagById(id, currentUser);
