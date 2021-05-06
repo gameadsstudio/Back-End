@@ -46,10 +46,11 @@ namespace api.Repositories.AdContainer
         public (List<AdContainerModel>, int) GetAdContainersByOrganizationId(int offset, int limit,
             Guid orgId, Guid userId)
         {
-            var query = _context.AdContainer.OrderBy(p => p.Id)
+            var query = _context.AdContainer.OrderByDescending(p => p.DateCreation)
                 .Include(a => a.Tags)
-                .Where(p => p.Organization.Id == orgId)
-                .Where(a => a.Organization.Users != null && a.Organization.Users.Any(u => u.Id == userId));
+                .Include(a => a.Organization)
+                .ThenInclude(o => o.Users)
+                .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
 
             return (query.Skip(offset)
                         .Take(limit)
