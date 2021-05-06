@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -19,14 +18,15 @@ namespace api.Business.AdContainer
     {
         private readonly IMapper _mapper;
         private readonly IAdContainerRepository _repository;
+
         private readonly ITagBusinessLogic _tagBusinessLogic;
         // private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
 
         public AdContainerBusinessLogic(
-            ApiContext context,
-            IMapper mapper,
-            ITagBusinessLogic tagBusinessLogic)
-           // IOrganizationBusinessLogic organizationBusinessLogic)
+                ApiContext context,
+                IMapper mapper,
+                ITagBusinessLogic tagBusinessLogic)
+            // IOrganizationBusinessLogic organizationBusinessLogic)
         {
             _repository = new AdContainerRepository(context);
             _tagBusinessLogic = tagBusinessLogic;
@@ -42,33 +42,22 @@ namespace api.Business.AdContainer
 
         private AdContainerModel GetAdContainerById(string id, Claim currentUser)
         {
-            try
-            {
-                return _repository.GetAdContainerById(Guid.Parse(id)) ??
-                       throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
-            }
-            catch (FormatException e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
+            // Todo : check if current user has access to the ad container
+            return _repository.GetAdContainerById(GuidHelper.StringToGuidConverter(id)) ??
+                   throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
         }
 
-        public (int page, int pageSize, int maxPage, AdContainerModel[] tags) GetAdContainers(PagingDto paging, string orgId, Claim currentUser)
+        public (int page, int pageSize, int maxPage, AdContainerModel[] tags) GetAdContainers(PagingDto paging,
+            string orgId, Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
             paging = PagingHelper.Check(paging);
-            try {
-                var (adContainers, maxPage) = _repository.GetAdContainersByOrganizationId(
-                    (paging.Page - 1) * paging.PageSize,
-                    paging.PageSize,
-                    Guid.Parse(orgId));
-                return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), adContainers);
-            }
-            catch (FormatException e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
+            var (adContainers, maxPage) = _repository.GetAdContainersByOrganizationId(
+                (paging.Page - 1) * paging.PageSize,
+                paging.PageSize,
+                GuidHelper.StringToGuidConverter(orgId));
+            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), adContainers);
         }
 
         public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser)
@@ -84,7 +73,8 @@ namespace api.Business.AdContainer
             return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicDto());
         }
 
-        public AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer, Claim currentUser)
+        public AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
+            Claim currentUser)
         {
             // Todo : check if user is in the specified org OR the user is admin
 
@@ -93,6 +83,7 @@ namespace api.Business.AdContainer
             {
                 adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
+
             return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicDto());
         }
 
@@ -106,7 +97,7 @@ namespace api.Business.AdContainer
 
         private List<TagModel> ResolveTags(List<string> tagNames)
         {
-            return tagNames.Select(tagName => _tagBusinessLogic.GetTagByName(tagName)).ToList();
+            return tagNames.Select(tagName => _tagBusinessLogic.GetTagModelByName(tagName)).ToList();
         }
     }
 }

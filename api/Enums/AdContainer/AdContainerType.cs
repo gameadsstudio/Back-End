@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace api.Enum.AdContainer
+namespace api.Enums.AdContainer
 {
     public enum AdContainerType
     {
