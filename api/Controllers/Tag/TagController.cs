@@ -38,11 +38,11 @@ namespace api.Controllers.Tag
 
             return Ok(new GetAllDto<TagPublicDto>()
             {
-                Status = 200,
                 Page = page,
                 PageSize = pageSize,
                 MaxPage = maxPage,
-                Result = tags
+                Count = tags.Count,
+                Items = tags
             });
         }
 
