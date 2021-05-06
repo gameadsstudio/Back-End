@@ -51,17 +51,28 @@ namespace api.Repositories.Organization
             return updatedOrganization;
         }
 
-        public List<OrganizationModel> GetOrganizations(int offset, int limit)
+        public List<OrganizationModel> GetOrganizations(OrganizationFiltersDto filters, int offset, int limit)
         {
-            return _context.Organization.OrderBy(p => p.Id)
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
+            IQueryable<OrganizationModel> query = _context.Organization.OrderBy(a => a.Id);
+
+            if (filters.UserId != null)
+            {
+                query = query.Where(o => o.Users.All(u => u.Id == filters.UserId));
+            }
+
+            return query.Skip(offset).Take(limit).ToList();
         }
 
-        public int CountOrganizations()
+        public int CountOrganizations(OrganizationFiltersDto filters = null)
         {
-            return _context.Organization.Count();
+            IQueryable<OrganizationModel> query = _context.Organization;
+
+            if (filters?.UserId != null)
+            {
+                query = query.Where(o => o.Users.All(u => u.Id == filters.UserId));
+            }
+
+            return query.Count();
         }
     }
 }

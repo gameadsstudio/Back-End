@@ -49,11 +49,11 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging)
+        public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging, OrganizationFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountOrganizations() / paging.PageSize + 1;
-            var organizations = _repository.GetOrganizations((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var maxPage = _repository.CountOrganizations(filters) / paging.PageSize + 1;
+            var organizations = _repository.GetOrganizations(filters, (paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, maxPage,
                 _mapper.Map(organizations, new List<OrganizationPublicDto>()));
         }
