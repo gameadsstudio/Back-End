@@ -17,7 +17,7 @@ namespace api.Models.AdContainer
         public VersionModel Version { get; set; }
         */
 
-        public OrganizationModel Organization { get; set; }
+        public OrganizationPublicDto Organization { get; set; }
 
         public ICollection<TagPublicDto> Tags { get; set; }
 
