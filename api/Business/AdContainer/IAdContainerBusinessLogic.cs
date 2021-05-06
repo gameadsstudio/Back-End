@@ -6,7 +6,7 @@ namespace api.Business.AdContainer
 {
     public interface IAdContainerBusinessLogic
     {
-        AdContainerPublicDto GetPublicAdContainerById(string id, Claim currentUser);
+        AdContainerPublicDto GetAdContainerById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, AdContainerModel[] tags) GetAdContainers(PagingDto paging, string orgId, Claim currentUser);
         AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, Claim currentUser);
         AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
