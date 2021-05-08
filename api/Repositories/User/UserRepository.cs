@@ -30,15 +30,9 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public List<UserPublicDto> GetUsers(int offset, int limit)
+        public List<UserModel> GetUsers(int offset, int limit)
         {
             return _context.User.OrderBy(p => p.Id)
-                .Select(p => new UserPublicDto
-                {
-                    Id = p.Id,
-                    Username = p.Username,
-                    Email = p.Email
-                })
                 .Skip(offset)
                 .Take(limit)
                 .ToList();
