@@ -10,7 +10,7 @@ namespace api.Repositories.User
         UserModel GetUserById(Guid id);
         UserModel GetUserByUsername(string username);
         UserModel GetUserByEmail(string email);
-        List<UserPublicDto> GetUsers(int offset, int limit);
+        List<UserModel> GetUsers(int offset, int limit);
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();

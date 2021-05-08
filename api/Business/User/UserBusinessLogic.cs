@@ -93,7 +93,7 @@ namespace api.Business.User
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountUsers() / paging.PageSize + 1;
             var users = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage, users);
+            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
         public UserPrivateDto AddNewUser(UserCreationDto newUser)
