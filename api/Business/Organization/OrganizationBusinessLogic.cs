@@ -136,7 +136,7 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public ICollection<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser)
+        public List<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
