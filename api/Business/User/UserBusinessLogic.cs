@@ -27,18 +27,7 @@ namespace api.Business.User
 
         public IUserDto GetUserById(string id, Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(id);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var user = _repository.GetUserById(guid);
+            var user = GetUserModelById(id);
 
             if (user == null)
             {
@@ -67,18 +56,7 @@ namespace api.Business.User
         
         public object GetSelf(Claim currentUser)
         {
-            Guid guid;
-
-            try
-            {
-                guid = Guid.Parse(currentUser.Value);
-            }
-            catch (Exception e)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
-            }
-
-            var user = _repository.GetUserById(guid);
+            var user = GetUserModelById(currentUser.Value);
 
             if (user == null)
             {
@@ -117,7 +95,7 @@ namespace api.Business.User
 
         public int DeleteUserById(string id, Claim currentUser)
         {
-            var user = _repository.GetUserById(Guid.Parse(id));
+            var user = GetUserModelById(id);
 
             if (user == null)
             {
@@ -134,12 +112,7 @@ namespace api.Business.User
 
         public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser)
         {
-            var user = _repository.GetUserById(Guid.Parse(id));
-
-            if (user == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
-            }
+            var user = GetUserModelById(id);
 
             if (user.Id.ToString() != currentUser.Value)
             {
