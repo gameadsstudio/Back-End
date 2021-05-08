@@ -25,7 +25,7 @@ namespace api.Business.User
             _mapper = mapper;
         }
 
-        public Object GetUserById(string id, Claim currentUser)
+        public IUserDto GetUserById(string id, Claim currentUser)
         {
             Guid guid;
 
@@ -167,7 +167,7 @@ namespace api.Business.User
             return _mapper.Map(result, new UserPrivateDto());
         }
 
-        public string Login(UserLoginDto loginDto)
+        public UserLoginResponseDto Login(UserLoginDto loginDto)
         {
             UserModel user;
 
@@ -200,7 +200,10 @@ namespace api.Business.User
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return new UserLoginResponseDto()
+            {
+                Token = tokenHandler.WriteToken(token)
+            };
         }
     }
 }
