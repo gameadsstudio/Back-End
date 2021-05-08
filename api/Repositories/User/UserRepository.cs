@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.User;
@@ -29,7 +30,7 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public UserPublicDto[] GetUsers(int offset, int limit)
+        public List<UserPublicDto> GetUsers(int offset, int limit)
         {
             return _context.User.OrderBy(p => p.Id)
                 .Select(p => new UserPublicDto
@@ -40,7 +41,7 @@ namespace api.Repositories.User
                 })
                 .Skip(offset)
                 .Take(limit)
-                .ToArray();
+                .ToList();
         }
 
         public UserModel AddNewUser(UserModel user)

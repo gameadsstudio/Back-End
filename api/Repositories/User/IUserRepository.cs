@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using api.Models.User;
 
 namespace api.Repositories.User
@@ -9,7 +10,7 @@ namespace api.Repositories.User
         UserModel GetUserById(Guid id);
         UserModel GetUserByUsername(string username);
         UserModel GetUserByEmail(string email);
-        UserPublicDto[] GetUsers(int offset, int limit);
+        List<UserPublicDto> GetUsers(int offset, int limit);
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();
