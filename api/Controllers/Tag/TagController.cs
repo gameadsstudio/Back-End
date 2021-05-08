@@ -22,9 +22,12 @@ namespace api.Controllers.Tag
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public ActionResult<TagPublicDto> Get(string id)
+        public ActionResult<GetDto<TagPublicDto>> Get(string id)
         {
-            return Ok(_business.GetTagById(id));
+            return Ok(new GetDto<TagPublicDto>()
+            {
+                Data = _business.GetTagById(id)
+            });
         }
 
         [AllowAnonymous]
@@ -38,27 +41,36 @@ namespace api.Controllers.Tag
 
             return Ok(new GetAllDto<TagPublicDto>()
             {
-                Page = page,
-                PageSize = pageSize,
-                MaxPage = maxPage,
-                Count = tags.Count,
-                Items = tags
+                Data =
+                {
+                    PageIndex = page,
+                    ItemsPerPage = pageSize,
+                    TotalPages = maxPage,
+                    CurrentItemCount = tags.Count,
+                    Items = tags
+                }
             });
         }
 
         [HttpPost]
-        public ActionResult<TagPublicDto> Post([FromForm] TagCreationDto newTag)
+        public ActionResult<GetDto<TagPublicDto>> Post([FromForm] TagCreationDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var success = _business.AddNewTag(newTag, currentUser);
-            return Created("tag", success);
+            var tag = _business.AddNewTag(newTag, currentUser);
+            return Created("tag", new GetDto<TagPublicDto>()
+            {
+                Data = tag,
+            });
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<TagPublicDto> Patch(string id, [FromForm] TagUpdateDto newTag)
+        public ActionResult<GetDto<TagPublicDto>> Patch(string id, [FromForm] TagUpdateDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(_business.UpdateTagById(id, newTag, currentUser));
+            return Ok(new GetDto<TagPublicDto>()
+            {
+                Data = _business.UpdateTagById(id, newTag, currentUser)
+            });
         }
 
         [HttpDelete("{id}")]
