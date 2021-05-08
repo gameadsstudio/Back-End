@@ -15,7 +15,7 @@ namespace api.Business.Organization
         OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, Claim currentUser);
         void DeleteOrganizationById(string id, Claim currentUser);
         OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser);
-        ICollection<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser);
+        List<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser);
         OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, Claim currentUser);
         bool IsUserInOrganization(string orgId, string userId);
     }
