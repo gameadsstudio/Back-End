@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -87,7 +88,7 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int, int, int, UserPublicDto[]) GetUsers(PagingDto paging)
+        public (int, int, int, List<UserPublicDto>) GetUsers(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountUsers() / paging.PageSize + 1;
