@@ -13,5 +13,14 @@ namespace api.Models.Common
         public int CurrentItemCount { get; set; }
         
         public List<T> Items { get; set; }
+
+        public DataAllDto((int page, int pageSize, int maxPage, List<T> items) data)
+        {
+            PageIndex = data.page;
+            ItemsPerPage = data.pageSize;
+            TotalPages = data.maxPage;
+            CurrentItemCount = data.items.Count;
+            Items = data.items;
+        }
     }
 }

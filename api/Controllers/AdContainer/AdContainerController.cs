@@ -25,10 +25,8 @@ namespace api.Controllers.AdContainer
         public ActionResult<GetDto<AdContainerPublicDto>> Get(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(new GetDto<AdContainerPublicDto>()
-            {
-                Data = _business.GetAdContainerById(id, currentUser)
-            });
+            
+            return Ok(new GetDto<AdContainerPublicDto>(_business.GetAdContainerById(id, currentUser)));
         }
 
         [HttpGet]
@@ -38,47 +36,33 @@ namespace api.Controllers.AdContainer
             )
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var (page, pageSize, maxPage, adContainers) = _business.GetAdContainers(paging, orgId, currentUser);
 
-            return Ok(new GetAllDto<AdContainerPublicDto>()
-            {
-                Data =
-                {
-                    PageIndex = page,
-                    ItemsPerPage = pageSize,
-                    TotalPages = maxPage,
-                    CurrentItemCount = adContainers.Count,
-                    Items = adContainers
-                }
-            });
+            return Ok(new GetAllDto<AdContainerPublicDto>(_business.GetAdContainers(paging, orgId, currentUser)));
         }
 
         [HttpPost]
         public ActionResult<GetDto<AdContainerPublicDto>> Post([FromForm] AdContainerCreationDto newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var adContainer = _business.AddNewAdContainer(newAdContainer, currentUser);
-            return Created("ad-container", new GetDto<AdContainerPublicDto>()
-            {
-                Data = adContainer
-            });
+
+            return Created("ad-container", new GetDto<AdContainerPublicDto>(_business.AddNewAdContainer(newAdContainer, currentUser)));
         }
 
         [HttpPatch("{id}")]
         public ActionResult<GetDto<AdContainerPublicDto>> Patch(string id, [FromForm] AdContainerUpdateDto newAdContainer)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(new GetDto<AdContainerPublicDto>()
-            {
-                Data = _business.UpdateAdContainerById(id, newAdContainer, currentUser)
-            });
+            
+            return Ok(new GetDto<AdContainerPublicDto>(_business.UpdateAdContainerById(id, newAdContainer, currentUser)));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            
             _business.DeleteAdContainerById(id, currentUser);
+            
             return Ok();
         }
     }

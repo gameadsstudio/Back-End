@@ -21,62 +21,41 @@ namespace api.Controllers.User
         }
 
         [HttpGet("self")]
-        public IActionResult GetSelf()
+        public ActionResult<GetDto<UserPrivateDto>> GetSelf()
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var user = _business.GetSelf(currentUser);
-            return Ok(new {status = 200, user});
+            
+            return Ok(new GetDto<UserPrivateDto>(_business.GetSelf(currentUser)));
         }
 
         [HttpGet("{id}")]
         public ActionResult<GetDto<IUserDto>> GetUser(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var user = _business.GetUserById(id, currentUser);
-            return Ok(new GetDto<IUserDto>()
-            {
-                Data = user,
-            });
+            
+            return Ok(new GetDto<IUserDto>(_business.GetUserById(id, currentUser)));
         }
 
         [HttpGet]
         public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging)
         {
-            var (page, pageSize, maxPage, users) = _business.GetUsers(paging);
+            return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging)));
             
-            return Ok(new GetAllDto<UserPublicDto>()
-            {
-                Data =
-                {
-                    PageIndex = page,
-                    ItemsPerPage = pageSize,
-                    TotalPages = maxPage,
-                    CurrentItemCount = users.Count,
-                    Items = users
-                }
-            });
         }
 
         [AllowAnonymous]
         [HttpPost]
         public ActionResult<GetDto<UserPrivateDto>> Post([FromForm] UserCreationDto newUser)
         {
-            var user = _business.AddNewUser(newUser);
-
-            return Created("User", new GetDto<UserPrivateDto>()
-            {
-                Data = user
-            });
+            return Created("User", new GetDto<UserPrivateDto>(_business.AddNewUser(newUser)));
         }
 
         [HttpPatch("{id}")]
         public ActionResult<GetDto<UserPrivateDto>> Patch(string id, [FromForm] UserUpdateDto newUser)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(new GetDto<UserPrivateDto>()
-            {
-                Data = _business.UpdateUserById(id, newUser, currentUser)
-            });
+            
+            return Ok(new GetDto<UserPrivateDto>(_business.UpdateUserById(id, newUser, currentUser)));
         }
 
         [HttpDelete("{id}")]
@@ -86,19 +65,14 @@ namespace api.Controllers.User
 
             _business.DeleteUserById(id, currentUser);
 
-            return Ok(new {status = 200,});
+            return Ok();
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult<GetDto<UserLoginResponseDto>> Login([FromForm] UserLoginDto loginDto)
         {
-            var response = _business.Login(loginDto);
-
-            return Ok(new GetDto<UserLoginResponseDto>()
-            {
-                Data = response,
-            });
+            return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
         }
     }
 }
