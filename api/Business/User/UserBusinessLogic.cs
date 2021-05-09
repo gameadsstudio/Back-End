@@ -54,7 +54,7 @@ namespace api.Business.User
             return user;
         }
         
-        public object GetSelf(Claim currentUser)
+        public UserPrivateDto GetSelf(Claim currentUser)
         {
             var user = GetUserModelById(currentUser.Value);
 

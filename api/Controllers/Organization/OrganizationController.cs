@@ -25,28 +25,13 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(new GetDto<IOrganizationDto>()
-            {
-                Data = _business.GetOrganizationById(id, currentUser)
-            });
+            return Ok(new GetDto<IOrganizationDto>(_business.GetOrganizationById(id, currentUser)));
         }
 
         [HttpGet]
         public ActionResult<GetAllDto<OrganizationPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] OrganizationFiltersDto filters)
         {
-            var (page, pageSize, maxPage, organizations) = _business.GetOrganizations(paging, filters);
-
-            return Ok(new GetAllDto<OrganizationPublicDto>()
-            {
-                Data =
-                {
-                    PageIndex = page,
-                    ItemsPerPage = pageSize,
-                    TotalPages = maxPage,
-                    CurrentItemCount = organizations.Count,
-                    Items = organizations
-                }
-            });
+            return Ok(new GetAllDto<OrganizationPublicDto>(_business.GetOrganizations(paging, filters)));
         }
 
         [HttpPost]
@@ -54,12 +39,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var organization = _business.AddNewOrganization(newOrganization, currentUser);
-
-            return Created("Organization", new GetDto<OrganizationPrivateDto>()
-            {
-                Data = organization
-            });
+            return Created("Organization", new GetDto<OrganizationPrivateDto>(_business.AddNewOrganization(newOrganization, currentUser)));
         }
 
         [HttpPatch("{id}")]
@@ -67,10 +47,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(new GetDto<OrganizationPrivateDto>()
-            {
-                Data = _business.UpdateOrganizationById(id, newOrganization, currentUser)
-            });
+            return Ok(new GetDto<OrganizationPrivateDto>(_business.UpdateOrganizationById(id, newOrganization, currentUser)));
         }
 
         [HttpDelete("{id}")]
@@ -88,10 +65,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(new GetDto<OrganizationPrivateDto>()
-            {
-                Data = _business.AddUserToOrganization(id, userId, currentUser)
-            });
+            return Ok(new GetDto<OrganizationPrivateDto>(_business.AddUserToOrganization(id, userId, currentUser)));
         }
 
         [HttpGet("{id}/users")]
@@ -101,17 +75,7 @@ namespace api.Controllers.Organization
 
             var users = _business.GetOrganizationUsers(id, currentUser);
             
-            return Ok(new GetAllDto<UserPublicDto>()
-            {
-                Data =
-                {
-                    PageIndex = 1,
-                    ItemsPerPage = users.Count,
-                    TotalPages = 1,
-                    CurrentItemCount = users.Count,
-                    Items = users,
-                }
-            });
+            return Ok(new GetAllDto<UserPublicDto>((1, users.Count, 1, users)));
         }
 
         [HttpDelete("{id}/users/{userId}")]
@@ -119,12 +83,7 @@ namespace api.Controllers.Organization
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var organization = _business.DeleteUserFromOrganization(id, userId, currentUser);
-
-            return Ok(new GetDto<OrganizationPrivateDto>()
-            {
-                Data = organization,
-            });
+            return Ok(new GetDto<OrganizationPrivateDto>(_business.DeleteUserFromOrganization(id, userId, currentUser)));
         }
     }
 }

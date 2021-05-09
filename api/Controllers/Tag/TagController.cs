@@ -24,10 +24,7 @@ namespace api.Controllers.Tag
         [HttpGet("{id}")]
         public ActionResult<GetDto<TagPublicDto>> Get(string id)
         {
-            return Ok(new GetDto<TagPublicDto>()
-            {
-                Data = _business.GetTagById(id)
-            });
+            return Ok(new GetDto<TagPublicDto>(_business.GetTagById(id)));
         }
 
         [AllowAnonymous]
@@ -37,47 +34,32 @@ namespace api.Controllers.Tag
             [FromQuery] bool noPaging,
             [FromQuery] TagFiltersDto filters)
         {
-            var (page, pageSize, maxPage, tags) = _business.GetTags(paging, filters, noPaging);
-
-            return Ok(new GetAllDto<TagPublicDto>()
-            {
-                Data =
-                {
-                    PageIndex = page,
-                    ItemsPerPage = pageSize,
-                    TotalPages = maxPage,
-                    CurrentItemCount = tags.Count,
-                    Items = tags
-                }
-            });
+            return Ok(new GetAllDto<TagPublicDto>(_business.GetTags(paging, filters, noPaging)));
         }
 
         [HttpPost]
         public ActionResult<GetDto<TagPublicDto>> Post([FromForm] TagCreationDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var tag = _business.AddNewTag(newTag, currentUser);
-            return Created("tag", new GetDto<TagPublicDto>()
-            {
-                Data = tag,
-            });
+            
+            return Created("tag", new GetDto<TagPublicDto>(_business.AddNewTag(newTag, currentUser)));
         }
 
         [HttpPatch("{id}")]
         public ActionResult<GetDto<TagPublicDto>> Patch(string id, [FromForm] TagUpdateDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            return Ok(new GetDto<TagPublicDto>()
-            {
-                Data = _business.UpdateTagById(id, newTag, currentUser)
-            });
+            
+            return Ok(new GetDto<TagPublicDto>(_business.UpdateTagById(id, newTag, currentUser)));
         }
 
         [HttpDelete("{id}")]
         public ActionResult<TagPublicDto> Delete(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            
             _business.DeleteTagById(id, currentUser);
+            
             return Ok();
         }
     }

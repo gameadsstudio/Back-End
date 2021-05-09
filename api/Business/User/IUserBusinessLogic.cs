@@ -14,6 +14,6 @@ namespace api.Business.User
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser);
         int DeleteUserById(string id, Claim currentUser);
         UserLoginResponseDto Login(UserLoginDto userLoginDto);
-        object GetSelf(Claim currentUser);
+        UserPrivateDto GetSelf(Claim currentUser);
     }
 }
