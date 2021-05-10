@@ -9,6 +9,7 @@ using api.Business.AdContainer;
 using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
+using api.Business.Campaign;
 using api.Configuration;
 using api.Contexts;
 using api.Mappings;
@@ -107,6 +108,8 @@ namespace api
             services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
             services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
