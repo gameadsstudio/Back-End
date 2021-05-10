@@ -14,12 +14,11 @@ namespace api.Controllers.Campaign
     {
         private readonly ICampaignBusinessLogic _business;
 
-        public CampaignController(ApiContext context, IOptions<AppSettings> appSettings)
+        public CampaignController(ICampaignBusinessLogic campaignBusinessLogic)
         {
-            _business = new CampaignBusinessLogic(context, appSettings);
+            _business = campaignBusinessLogic;
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromForm] CampaignCreationModel newCampaign)
         {
@@ -33,7 +32,6 @@ namespace api.Controllers.Campaign
             return Conflict(new { message = "Couldn't create Campaign" });
         }
 
-        [AllowAnonymous]
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
@@ -43,7 +41,6 @@ namespace api.Controllers.Campaign
             return Ok(_business.UpdateCampaignById(id, newCampaign));
         }
 
-        [AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
@@ -53,7 +50,6 @@ namespace api.Controllers.Campaign
             return Ok(_business.UpdateCampaignById(id, newCampaign));
         }
 
-        [AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
