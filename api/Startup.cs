@@ -9,6 +9,7 @@ using api.Business.AdContainer;
 using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
+using api.Business.Campaign;
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
@@ -107,11 +108,13 @@ namespace api
             }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
-            services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
-            services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
-            services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
-            services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
-            services.AddScoped<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
+            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
+            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
