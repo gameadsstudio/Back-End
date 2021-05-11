@@ -41,7 +41,10 @@ namespace api.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)exception.StatusCode;
 
-            return context.Response.WriteAsync(result);
+            if (exception.Message != null)
+                return context.Response.WriteAsync(result);
+            else
+                return context.Response.CompleteAsync();
         }
         
         private static Task ExceptionHandler(HttpContext context, Exception exception)

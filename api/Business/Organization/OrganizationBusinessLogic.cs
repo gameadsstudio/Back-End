@@ -104,7 +104,7 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(user => user.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.NotModified,
+                throw new ApiError(HttpStatusCode.Unauthorized,
                     "Cannot modify an organization which you are not a part of");
             }
 
@@ -121,7 +121,7 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(x => x.Id.ToString() != currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.Unauthorized, "Cannot add user to an organization which you are not a part of");
             }
 
             if (organization.Users.Any(x => x.Id.ToString() == userId))
