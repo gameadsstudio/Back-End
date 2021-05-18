@@ -9,7 +9,8 @@ namespace api.Business.User
     {
         IUserDto GetUserById(string id, Claim currentUser);
         UserModel GetUserModelById(string id);
-        (int page, int pageSize, int maxPage, List<UserPublicDto> users) GetUsers(PagingDto paging);
+        (int page, int pageSize, int maxPage, List<UserPublicDto> users) GetUsers(PagingDto paging,
+            UserFiltersDto filters);
         UserPrivateDto AddNewUser(UserCreationDto newUser);
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser);
         int DeleteUserById(string id, Claim currentUser);

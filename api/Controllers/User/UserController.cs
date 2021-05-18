@@ -36,9 +36,9 @@ namespace api.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging)
+        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] UserFiltersDto filters)
         {
-            return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging)));
+            return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging, filters)));
         }
 
         [AllowAnonymous]

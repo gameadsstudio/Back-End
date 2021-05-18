@@ -77,11 +77,11 @@ namespace api.Business.User
                 _mapper.Map(users, new List<UserPublicDto>()));
         }
 
-        public (int, int, int, List<UserPublicDto>) GetUsers(PagingDto paging)
+        public (int page, int pageSize, int maxPage, List<UserPublicDto> users) GetUsers(PagingDto paging,
+            UserFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountUsers() / paging.PageSize + 1;
-            var users = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var (users, maxPage) = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
             return (paging.Page, paging.PageSize, maxPage, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
