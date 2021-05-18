@@ -62,5 +62,16 @@ namespace api.Repositories.User
         {
             return _context.User.Count();
         }
+
+        public List<UserModel> SearchUser(int offset, int limit, string search, bool strict)
+        {
+            return (strict
+                    ? _context.User.Where(user => user.Username.ToLower().Equals(search.ToLower()))
+                    : _context.User.Where(user => user.Username.ToLower().Contains(search.ToLower())))
+                .OrderBy(user => user.Username)
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
+        }
     }
 }

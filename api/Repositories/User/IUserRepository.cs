@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using api.Models.User;
 
 namespace api.Repositories.User
-{ 
+{
     public interface IUserRepository
     {
         UserModel AddNewUser(UserModel user);
@@ -14,5 +14,6 @@ namespace api.Repositories.User
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();
+        List<UserModel> SearchUser(int offset, int limit, string search, bool strict);
     }
 }
