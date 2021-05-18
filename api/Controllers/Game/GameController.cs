@@ -2,9 +2,12 @@
 using api.Configuration;
 using api.Contexts;
 using api.Models.Game;
+using System.Security.Claims;
+using api.Models.Organization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using api.Helpers;
+using api.Models.Common;
 
 namespace api.Controllers.Game
 {
@@ -14,28 +17,29 @@ namespace api.Controllers.Game
     {
         private readonly IGameBusinessLogic _business;
 
-        public GameController(ApiContext context, IOptions<AppSettings> appSettings)
+        public GameController(IGameBusinessLogic gameBusinessLogic)
         {
-            _business = new GameBusinessLogic(context, appSettings);
+            _business = gameBusinessLogic;
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromForm] GameCreationModel newGame)
+        public ActionResult<GetDto<GamePrivateDto>> Post([FromForm] GameCreationDto newGame)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            var success = _business.AddNewGame(newGame);
-
-            if (success != null)
-                return Created("Game", success);
-            return Conflict(new { message = "Couldn't create Game" });
+            return Created("Game", new GetDto<GamePrivateDto>(_business.AddNewGame(newGame, currentUser)));
         }
 
-        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public ActionResult<GetDto<IGameDto>> GetGame(string id)
+        {
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            return Ok(new GetDto<IGameDto>(_business.GetGameById(id, currentUser)));
+        }
+
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] GameUpdateModel newGame)
+        public IActionResult Patch(string id, [FromForm] GameUpdateDto newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -43,9 +47,8 @@ namespace api.Controllers.Game
             return Ok(_business.UpdateGameById(id, newGame));
         }
 
-        [AllowAnonymous]
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromForm] GameUpdateModel newGame)
+        public IActionResult Put(string id, [FromForm] GameUpdateDto newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -53,7 +56,6 @@ namespace api.Controllers.Game
             return Ok(_business.UpdateGameById(id, newGame));
         }
 
-        [AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {

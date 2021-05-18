@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Models.Game
 {
-    public class GameCreationModel
+    public class GameCreationDto
     {
         [Required]
         public string OrganizationId { get; set; }
 
         [Required]
-        public string MediaId { get; set; }
+        public Guid MediaId { get; set; }
 
         [Required]
         public string Name { get; set; }

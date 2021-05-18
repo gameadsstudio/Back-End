@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using api.Contexts;
 using api.Models.Game;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Game
 {
@@ -14,9 +16,21 @@ namespace api.Repositories.Game
             _context = context;
         }
 
-        public int AddNewGame(GameModel game)
+        public GameModel AddNewGame(GameModel game)
         {
-            throw new NotImplementedException();
+            _context.Game.Add(game);
+            _context.SaveChanges();
+            return game;
+        }
+
+        public GameModel GetGameByName(string name)
+        {
+            return _context.Game.SingleOrDefault(a => a.Name == name);
+        }
+
+        public GameModel GetGameById(Guid id)
+        {
+            return _context.Game.Include(p => p.Organization).SingleOrDefault(e => e.Id == id);
         }
 
         public int DeleteGame(GameModel game)
