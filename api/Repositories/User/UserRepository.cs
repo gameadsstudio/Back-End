@@ -63,15 +63,17 @@ namespace api.Repositories.User
             return _context.User.Count();
         }
 
-        public List<UserModel> SearchUser(int offset, int limit, string search, bool strict)
+        public (List<UserModel> users, int count) SearchUser(int offset, int limit, string search)
         {
-            return (strict
-                    ? _context.User.Where(user => user.Username.ToLower().Equals(search.ToLower()))
-                    : _context.User.Where(user => user.Username.ToLower().Contains(search.ToLower())))
-                .OrderBy(user => user.Username)
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
+                var query = _context.User.Where(user =>
+                    user.Username.ToLower().Contains(search.ToLower()) ||
+                    user.Email.ToLower().Contains(search.ToLower()));
+
+                return (query
+                    .OrderBy(user => user.Username)
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList(), query.Count());
         }
     }
 }
