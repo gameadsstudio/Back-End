@@ -38,17 +38,14 @@ namespace api.Controllers.Game
             return Ok(new GetDto<IGameDto>(_business.GetGameById(id, currentUser)));
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] GameUpdateDto newGame)
+        [HttpGet]
+        public ActionResult<GetAllDto<GamePublicDto>> GetAll([FromQuery] PagingDto paging)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
-            return Ok(_business.UpdateGameById(id, newGame));
+            return Ok(new GetAllDto<GamePublicDto>(_business.GetGames(paging)));
         }
 
-        [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromForm] GameUpdateDto newGame)
+        [HttpPatch("{id}")]
+        public IActionResult Patch(string id, [FromForm] GameUpdateDto newGame)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
