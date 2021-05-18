@@ -11,7 +11,6 @@ using api.Business.User;
 using api.Business.Organization;
 using api.Business.Campaign;
 using api.Business.Game;
-using api.Business.Campaign;
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;

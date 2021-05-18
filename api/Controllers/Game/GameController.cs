@@ -1,11 +1,6 @@
 ﻿using api.Business.Game;
-using api.Configuration;
-using api.Contexts;
 using api.Models.Game;
-using System.Security.Claims;
-using api.Models.Organization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using api.Helpers;
 using api.Models.Common;
 
