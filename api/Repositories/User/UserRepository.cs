@@ -30,7 +30,7 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public (List<UserModel> users, int count) GetUsers(int offset, int limit, UserFiltersDto filters)
+        public (IList<UserModel> users, int count) GetUsers(int offset, int limit, UserFiltersDto filters)
         {
             IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
 
@@ -74,7 +74,7 @@ namespace api.Repositories.User
             return _context.User.Count();
         }
 
-        public (List<UserModel> users, int count) SearchUser(int offset, int limit, string search)
+        public (IList<UserModel> users, int count) SearchUser(int offset, int limit, string search)
         {
                 var query = _context.User.Where(user =>
                     user.Username.ToLower().Contains(search.ToLower()) ||

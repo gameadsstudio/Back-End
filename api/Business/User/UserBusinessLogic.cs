@@ -66,7 +66,7 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int page, int pageSize, int maxPage, List<UserPublicDto> items) SearchUser(string search,
+        public (int page, int pageSize, int maxPage, IList<UserPublicDto> items) SearchUser(string search,
             PagingDto paging,
             Claim currentUser)
         {
@@ -77,7 +77,7 @@ namespace api.Business.User
                 _mapper.Map(users, new List<UserPublicDto>()));
         }
 
-        public (int page, int pageSize, int maxPage, List<UserPublicDto> users) GetUsers(PagingDto paging,
+        public (int page, int pageSize, int maxPage, IList<UserPublicDto> users) GetUsers(PagingDto paging,
             UserFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
