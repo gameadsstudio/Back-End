@@ -15,5 +15,7 @@ namespace api.Business.User
         int DeleteUserById(string id, Claim currentUser);
         UserLoginResponseDto Login(UserLoginDto userLoginDto);
         UserPrivateDto GetSelf(Claim currentUser);
+        (int page, int pageSize, int maxPage, IEnumerable<IUserDto> items) SearchUser(string search, PagingDto paging,
+            Claim currentUser, bool strict);
     }
 }

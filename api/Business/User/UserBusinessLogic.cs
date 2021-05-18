@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -45,15 +46,15 @@ namespace api.Business.User
         public UserModel GetUserModelById(string id)
         {
             var user = _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
-            
+
             if (user == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
-            
+
             return user;
         }
-        
+
         public UserPrivateDto GetSelf(Claim currentUser)
         {
             var user = GetUserModelById(currentUser.Value);
@@ -64,6 +65,23 @@ namespace api.Business.User
             }
 
             return _mapper.Map(user, new UserPrivateDto());
+        }
+
+        public (int page, int pageSize, int maxPage, IEnumerable<IUserDto> items) SearchUser(string search, PagingDto paging,
+            Claim currentUser, bool strict)
+        {
+            paging = PagingHelper.Check(paging);
+            var maxPage = _repository.CountUsers() / paging.PageSize + 1;
+            var users = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search, strict);
+
+            if (strict && users.Any(user => user.Id.ToString() == currentUser.Value))
+            {
+                return (paging.Page, paging.PageSize, maxPage,
+                    _mapper.Map(users, new List<UserPrivateDto>()));
+            }
+
+            return (paging.Page, paging.PageSize, maxPage,
+                _mapper.Map(users, new List<UserPublicDto>()));
         }
 
         public (int, int, int, List<UserPublicDto>) GetUsers(PagingDto paging)
