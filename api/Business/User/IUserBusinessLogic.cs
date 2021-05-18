@@ -9,14 +9,14 @@ namespace api.Business.User
     {
         IUserDto GetUserById(string id, Claim currentUser);
         UserModel GetUserModelById(string id);
-        (int page, int pageSize, int maxPage, List<UserPublicDto> users) GetUsers(PagingDto paging,
+        (int page, int pageSize, int maxPage, IList<UserPublicDto> users) GetUsers(PagingDto paging,
             UserFiltersDto filters);
         UserPrivateDto AddNewUser(UserCreationDto newUser);
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser);
         int DeleteUserById(string id, Claim currentUser);
         UserLoginResponseDto Login(UserLoginDto userLoginDto);
         UserPrivateDto GetSelf(Claim currentUser);
-        (int page, int pageSize, int maxPage, List<UserPublicDto> items) SearchUser(string search, PagingDto paging,
+        (int page, int pageSize, int maxPage, IList<UserPublicDto> items) SearchUser(string search, PagingDto paging,
             Claim currentUser);
     }
 }
