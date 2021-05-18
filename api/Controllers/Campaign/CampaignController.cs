@@ -14,9 +14,9 @@ namespace api.Controllers.Campaign
     {
         private readonly ICampaignBusinessLogic _business;
 
-        public CampaignController(ICampaignBusinessLogic campaignBusinessLogic)
+        public CampaignController(ApiContext context, IOptions<AppSettings> appSettings)
         {
-            _business = campaignBusinessLogic;
+            _business = new CampaignBusinessLogic(context, appSettings);
         }
 
         [AllowAnonymous]

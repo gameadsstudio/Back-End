@@ -14,6 +14,7 @@ namespace api.Business.Campaign
     {
 		private readonly IMapper _mapper;
         private readonly ICampaignRepository _repository;
+        private readonly AppSettings _appSettings;
 
         public CampaignBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
         {
