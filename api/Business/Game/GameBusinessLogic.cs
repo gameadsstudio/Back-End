@@ -5,6 +5,8 @@ using api.Errors;
 using api.Repositories.Game;
 using System.Security.Claims;
 using api.Business.Organization;
+using api.Models.Organization;
+using Microsoft.Extensions.Options;
 using AutoMapper;
 using System.Net;
 using System.Linq;
