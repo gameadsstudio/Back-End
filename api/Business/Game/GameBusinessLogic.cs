@@ -1,15 +1,10 @@
-﻿using System;
-using api.Contexts;
+﻿using api.Contexts;
 using api.Models.Game;
 using api.Errors;
 using api.Repositories.Game;
-using System.Security.Claims;
 using api.Business.Organization;
-using api.Models.Organization;
-using Microsoft.Extensions.Options;
 using AutoMapper;
 using System.Net;
-using System.Linq;
 using api.Helpers;
 using System.Collections.Generic;
 
@@ -65,13 +60,7 @@ namespace api.Business.Game
             return _mapper.Map(game, new GamePublicDto());
         }
 
-        private GameModel GetGameModelById(string id)
-        {
-            return _repository.GetGameById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Could not find a game with Id: {id}");
-        }
-
-        public (int, int, int, IList<GamePublicDto>) GetGames(PagingDto paging)
+        public (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountGames() / paging.PageSize + 1;
@@ -81,7 +70,7 @@ namespace api.Business.Game
 
         public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser)
         {
-            var game = GetGameModelById(id);
+            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
 
             if (game == null)
             {
@@ -101,7 +90,7 @@ namespace api.Business.Game
 
         public void DeleteGameById(string id, ConnectedUser currentUser)
         {
-            var game = GetGameModelById(id);
+            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
 
             if (game == null)
             {
