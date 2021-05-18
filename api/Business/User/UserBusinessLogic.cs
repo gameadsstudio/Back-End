@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -67,20 +66,14 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int page, int pageSize, int maxPage, IEnumerable<IUserDto> items) SearchUser(string search, PagingDto paging,
-            Claim currentUser, bool strict)
+        public (int page, int pageSize, int maxPage, List<UserPublicDto> items) SearchUser(string search,
+            PagingDto paging,
+            Claim currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountUsers() / paging.PageSize + 1;
-            var users = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search, strict);
+            var (users, maxPage) = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search);
 
-            if (strict && users.Any(user => user.Id.ToString() == currentUser.Value))
-            {
-                return (paging.Page, paging.PageSize, maxPage,
-                    _mapper.Map(users, new List<UserPrivateDto>()));
-            }
-
-            return (paging.Page, paging.PageSize, maxPage,
+            return (paging.Page, paging.PageSize, maxPage / paging.PageSize + 1,
                 _mapper.Map(users, new List<UserPublicDto>()));
         }
 

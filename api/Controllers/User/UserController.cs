@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
+﻿using System.Linq;
 using System.Security.Claims;
 using api.Business.User;
 using api.Helpers;
@@ -79,21 +74,11 @@ namespace api.Controllers.User
         }
 
         [HttpGet("search/{search}")]
-        public ActionResult<GetAllDto<IUserDto>> SearchUser(string search, [FromQuery] PagingDto paging,
-            [FromQuery] bool strict = false)
+        public ActionResult<GetAllDto<UserPublicDto>> SearchUser(string search, [FromQuery] PagingDto paging)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            var result = _business.SearchUser(search, paging, currentUser, strict);
 
-            return result.items.GetType().GetProperty("Item")?.PropertyType.ToString() switch
-            {
-                "api.Models.User.UserPublicDto" => Ok(new GetAllDto<UserPublicDto>((result.page, result.pageSize,
-                    result.maxPage, (List<UserPublicDto>) result.items))),
-                "api.Models.User.UserPrivateDto" => Ok(new GetAllDto<UserPrivateDto>((result.page, result.pageSize,
-                    result.maxPage, (List<UserPrivateDto>) result.items))),
-                _ => Ok(new GetAllDto<UserPublicDto>((result.page, result.pageSize, result.maxPage,
-                    (List<UserPublicDto>) result.items)))
-            };
+            return Ok(new GetAllDto<UserPublicDto>(_business.SearchUser(search, paging, currentUser)));
         }
     }
 }

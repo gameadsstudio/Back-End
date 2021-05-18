@@ -14,6 +14,6 @@ namespace api.Repositories.User
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();
-        List<UserModel> SearchUser(int offset, int limit, string search, bool strict);
+        (List<UserModel> users, int count) SearchUser(int offset, int limit, string search);
     }
 }
