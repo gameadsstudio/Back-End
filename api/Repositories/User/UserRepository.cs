@@ -30,12 +30,23 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public List<UserModel> GetUsers(int offset, int limit)
+        public (List<UserModel> users, int count) GetUsers(int offset, int limit, UserFiltersDto filters)
         {
-            return _context.User.OrderBy(p => p.Id)
+            IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
+
+            if (!string.IsNullOrEmpty(filters.Username))
+            {
+                query = query.Where(user => user.Username.ToLower().Equals(filters.Username.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(filters.Email))
+            {
+                query = query.Where(user => user.Email.ToLower().Equals(filters.Email.ToLower()));
+            }
+
+            return (query
                 .Skip(offset)
                 .Take(limit)
-                .ToList();
+                .ToList(), query.Count());
         }
 
         public UserModel AddNewUser(UserModel user)
