@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using api.Models.Game;
 
 namespace api.Repositories.Game
@@ -6,9 +7,11 @@ namespace api.Repositories.Game
     public interface IGameRepository
     {
         GameModel AddNewGame(GameModel game);
-        public GameModel GetGameById(Guid id);
+        GameModel GetGameById(Guid id);
         int UpdateGame(GameModel updatedGame, GameModel targetGame);
         int DeleteGame(GameModel game);
-        public GameModel GetGameByName(string name);
+        GameModel GetGameByName(string name);
+        List<GameModel> GetGames(int offset, int limit);
+        int CountGames();
     }
 }

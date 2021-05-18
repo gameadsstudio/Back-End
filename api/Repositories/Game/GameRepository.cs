@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Game;
@@ -43,5 +44,17 @@ namespace api.Repositories.Game
             throw new NotImplementedException();
         }
 
+        public List<GameModel> GetGames(int offset, int limit)
+        {
+            return _context.Game.OrderBy(p => p.Id)
+                .Skip(offset)
+                .Take(limit)
+                .ToList();
+        }
+
+        public int CountGames()
+        {
+            return _context.Game.Count();
+        }
     }
 }

@@ -12,6 +12,7 @@ using AutoMapper;
 using System.Net;
 using System.Linq;
 using api.Helpers;
+using System.Collections.Generic;
 
 namespace api.Business.Game
 {
@@ -63,6 +64,14 @@ namespace api.Business.Game
             }
 
             return _mapper.Map(game, new GamePublicDto());
+        }
+
+        public (int, int, int, List<GamePublicDto>) GetGames(PagingDto paging)
+        {
+            paging = PagingHelper.Check(paging);
+            var maxPage = _repository.CountGames() / paging.PageSize + 1;
+            var games = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
         public GameModel UpdateGameById(string id, GameUpdateDto updatedGame)
