@@ -9,11 +9,7 @@ using api.Business.AdContainer;
 using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
-<<<<<<< HEAD
-using api.Business.Campaign;
 using api.Business.Game;
-=======
->>>>>>> parent of 64a630f... feature/campaigns -> WIP
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
@@ -117,12 +113,8 @@ namespace api
             services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
             services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
-<<<<<<< HEAD
-            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddSingleton<IGameBusinessLogic, GameBusinessLogic>();
 
-=======
->>>>>>> parent of 64a630f... feature/campaigns -> WIP
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
