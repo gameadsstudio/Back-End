@@ -2,7 +2,8 @@ namespace api.Enums
 {
     public enum UserRole
     {
-        User,
+        Developer,
+        Announcer,
         Admin
     }
 }
