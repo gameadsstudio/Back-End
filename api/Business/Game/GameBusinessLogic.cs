@@ -2,47 +2,70 @@
 using api.Configuration;
 using api.Contexts;
 using api.Models.Game;
+using api.Errors;
 using api.Repositories.Game;
-using api.Repositories.Organization;
+using System.Security.Claims;
+using api.Business.Organization;
+using api.Models.Organization;
 using Microsoft.Extensions.Options;
+using AutoMapper;
+using System.Net;
+using System.Linq;
+using api.Helpers;
 
 namespace api.Business.Game
 {
     public class GameBusinessLogic : IGameBusinessLogic
     {
+        private readonly IMapper _mapper;
         private readonly IGameRepository _repository;
-        private readonly IOrganizationRepository _organizationRepository;
-        private readonly AppSettings _appSettings;
+        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
 
-        public GameBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings)
+        public GameBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusinessLogic)
         {
-            _organizationRepository = new OrganizationRepository(context);
             _repository = new GameRepository(context);
-            _appSettings = appSettings.Value;
+            _organizationBusinessLogic = organizationBusinessLogic;
+            _mapper = mapper;
         }
 
-        public GameModel AddNewGame(GameCreationModel newGame)
+        public GamePrivateDto AddNewGame(GameCreationDto newGame, Claim currentUser)
         {
-            var game = new GameModel
-            {
-                MediaId = Guid.Parse(newGame.MediaId),
-                Name = newGame.Name,
-                Status = newGame.Status,
-                DateCreation = DateTime.Now,
-                DateLaunch = DateTime.Now,
-                DateUpdate = DateTime.Now,
-                //Organization = _organizationRepository.GetOrganizationById(newGame.OrganizationId),
-            };
+            var game = _mapper.Map(newGame, new GameModel());
 
-            if (game.Organization == null)
+            if (_repository.GetGameByName(game.Name) != null)
             {
-                throw new Exception();
+                throw new ApiError(HttpStatusCode.Conflict,
+                    $"Game with name: {game.Name} already exists");
             }
 
-            throw new NotImplementedException();
+            var organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrganizationId);
+
+            if (organization.Users == null || organization.Users.All(user => user.Id.ToString() != currentUser.Value))
+            {
+                throw new ApiError(HttpStatusCode.Unauthorized,
+                    "Cannot use an organization which you are not a part of");
+            }
+
+            game.Organization = organization;
+
+            return _mapper.Map(_repository.AddNewGame(game), new GamePrivateDto());
         }
 
-        public GameModel UpdateGameById(string id, GameUpdateModel updatedGame)
+        public IGameDto GetGameById(string id, Claim currentUser)
+        {
+            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
+
+            //var organization = _organizationBusinessLogic.GetOrganizationModelById(game.Organization.Id.ToString());
+
+            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            {
+                return _mapper.Map(game, new GamePrivateDto());
+            }
+
+            return _mapper.Map(game, new GamePublicDto());
+        }
+
+        public GameModel UpdateGameById(string id, GameUpdateDto updatedGame)
         {
             throw new NotImplementedException();
         }

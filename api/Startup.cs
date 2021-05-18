@@ -10,6 +10,7 @@ using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
 using api.Business.Campaign;
+using api.Business.Game;
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
@@ -114,6 +115,7 @@ namespace api
             services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
             services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
             services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
+            services.AddSingleton<IGameBusinessLogic, GameBusinessLogic>();
 
         }
 

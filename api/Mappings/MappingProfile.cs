@@ -3,6 +3,7 @@ using api.Models.AdContainer;
 using api.Models.Tag;
 using api.Models.User;
 using api.Models.Organization;
+using api.Models.Game;
 using AutoMapper;
 
 namespace api.Mappings
@@ -35,6 +36,11 @@ namespace api.Mappings
             CreateMap<AdContainerModel, AdContainerCreationDto>().ReverseMap();
             CreateMap<AdContainerModel, AdContainerPublicDto>().ReverseMap();
             CreateMap<AdContainerModel, AdContainerUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+
+            CreateMap<GameModel, GameCreationDto>().ReverseMap();
+            CreateMap<GameModel, GameUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<GameModel, GamePrivateDto>().ReverseMap();
+            CreateMap<GameModel, GamePublicDto>().ReverseMap();
         }
     }
 }
