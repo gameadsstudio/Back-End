@@ -102,11 +102,11 @@ namespace api
             });
 
             // Business Logic
-            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
-            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
-            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
-            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
-            services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
+            services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
+            services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddScoped<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
