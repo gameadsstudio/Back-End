@@ -46,7 +46,7 @@ namespace api
             services.AddDbContext<ApiContext>(
                 p => p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
-                    .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
+                    .UseSnakeCaseNamingConvention());
 
             services.AddSwaggerGen(c =>
             {
