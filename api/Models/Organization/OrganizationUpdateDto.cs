@@ -17,9 +17,7 @@ namespace api.Models.Organization
         public string LogoUrl { get; set; }
         
         public string WebsiteUrl { get; set; }
-        
-        public string Type { get; set; }
-        
+
         public string State { get; set; }
         
         public string DefaultAuthorization { get; set; }

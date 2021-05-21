@@ -2,7 +2,7 @@ namespace api.Enums
 {
     public enum AdvertisementStatus
     {
-        Created,
+        Created = 1,
         InProgress,
         Terminated
     }
