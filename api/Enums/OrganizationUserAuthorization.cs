@@ -2,7 +2,7 @@ namespace api.Enums
 {
     public enum OrganizationUserAuthorization
     {
-        User,
+        User = 1,
         Admin
     }
 }

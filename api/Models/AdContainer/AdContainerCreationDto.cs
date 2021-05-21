@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using api.DataAnnotations;
 using api.Enums.AdContainer;
 
 namespace api.Models.AdContainer
@@ -21,7 +22,7 @@ namespace api.Models.AdContainer
         [Required]
         public List<string> TagNames { get; set; }
 
-        [Required]
+        [RequiredEnumAttribute]
         public AdContainerType Type { get; set; }
 
         public AdContainerAspectRatio? AspectRatio { get; set; }
