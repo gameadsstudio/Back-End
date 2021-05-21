@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.DataAnnotations;
+using api.Enums.User;
 
 namespace api.Models.User
 {
@@ -22,5 +24,8 @@ namespace api.Models.User
         [MinLength(8)]
         [MaxLength(128)]
         public string Password { get; set; }
+        
+        [RequiredEnumAttribute]
+        public UserType Type { get; set; }
     }
 }
