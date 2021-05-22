@@ -31,7 +31,7 @@ services:
             - gas-db-data:/var/lib/postgresql/data
 
     gas-pgadmin:
-        image: dpage/pgadmin4
+        image: dpage/pgadmin4:5
         restart: unless-stopped
         environment:
             PGADMIN_DEFAULT_EMAIL: ${GAS_DB_ADMIN_MAIL}
