@@ -71,9 +71,26 @@ namespace api.Business.Game
             return (paging.Page, paging.PageSize, maxPage, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
-        public GameModel UpdateGameById(string id, GameUpdateDto updatedGame)
+        public GamePrivateDto UpdateGameById(string id, GameUpdateDto updatedGame, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
+
+            if (game == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
+            }
+
+            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            {
+                var gameMapped = _mapper.Map(updatedGame, game);
+
+                return _mapper.Map(_repository.UpdateGame(gameMapped), new GamePrivateDto());
+            }
+            else
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot remove a game from an organization which you are not a part of");
+            }
         }
 
         public void DeleteGameById(string id, Claim currentUser)
