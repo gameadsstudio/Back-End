@@ -42,9 +42,11 @@ namespace api.Repositories.Game
             _context.SaveChanges();
         }
 
-        public int UpdateGame(GameModel updatedGame, GameModel targetGame)
+        public GameModel UpdateGame(GameModel updatedGame)
         {
-            throw new NotImplementedException();
+            _context.Update(updatedGame);
+            _context.SaveChanges();
+            return updatedGame;
         }
 
         public List<GameModel> GetGames(int offset, int limit)
