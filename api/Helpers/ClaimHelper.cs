@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using api.Enums;
+using api.Enums.User;
 
 namespace api.Helpers
 {
