@@ -1,4 +1,4 @@
-﻿using api.Contexts;
+using api.Contexts;
 using api.Models.Game;
 using api.Errors;
 using api.Repositories.Game;
