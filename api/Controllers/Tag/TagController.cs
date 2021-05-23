@@ -11,6 +11,7 @@ namespace api.Controllers.Tag
 {
     [Route("/v1/tags")]
     [ApiController]
+    [Authorize(Policy = "RequireAdmin")]
     public class TagController : ControllerBase
     {
         private readonly ITagBusinessLogic _business;
@@ -41,7 +42,7 @@ namespace api.Controllers.Tag
         public ActionResult<GetDto<TagPublicDto>> Post([FromForm] TagCreationDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+
             return Created("tag", new GetDto<TagPublicDto>(_business.AddNewTag(newTag, currentUser)));
         }
 
@@ -49,7 +50,7 @@ namespace api.Controllers.Tag
         public ActionResult<GetDto<TagPublicDto>> Patch(string id, [FromForm] TagUpdateDto newTag)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+
             return Ok(new GetDto<TagPublicDto>(_business.UpdateTagById(id, newTag, currentUser)));
         }
 
@@ -57,9 +58,9 @@ namespace api.Controllers.Tag
         public ActionResult<TagPublicDto> Delete(string id)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+
             _business.DeleteTagById(id, currentUser);
-            
+
             return Ok();
         }
     }
