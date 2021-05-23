@@ -9,7 +9,7 @@ namespace api.DataAnnotations
         {
             if (value == null) return false;
             var type = value.GetType();
-            return type.IsEnum && Enum.IsDefined(type, value);;
+            return type.IsEnum && Enum.IsDefined(type, value);
         }
     }
 }
