@@ -1,12 +1,12 @@
 using System;
 using api.Enums.User;
-using api.Enums;
 
 namespace api.Models.User
 {
     public class UserPrivateDto : IUserDto
     {
         public Guid Id { get; set; }
+
         public UserRole Role { get; set; }
 
         public string Username { get; set; }

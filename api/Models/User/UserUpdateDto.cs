@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using api.Enums;
 using api.Enums.User;
 
 namespace api.Models.User
@@ -8,7 +7,7 @@ namespace api.Models.User
     {
         [EnumDataType(typeof(UserRole))]
         public UserRole Role { get; set; }
-        
+
         [EmailAddress]
         public string Email { get; set; }
 

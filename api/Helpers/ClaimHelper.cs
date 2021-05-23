@@ -1,51 +1,24 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
-using api.Enums;
 using api.Enums.User;
+using api.Errors;
 
 namespace api.Helpers
 {
     public class CurrentUser
     {
-        public Guid? Id { get; }
-        public UserRole? Role { get; }
+        public Guid Id { get; }
+        public UserRole Role { get; }
 
-        public CurrentUser(System.Collections.Generic.IEnumerable<Claim> claims)
+        public CurrentUser(IReadOnlyCollection<Claim> claims)
         {
-            var tmp1 = claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            if (tmp1 != null)
-            {
-                Id = Guid.Parse(tmp1.Value);
-            }
-            else
-            {
-                Id = null;
-            }
-            
-            var tmp2 = claims.FirstOrDefault(p => p.Type == ClaimTypes.Role);
-            if (tmp2 != null)
-            {
-                Role = Enum.Parse<UserRole>(tmp2.Value);
-            }
-            else
-            {
-                Id = null;
-            }
+            Id = Guid.Parse(claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?.Value ??
+                            throw new ApiError(HttpStatusCode.BadRequest, "Bad Token - No ID specified in token"));
+            Role = Enum.Parse<UserRole>(claims.FirstOrDefault(p => p.Type == ClaimTypes.Role)?.Value ??
+                                        throw new ApiError(HttpStatusCode.BadRequest, "Bad Token - No role specified in token"));
         }
-    }
-    
-    public static class ClaimHelper
-    {
-        // public static CurrentUser ClaimToUser(System.Collections.Generic.IEnumerable<Claim> claims)
-        // {
-        //     var currentUser = new CurrentUser();
-        //     
-        //     var id = claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-        //     var role = claims.FirstOrDefault(p => p.Type == ClaimTypes.Role);
-        //     
-        //     Console.WriteLine(claims);
-        //     return currentUser;
-        // }
     }
 }
