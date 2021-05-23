@@ -1,4 +1,6 @@
 ﻿using System;
+using api.Models.Organization;
+
 namespace api.Models.Game
 {
     public class GamePrivateDto : IGameDto
@@ -10,6 +12,8 @@ namespace api.Models.Game
         public string Name { get; set; }
 
         public string Status { get; set; }
+
+        public OrganizationPublicDto Organization { get; set; }
 
         public DateTimeOffset DateLaunch { get; set; }
 
