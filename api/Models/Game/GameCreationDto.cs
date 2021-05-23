@@ -6,7 +6,7 @@ namespace api.Models.Game
     public class GameCreationDto
     {
         [Required]
-        public string OrganizationId { get; set; }
+        public string OrgId { get; set; }
 
         [Required]
         public Guid MediaId { get; set; }

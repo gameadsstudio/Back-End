@@ -35,7 +35,7 @@ namespace api.Controllers.Game
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(new GetDto<IGameDto>(_business.GetGameById(id, currentUser)));
+            return Ok(new GetDto<object>(_business.GetGameById(id, currentUser)));
         }
 
         [HttpGet]
@@ -56,7 +56,11 @@ namespace api.Controllers.Game
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            return Ok(_business.DeleteGameById(id));
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            _business.DeleteGameById(id, currentUser);
+
+            return Ok();
         }
     }
 }
