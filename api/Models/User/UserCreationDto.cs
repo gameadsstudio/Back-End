@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.DataAnnotations;
 using api.Enums.User;
-using api.Enums;
 
 namespace api.Models.User
 {

@@ -11,6 +11,7 @@ using api.Business.User;
 using api.Business.Organization;
 using api.Configuration;
 using api.Contexts;
+using api.Enums.User;
 using api.Mappings;
 using api.Middlewares;
 using AutoMapper;
@@ -55,23 +56,23 @@ namespace api
             services.AddSingleton(
                 new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); }).CreateMapper());
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication(options =>
                 {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(x =>
+                .AddJwtBearer(options =>
                 {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
-                    x.Events = new JwtBearerEvents()
+                    options.Events = new JwtBearerEvents()
                     {
                         OnTokenValidated = context =>
                         {
@@ -90,6 +91,11 @@ namespace api
                         }
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin",
+                    policy => policy.RequireRole(UserRole.Admin.ToString()));
+            });
             services.AddMvc(o =>
             {
                 var policy = new AuthorizationPolicyBuilder()

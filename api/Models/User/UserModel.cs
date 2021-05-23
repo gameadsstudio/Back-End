@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums.User;
 using api.Models.Organization;
-using api.Enums;
 
 namespace api.Models.User
 {
@@ -27,7 +26,7 @@ namespace api.Models.User
         public string Password { get; set; }
 
         public string Email { get; set; }
-        
+
         public UserType Type { get; set; }
 
         public string Alias { get; set; } // TODO: check if needed
