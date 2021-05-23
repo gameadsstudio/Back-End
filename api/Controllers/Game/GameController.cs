@@ -47,10 +47,9 @@ namespace api.Controllers.Game
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] GameUpdateDto newGame)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Ok(_business.UpdateGameById(id, newGame));
+            return Ok(new GetDto<object>(_business.UpdateGameById(id, newGame, currentUser)));
         }
 
         [HttpDelete("{id}")]
