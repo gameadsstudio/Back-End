@@ -1,13 +1,10 @@
 ﻿using System;
-using api.Configuration;
 using api.Contexts;
 using api.Models.Game;
 using api.Errors;
 using api.Repositories.Game;
 using System.Security.Claims;
 using api.Business.Organization;
-using api.Models.Organization;
-using Microsoft.Extensions.Options;
 using AutoMapper;
 using System.Net;
 using System.Linq;
@@ -39,15 +36,12 @@ namespace api.Business.Game
                     $"Game with name: {game.Name} already exists");
             }
 
-            var organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrganizationId);
-
-            if (organization.Users == null || organization.Users.All(user => user.Id.ToString() != currentUser.Value))
+            if (!_organizationBusinessLogic.IsUserInOrganization(newGame.OrgId, currentUser.Value))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized,
-                    "Cannot use an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot create a game for an organization you're not part of");
             }
 
-            game.Organization = organization;
+            game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId);
 
             return _mapper.Map(_repository.AddNewGame(game), new GamePrivateDto());
         }
@@ -56,14 +50,17 @@ namespace api.Business.Game
         {
             var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
 
-            //var organization = _organizationBusinessLogic.GetOrganizationModelById(game.Organization.Id.ToString());
-
-            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            if (game == null)
             {
-                return _mapper.Map(game, new GamePrivateDto());
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            return _mapper.Map(game, new GamePublicDto());
+            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id.ToString(), currentUser.Value))
+            {
+                return _mapper.Map(game, new GamePublicDto());
+
+            }
+            return _mapper.Map(game, new GamePrivateDto());
         }
 
         public (int, int, int, List<GamePublicDto>) GetGames(PagingDto paging)
@@ -79,9 +76,24 @@ namespace api.Business.Game
             throw new NotImplementedException();
         }
 
-        public int DeleteGameById(string id)
+        public void DeleteGameById(string id, Claim currentUser)
         {
-            throw new NotImplementedException();
+            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
+
+            if (game == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
+            }
+
+            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            {
+                _repository.DeleteGame(game);
+            }
+            else
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot delete a game which you are not a part of the organization game owner");
+            }
         }
     }
 }

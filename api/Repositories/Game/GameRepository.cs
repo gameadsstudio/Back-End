@@ -31,12 +31,15 @@ namespace api.Repositories.Game
 
         public GameModel GetGameById(Guid id)
         {
-            return _context.Game.Include(p => p.Organization).SingleOrDefault(e => e.Id == id);
+            return _context.Game
+                .Include(a => a.Organization)
+                .SingleOrDefault(a => a.Id == id);
         }
 
-        public int DeleteGame(GameModel game)
+        public void DeleteGame(GameModel game)
         {
-            throw new NotImplementedException();
+            _context.Game.Remove(game);
+            _context.SaveChanges();
         }
 
         public int UpdateGame(GameModel updatedGame, GameModel targetGame)
