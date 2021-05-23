@@ -153,16 +153,9 @@ namespace api.Business.User
 
         public UserLoginResponseDto Login(UserLoginDto loginDto)
         {
-            UserModel user;
-
-            if (EmailHelper.IsValidEmail(loginDto.Identifier))
-            {
-                user = _repository.GetUserByEmail(loginDto.Identifier);
-            }
-            else
-            {
-                user = _repository.GetUserByUsername(loginDto.Identifier);
-            }
+            var user = EmailHelper.IsValidEmail(loginDto.Identifier)
+                ? _repository.GetUserByEmail(loginDto.Identifier)
+                : _repository.GetUserByUsername(loginDto.Identifier);
 
             if (user == null)
             {
@@ -178,13 +171,19 @@ namespace api.Business.User
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] {new(ClaimTypes.NameIdentifier, user.Id.ToString())}),
+                Subject = new ClaimsIdentity(
+                    new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, user.Role.ToString()),
+                    }
+                ),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new UserLoginResponseDto()
+            return new UserLoginResponseDto
             {
                 Token = tokenHandler.WriteToken(token)
             };
