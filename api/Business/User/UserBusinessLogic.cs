@@ -25,7 +25,7 @@ namespace api.Business.User
             _mapper = mapper;
         }
 
-        public IUserDto GetUserById(string id, Claim currentUser)
+        public IUserDto GetUserById(string id, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
@@ -34,7 +34,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            if (user.Id.ToString() == currentUser.Value)
+            if (user.Id == currentUser.Id)
             {
                 return _mapper.Map(user, new UserPrivateDto());
             }
@@ -54,13 +54,13 @@ namespace api.Business.User
             return user;
         }
 
-        public UserPrivateDto GetSelf(Claim currentUser)
+        public UserPrivateDto GetSelf(ConnectedUser currentUser)
         {
-            var user = GetUserModelById(currentUser.Value);
+            var user = GetUserModelById(currentUser.Id.ToString());
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Value}");
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Id}");
             }
 
             return _mapper.Map(user, new UserPrivateDto());
@@ -68,7 +68,7 @@ namespace api.Business.User
 
         public (int page, int pageSize, int maxPage, IList<UserPublicDto> items) SearchUser(string search,
             PagingDto paging,
-            Claim currentUser)
+            ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
             var (users, maxPage) = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search);
@@ -104,7 +104,7 @@ namespace api.Business.User
             return _mapper.Map(result, new UserPrivateDto());
         }
 
-        public int DeleteUserById(string id, Claim currentUser)
+        public int DeleteUserById(string id, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
@@ -113,7 +113,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            if (user.Id.ToString() != currentUser.Value)
+            if (user.Id != currentUser.Id)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
             }
@@ -121,11 +121,11 @@ namespace api.Business.User
             return _repository.DeleteUser(user);
         }
 
-        public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser)
+        public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
-            if (user.Id.ToString() != currentUser.Value)
+            if (user.Id != currentUser.Id)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot modify another user's account");
             }

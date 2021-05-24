@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Claims;
 using api.Contexts;
 using api.Errors;
 using api.Helpers;
@@ -52,7 +51,7 @@ namespace api.Business.Tag
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), _mapper.Map(tags, new List<TagPublicDto>()));
         }
 
-        public TagPublicDto AddNewTag(TagCreationDto newTag, Claim currentUser)
+        public TagPublicDto AddNewTag(TagCreationDto newTag, ConnectedUser currentUser)
         {
             // Todo: Check if user is admin
 
@@ -61,7 +60,7 @@ namespace api.Business.Tag
             return _mapper.Map(_repository.AddNewTag(tag), new TagPublicDto());
         }
 
-        public TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, Claim currentUser)
+        public TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, ConnectedUser currentUser)
         {
             // Todo: Check if user is admin
 
@@ -70,7 +69,7 @@ namespace api.Business.Tag
             return _mapper.Map(_repository.UpdateTag(tag), new TagPublicDto());
         }
 
-        public void DeleteTagById(string id, Claim currentUser)
+        public void DeleteTagById(string id, ConnectedUser currentUser)
         {
             // Todo: Check if user is admin
 

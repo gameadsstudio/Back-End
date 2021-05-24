@@ -1,8 +1,6 @@
 ﻿using api.Business.Organization;
-using System.Security.Claims;
 using api.Models.Organization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
@@ -23,7 +21,7 @@ namespace api.Controllers.Organization
         [HttpGet("{id}")]
         public ActionResult<GetDto<IOrganizationDto>> GetOrganization(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<IOrganizationDto>(_business.GetOrganizationById(id, currentUser)));
         }
@@ -37,7 +35,7 @@ namespace api.Controllers.Organization
         [HttpPost]
         public ActionResult<GetDto<OrganizationPrivateDto>> Post([FromForm] OrganizationCreationDto newOrganization)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Created("Organization", new GetDto<OrganizationPrivateDto>(_business.AddNewOrganization(newOrganization, currentUser)));
         }
@@ -45,7 +43,7 @@ namespace api.Controllers.Organization
         [HttpPatch("{id}")]
         public ActionResult<GetDto<OrganizationPrivateDto>> Patch(string id, [FromForm] OrganizationUpdateDto newOrganization)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<OrganizationPrivateDto>(_business.UpdateOrganizationById(id, newOrganization, currentUser)));
         }
@@ -53,7 +51,7 @@ namespace api.Controllers.Organization
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteOrganizationById(id, currentUser);
 
@@ -63,7 +61,7 @@ namespace api.Controllers.Organization
         [HttpPost("{id}/users/{userId}")]
         public ActionResult<GetDto<OrganizationPrivateDto>> AddUserToOrganization(string id, string userId)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<OrganizationPrivateDto>(_business.AddUserToOrganization(id, userId, currentUser)));
         }
@@ -71,17 +69,17 @@ namespace api.Controllers.Organization
         [HttpGet("{id}/users")]
         public ActionResult<GetAllDto<UserPublicDto>> GetOrganizationUsers(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             var users = _business.GetOrganizationUsers(id, currentUser);
-            
+
             return Ok(new GetAllDto<UserPublicDto>((1, users.Count, 1, users)));
         }
 
         [HttpDelete("{id}/users/{userId}")]
         public ActionResult<GetDto<OrganizationPrivateDto>> DeleteUserFromOrganization(string id, string userId)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<OrganizationPrivateDto>(_business.DeleteUserFromOrganization(id, userId, currentUser)));
         }

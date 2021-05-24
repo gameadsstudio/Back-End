@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Security.Claims;
 using api.Business.Advertisements;
 using api.Helpers;
 using api.Models.Advertisement;
@@ -21,7 +19,7 @@ namespace api.Controllers.Advertisement
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
             return Ok(new {status = 200, advertisement = _business.GetAdvertisementById(id, currentUser)});
         }
 
@@ -51,7 +49,7 @@ namespace api.Controllers.Advertisement
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] AdvertisementUpdateDto newAdvertisement)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
             return Ok(new
             {
                 status = "", advertisement = _business.UpdateAdvertisementById(id, newAdvertisement, currentUser),
@@ -61,7 +59,7 @@ namespace api.Controllers.Advertisement
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteAdvertisementById(id, currentUser);
 
