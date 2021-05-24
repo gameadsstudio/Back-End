@@ -53,8 +53,6 @@ namespace api.Business.Tag
 
         public TagPublicDto AddNewTag(TagCreationDto newTag, ConnectedUser currentUser)
         {
-            // Todo: Check if user is admin
-
             CheckTagExists(newTag.Name);
             var tag = _mapper.Map(newTag, new TagModel());
             return _mapper.Map(_repository.AddNewTag(tag), new TagPublicDto());
@@ -62,8 +60,6 @@ namespace api.Business.Tag
 
         public TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, ConnectedUser currentUser)
         {
-            // Todo: Check if user is admin
-
             CheckTagExists(updatedTag.Name);
             var tag = _mapper.Map(updatedTag, GetTagModelById(id));
             return _mapper.Map(_repository.UpdateTag(tag), new TagPublicDto());
@@ -71,8 +67,6 @@ namespace api.Business.Tag
 
         public void DeleteTagById(string id, ConnectedUser currentUser)
         {
-            // Todo: Check if user is admin
-
             var tag = GetTagModelById(id);
             _repository.DeleteTag(tag);
         }
