@@ -5,6 +5,7 @@ using System.Net;
 using api.Business.Organization;
 using api.Business.Tag;
 using api.Contexts;
+using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.AdContainer;
@@ -37,12 +38,14 @@ namespace api.Business.AdContainer
 
         public AdContainerPublicDto GetAdContainerById(string id, ConnectedUser currentUser)
         {
-            // Todo : check if user is admin
             var adContainer = GetAdContainerModelById(id);
-            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id))
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
+                currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the ad container of an organization you're not part of");
             }
+
             return _mapper.Map(adContainer, new AdContainerPublicDto());
         }
 
@@ -69,12 +72,13 @@ namespace api.Business.AdContainer
 
         public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, ConnectedUser currentUser)
         {
-            // Todo : check if user is admin
-
-            if (!_organizationBusinessLogic.IsUserInOrganization(GuidHelper.StringToGuidConverter(newAdContainer.OrgId), currentUser.Id))
+            if (!_organizationBusinessLogic.IsUserInOrganization(GuidHelper.StringToGuidConverter(newAdContainer.OrgId),
+                currentUser.Id) && currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot create an ad container for an organization you're not part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot create an ad container for an organization you're not part of");
             }
+
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
             adContainer.Tags = ResolveTags(newAdContainer.TagNames);
             /*
@@ -87,13 +91,14 @@ namespace api.Business.AdContainer
         public AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
             ConnectedUser currentUser)
         {
-            // Todo : check if user is admin
-
             var adContainer = GetAdContainerModelById(id);
-            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id))
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
+                currentUser.Role == UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the ad container of an organization you're not part of");
             }
+
             var updated = _mapper.Map(updatedAdContainer, adContainer);
             if (updatedAdContainer.TagNames != null)
             {
@@ -105,13 +110,14 @@ namespace api.Business.AdContainer
 
         public void DeleteAdContainerById(string id, ConnectedUser currentUser)
         {
-            // Todo : check if user is admin
-
             var adContainer = GetAdContainerModelById(id);
-            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id))
+            if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
+                currentUser.Role == UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot get the ad container of an organization you're not part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the ad container of an organization you're not part of");
             }
+
             _repository.DeleteAdContainer(adContainer);
         }
 
