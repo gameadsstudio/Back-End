@@ -12,8 +12,10 @@ using api.Business.Organization;
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
+using api.Helpers;
 using api.Mappings;
 using api.Middlewares;
+using api.Models.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -102,10 +104,7 @@ namespace api
                     .RequireAuthenticatedUser()
                     .Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
-            }).AddJsonOptions(opts =>
-            {
-                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
             services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
@@ -126,6 +125,8 @@ namespace api
 
             // Auto migrate database on startup
             context.Database.Migrate();
+            CreateAdmin(context);
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -139,6 +140,29 @@ namespace api
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void CreateAdmin(ApiContext context)
+        {
+            // Creating default admin user
+            context.Database.EnsureCreated();
+            var testBlog = context.User.FirstOrDefault(user =>
+                user.Username == (Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin"));
+            if (testBlog == null)
+            {
+                context.User.Add(new UserModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Username = Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin",
+                    Email =
+                        Environment.GetEnvironmentVariable("GAS_ADMIN_EMAIL") ?? "contact@gameadsstudio.com",
+                    Role = UserRole.Admin,
+                    Password = HashHelper.HashPassword(
+                        Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password")
+                });
+            }
+
+            context.SaveChanges();
         }
     }
 }
