@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Security.Claims;
 using api.Business.Tag;
 using api.Helpers;
 using api.Models.Common;
@@ -41,7 +39,7 @@ namespace api.Controllers.Tag
         [HttpPost]
         public ActionResult<GetDto<TagPublicDto>> Post([FromForm] TagCreationDto newTag)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Created("tag", new GetDto<TagPublicDto>(_business.AddNewTag(newTag, currentUser)));
         }
@@ -49,7 +47,7 @@ namespace api.Controllers.Tag
         [HttpPatch("{id}")]
         public ActionResult<GetDto<TagPublicDto>> Patch(string id, [FromForm] TagUpdateDto newTag)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<TagPublicDto>(_business.UpdateTagById(id, newTag, currentUser)));
         }
@@ -57,7 +55,7 @@ namespace api.Controllers.Tag
         [HttpDelete("{id}")]
         public ActionResult<TagPublicDto> Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteTagById(id, currentUser);
 

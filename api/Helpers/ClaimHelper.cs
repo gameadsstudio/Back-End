@@ -8,12 +8,12 @@ using api.Errors;
 
 namespace api.Helpers
 {
-    public class CurrentUser
+    public class ConnectedUser
     {
         public Guid Id { get; }
         public UserRole Role { get; }
 
-        public CurrentUser(IReadOnlyCollection<Claim> claims)
+        public ConnectedUser(IEnumerable<Claim> claims)
         {
             Id = Guid.Parse(claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier)?.Value ??
                             throw new ApiError(HttpStatusCode.BadRequest, "Bad Token - No ID specified in token"));
