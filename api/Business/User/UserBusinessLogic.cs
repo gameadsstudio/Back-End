@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using api.Contexts;
+using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.User;
@@ -113,7 +114,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            if (user.Id != currentUser.Id)
+            if (user.Id != currentUser.Id && currentUser.Role != UserRole.Admin)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
             }
@@ -144,6 +145,11 @@ namespace api.Business.User
             if (updatedUser.Password != null)
             {
                 updatedUser.Password = HashHelper.HashPassword(user.Password);
+            }
+
+            if (updatedUser.Role != null && updatedUser.Role != UserRole.User && currentUser.Role != UserRole.Admin)
+            {
+                updatedUser.Role = UserRole.User;
             }
 
             user = _mapper.Map(updatedUser, user);

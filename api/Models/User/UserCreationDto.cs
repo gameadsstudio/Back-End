@@ -6,7 +6,6 @@ namespace api.Models.User
 {
     public class UserCreationDto
     {
-        [EnumDataType(typeof(UserRole))]
         public UserRole Role { get; set; }
 
         [Required]

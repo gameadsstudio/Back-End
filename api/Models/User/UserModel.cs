@@ -14,7 +14,6 @@ namespace api.Models.User
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [EnumDataType(typeof(UserRole))]
         public UserRole Role { get; set; }
 
         public string Username { get; set; } // TODO: check id needed
