@@ -2,7 +2,7 @@ namespace api.Enums.User
 {
     public enum UserRole
     {
-        User,
+        User = 1,
         Admin
     }
 }
