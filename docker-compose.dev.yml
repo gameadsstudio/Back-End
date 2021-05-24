@@ -41,9 +41,11 @@ services:
             - "80:${GAS_DB_ADMIN_PORT}"
         logging:
             driver: none
+        volumes:
+            - gas-pgadmin-data:/var/lib/pgadmin
 
 volumes:
     gas-db-data:
         driver: local
-    pgadmin:
+    gas-pgadmin-data:
         driver: local
