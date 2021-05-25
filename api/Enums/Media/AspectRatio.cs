@@ -1,8 +1,8 @@
 using System.ComponentModel;
 
-namespace api.Enums.AdContainer
+namespace api.Enums.Media
 {
-    public enum AdContainerAspectRatio
+    public enum AspectRatio
     {
         [Description("1x1")]
         Aspect1X1 = 1,
