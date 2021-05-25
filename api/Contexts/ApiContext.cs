@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using api.Enums.AdContainer;
+using api.Enums.Media;
 using api.Enums.User;
 using api.Enums.Organization;
 using api.Models.Advertisement;
@@ -12,6 +12,7 @@ using api.Models.Tag;
 using api.Models.User;
 using api.Models.Version;
 using Microsoft.EntityFrameworkCore;
+using Type = api.Enums.Media.Type;
 
 namespace api.Contexts
 {
@@ -109,11 +110,11 @@ namespace api.Contexts
                 entity.Property(e => e.Type)
                     .HasConversion(
                         v => v.ToString(),
-                        v => (AdContainerType) Enum.Parse(typeof(AdContainerType), v));
+                        v => (Type) Enum.Parse(typeof(Type), v));
                 entity.Property(e => e.AspectRatio)
                     .HasConversion(
                         v => v.ToString(),
-                        v => (AdContainerAspectRatio) Enum.Parse(typeof(AdContainerAspectRatio), v));
+                        v => (AspectRatio) Enum.Parse(typeof(AspectRatio), v));
             });
 
             modelBuilder.Entity<VersionModel>(entity =>

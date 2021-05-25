@@ -1,8 +1,8 @@
 using System.ComponentModel;
 
-namespace api.Enums.AdContainer
+namespace api.Enums.Media
 {
-    public enum AdContainerType
+    public enum Type
     {
         [Description("2D")]
         Type2D = 1,
