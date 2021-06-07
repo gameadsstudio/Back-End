@@ -60,7 +60,13 @@ namespace api.Business.Game
             return _mapper.Map(game, new GamePublicDto());
         }
 
-        public (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging)
+        private GameModel GetGameModelById(string id)
+        {
+            return _repository.GetGameById(GuidHelper.StringToGuidConverter(id)) ??
+                   throw new ApiError(HttpStatusCode.NotFound, $"Could not find a game with Id: {id}");
+        }
+
+        public (int, int, int, IList<GamePublicDto>) GetGames(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountGames() / paging.PageSize + 1;
@@ -70,7 +76,7 @@ namespace api.Business.Game
 
         public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser)
         {
-            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
+            var game = GetGameModelById(id);
 
             if (game == null)
             {
@@ -90,7 +96,7 @@ namespace api.Business.Game
 
         public void DeleteGameById(string id, ConnectedUser currentUser)
         {
-            var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
+            var game = GetGameModelById(id);
 
             if (game == null)
             {
