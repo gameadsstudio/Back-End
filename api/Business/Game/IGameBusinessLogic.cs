@@ -8,7 +8,7 @@ namespace api.Business.Game
     public interface IGameBusinessLogic
     {
         public GamePrivateDto AddNewGame(GameCreationDto newGame, Claim currentUser);
-        public IGameDto GetGameById(string id, Claim currentUser);
+        public GamePublicDto GetGameById(string id, Claim currentUser);
         GamePrivateDto UpdateGameById(string id, GameUpdateDto updatedGame, Claim currentUser);
         void DeleteGameById(string id, Claim currentUser);
         (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging);
