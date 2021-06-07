@@ -23,11 +23,11 @@ namespace api.Controllers.Game
         }
 
         [HttpPost]
-        public ActionResult<GetDto<GamePrivateDto>> Post([FromForm] GameCreationDto newGame)
+        public ActionResult<GetDto<GamePublicDto>> Post([FromForm] GameCreationDto newGame)
         {
             var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
 
-            return Created("Game", new GetDto<GamePrivateDto>(_business.AddNewGame(newGame, currentUser)));
+            return Created("Game", new GetDto<GamePublicDto>(_business.AddNewGame(newGame, currentUser)));
         }
 
         [HttpGet("{id}")]
