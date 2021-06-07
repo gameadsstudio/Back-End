@@ -50,7 +50,7 @@ namespace api
             services.AddDbContext<ApiContext>(
                 p => p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
-                    .UseSnakeCaseNamingConvention());
+                    .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
 
             services.AddSwaggerGen(c =>
             {
@@ -108,13 +108,12 @@ namespace api
             }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
-            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
-            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
-            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
-            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
-            services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
-            services.AddSingleton<IGameBusinessLogic, GameBusinessLogic>();
-
+            services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
+            services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
+            services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddScoped<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
