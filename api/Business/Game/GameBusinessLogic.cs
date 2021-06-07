@@ -46,7 +46,7 @@ namespace api.Business.Game
             return _mapper.Map(_repository.AddNewGame(game), new GamePrivateDto());
         }
 
-        public IGameDto GetGameById(string id, Claim currentUser)
+        public GamePublicDto GetGameById(string id, Claim currentUser)
         {
             var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
 
@@ -57,10 +57,10 @@ namespace api.Business.Game
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id.ToString(), currentUser.Value))
             {
-                return _mapper.Map(game, new GamePublicDto());
-
+                throw new ApiError(HttpStatusCode.Forbidden,
+                "Cannot fetch a game from an organization which you are not a part of");
             }
-            return _mapper.Map(game, new GamePrivateDto());
+            return _mapper.Map(game, new GamePublicDto());
         }
 
         public (int, int, int, IList<GamePublicDto>) GetGames(PagingDto paging)
@@ -80,17 +80,14 @@ namespace api.Business.Game
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            if (game.Organization.Users != null && game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
             {
                 var gameMapped = _mapper.Map(updatedGame, game);
 
                 return _mapper.Map(_repository.UpdateGame(gameMapped), new GamePrivateDto());
             }
-            else
-            {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot remove a game from an organization which you are not a part of");
-            }
+            throw new ApiError(HttpStatusCode.Forbidden,
+                "Cannot remove a game from an organization which you are not a part of");
         }
 
         public void DeleteGameById(string id, Claim currentUser)
@@ -102,7 +99,7 @@ namespace api.Business.Game
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            if (game.Organization.Users != null || game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
+            if (game.Organization.Users != null && game.Organization.Users.All(user => user.Id.ToString() == currentUser.Value))
             {
                 _repository.DeleteGame(game);
             }
