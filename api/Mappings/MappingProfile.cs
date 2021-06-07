@@ -39,7 +39,6 @@ namespace api.Mappings
 
             CreateMap<GameModel, GameCreationDto>().ReverseMap();
             CreateMap<GameModel, GameUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
-            CreateMap<GameModel, GamePrivateDto>().ReverseMap();
             CreateMap<GameModel, GamePublicDto>().ReverseMap();
         }
     }
