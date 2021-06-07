@@ -63,7 +63,7 @@ namespace api.Business.Game
             return _mapper.Map(game, new GamePrivateDto());
         }
 
-        public (int, int, int, List<GamePublicDto>) GetGames(PagingDto paging)
+        public (int, int, int, IList<GamePublicDto>) GetGames(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountGames() / paging.PageSize + 1;

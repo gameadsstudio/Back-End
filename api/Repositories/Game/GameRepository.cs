@@ -49,7 +49,7 @@ namespace api.Repositories.Game
             return updatedGame;
         }
 
-        public List<GameModel> GetGames(int offset, int limit)
+        public IList<GameModel> GetGames(int offset, int limit)
         {
             return _context.Game.OrderBy(p => p.Id)
                 .Skip(offset)
