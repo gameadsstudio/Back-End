@@ -25,7 +25,7 @@ namespace api.Controllers.Game
         [HttpPost]
         public ActionResult<GetDto<GamePublicDto>> Post([FromForm] GameCreationDto newGame)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Created("Game", new GetDto<GamePublicDto>(_business.AddNewGame(newGame, currentUser)));
         }
@@ -33,7 +33,7 @@ namespace api.Controllers.Game
         [HttpGet("{id}")]
         public ActionResult<GetDto<IGameDto>> GetGame(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<object>(_business.GetGameById(id, currentUser)));
         }
@@ -47,7 +47,7 @@ namespace api.Controllers.Game
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] GameUpdateDto newGame)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<object>(_business.UpdateGameById(id, newGame, currentUser)));
         }
@@ -55,7 +55,7 @@ namespace api.Controllers.Game
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteGameById(id, currentUser);
 
