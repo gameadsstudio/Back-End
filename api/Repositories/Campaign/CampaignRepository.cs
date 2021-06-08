@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using api.Contexts;
 using api.Models.Campaign;
 
@@ -14,20 +16,31 @@ namespace api.Repositories.Campaign
             _context = context;
         }
 
-        public int AddNewCampaign(CampaignModel campaign)
+        public CampaignModel AddNewCampaign(CampaignModel campaign)
         {
-            throw new NotImplementedException();
+            _context.Campaign.Add(campaign);
+            _context.SaveChanges();
+            return campaign;
+        }
+
+        public CampaignModel UpdateCampaign(CampaignModel campaign)
+        {
+			_context.Update(campaign);
+			_context.SaveChanges();
+            return campaign;
         }
 
         public int DeleteCampaign(CampaignModel campaign)
         {
-            throw new NotImplementedException();
+			_context.Campaign.Remove(campaign);
+			return _context.SaveChanges();
         }
 
-        public int UpdateCampaign(CampaignModel updatedCampaign, CampaignModel targetCampaign)
-        {
-            throw new NotImplementedException();
-        }
-
+		public List<CampaignModel> GetOrganizationCampaigns(Guid id)
+		{
+			return _context.Campaign
+				.Where(x => x.Organization.Id == id)
+				.ToList();
+		}
     }
 }
