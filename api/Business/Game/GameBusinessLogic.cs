@@ -26,7 +26,7 @@ namespace api.Business.Game
             _mapper = mapper;
         }
 
-        public GamePublicDto AddNewGame(GameCreationDto newGame, Claim currentUser)
+        public GamePublicDto AddNewGame(GameCreationDto newGame, ConnectedUser currentUser)
         {
             var game = _mapper.Map(newGame, new GameModel());
 
@@ -36,7 +36,7 @@ namespace api.Business.Game
                     $"Game with name: {game.Name} already exists");
             }
 
-            if (!_organizationBusinessLogic.IsUserInOrganization(newGame.OrgId, currentUser.Value))
+            if (!_organizationBusinessLogic.IsUserInOrganization(GuidHelper.StringToGuidConverter(newGame.OrgId), currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot create a game for an organization you're not part of");
             }
@@ -46,7 +46,7 @@ namespace api.Business.Game
             return _mapper.Map(_repository.AddNewGame(game), new GamePublicDto());
         }
 
-        public GamePublicDto GetGameById(string id, Claim currentUser)
+        public GamePublicDto GetGameById(string id, ConnectedUser currentUser)
         {
             var game = _repository.GetGameById(GuidHelper.StringToGuidConverter(id));
 
@@ -55,7 +55,7 @@ namespace api.Business.Game
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id.ToString(), currentUser.Value))
+            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                 "Cannot fetch a game from an organization which you are not a part of");
@@ -77,7 +77,7 @@ namespace api.Business.Game
             return (paging.Page, paging.PageSize, maxPage, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
-        public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, Claim currentUser)
+        public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser)
         {
             var game = GetGameModelById(id);
 
@@ -86,7 +86,7 @@ namespace api.Business.Game
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id.ToString(), currentUser.Value))
+            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                 "Cannot update a game from an organization which you are not a part of");
@@ -97,7 +97,7 @@ namespace api.Business.Game
             return _mapper.Map(_repository.UpdateGame(gameMapped), new GamePublicDto());
         }
 
-        public void DeleteGameById(string id, Claim currentUser)
+        public void DeleteGameById(string id, ConnectedUser currentUser)
         {
             var game = GetGameModelById(id);
 
@@ -106,7 +106,7 @@ namespace api.Business.Game
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
             }
 
-            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id.ToString(), currentUser.Value))
+            if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                 "Cannot update a game from an organization which you are not a part of");
