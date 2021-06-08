@@ -1,11 +1,14 @@
-﻿using api.Models.Campaign;
+﻿using System;
+using System.Collections.Generic;
+using api.Models.Campaign;
 
 namespace api.Repositories.Campaign
 {
     public interface ICampaignRepository
     {
-        int AddNewCampaign(CampaignModel campaign);
-        int UpdateCampaign(CampaignModel updatedCampaign, CampaignModel targetCampaign);
+        CampaignModel AddNewCampaign(CampaignModel campaign);
+        CampaignModel UpdateCampaign(CampaignModel campaign);
         int DeleteCampaign(CampaignModel campaign);
+		List<CampaignModel> GetOrganizationCampaigns(Guid id);
     }
 }
