@@ -42,5 +42,10 @@ namespace api.Repositories.Campaign
 				.Where(x => x.Organization.Id == id)
 				.ToList();
 		}
+
+		public CampaignModel GetCampaignById(Guid id)
+		{
+			return _context.Campaign.SingleOrDefault(x => x.Id == id);
+		}
     }
 }
