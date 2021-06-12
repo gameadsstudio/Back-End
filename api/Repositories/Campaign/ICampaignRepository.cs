@@ -10,5 +10,6 @@ namespace api.Repositories.Campaign
         CampaignModel UpdateCampaign(CampaignModel campaign);
         int DeleteCampaign(CampaignModel campaign);
 		List<CampaignModel> GetOrganizationCampaigns(Guid id);
+		CampaignModel GetCampaignById(Guid id);
     }
 }
