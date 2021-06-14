@@ -149,9 +149,9 @@ namespace api
         {
             // Creating default admin user
             context.Database.EnsureCreated();
-            var testBlog = context.User.FirstOrDefault(user =>
+            var admin = context.User.FirstOrDefault(user =>
                 user.Username == (Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin"));
-            if (testBlog == null)
+            if (admin == null)
             {
                 context.User.Add(new UserModel()
                 {
