@@ -26,7 +26,7 @@ namespace api.Controllers.Game
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetDto<IGameDto>> GetGame(string id)
+        public ActionResult<GetDto<GamePublicDto>> GetGame(string id)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
