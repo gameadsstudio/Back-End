@@ -113,6 +113,7 @@ namespace api
             services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
             services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
