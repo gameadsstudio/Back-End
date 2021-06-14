@@ -3,7 +3,7 @@ using api.Models.Organization;
 
 namespace api.Models.Game
 {
-    public class GamePublicDto : IGameDto
+    public class GamePublicDto
     {
         public Guid Id { get; set; }
 
