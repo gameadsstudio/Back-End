@@ -16,7 +16,8 @@ namespace api.Business.Game
         private readonly IGameRepository _repository;
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
 
-        public GameBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusinessLogic)
+        public GameBusinessLogic(ApiContext context, IMapper mapper,
+            IOrganizationBusinessLogic organizationBusinessLogic)
         {
             _repository = new GameRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
@@ -29,13 +30,13 @@ namespace api.Business.Game
 
             if (_repository.GetGameByName(game.Name) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"Game with name: {game.Name} already exists");
+                throw new ApiError(HttpStatusCode.Conflict, $"Game with name: {game.Name} already exists");
             }
 
             if (!_organizationBusinessLogic.IsUserInOrganization(newGame.OrgId, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot create a game for an organization you're not part of");
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot create a game for an organization you're not part of");
             }
 
             game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId.ToString());
@@ -55,8 +56,9 @@ namespace api.Business.Game
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
-                "Cannot fetch a game from an organization which you are not a part of");
+                    "Cannot fetch a game from an organization which you are not a part of");
             }
+
             return _mapper.Map(game, new GamePublicDto());
         }
 
@@ -86,7 +88,7 @@ namespace api.Business.Game
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
-                "Cannot update a game from an organization which you are not a part of");
+                    "Cannot update a game from an organization which you are not a part of");
             }
 
             var gameMapped = _mapper.Map(updatedGame, game);
@@ -106,7 +108,7 @@ namespace api.Business.Game
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
-                "Cannot update a game from an organization which you are not a part of");
+                    "Cannot update a game from an organization which you are not a part of");
             }
 
             _repository.DeleteGame(game);
