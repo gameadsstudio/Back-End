@@ -33,12 +33,12 @@ namespace api.Business.Game
                     $"Game with name: {game.Name} already exists");
             }
 
-            if (!_organizationBusinessLogic.IsUserInOrganization(GuidHelper.StringToGuidConverter(newGame.OrgId), currentUser.Id))
+            if (!_organizationBusinessLogic.IsUserInOrganization(newGame.OrgId, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot create a game for an organization you're not part of");
             }
 
-            game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId);
+            game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId.ToString());
 
             return _mapper.Map(_repository.AddNewGame(game), new GamePublicDto());
         }
