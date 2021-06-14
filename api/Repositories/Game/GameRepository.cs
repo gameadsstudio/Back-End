@@ -9,7 +9,6 @@ namespace api.Repositories.Game
 {
     public class GameRepository : IGameRepository
     {
-
         private readonly ApiContext _context;
 
         public GameRepository(ApiContext context)
@@ -31,9 +30,7 @@ namespace api.Repositories.Game
 
         public GameModel GetGameById(Guid id)
         {
-            return _context.Game
-                .Include(a => a.Organization)
-                .SingleOrDefault(a => a.Id == id);
+            return _context.Game.Include(a => a.Organization).SingleOrDefault(a => a.Id == id);
         }
 
         public void DeleteGame(GameModel game)
@@ -51,10 +48,7 @@ namespace api.Repositories.Game
 
         public IList<GameModel> GetGames(int offset, int limit)
         {
-            return _context.Game.OrderBy(p => p.Id)
-                .Skip(offset)
-                .Take(limit)
-                .ToList();
+            return _context.Game.OrderBy(p => p.Id).Skip(offset).Take(limit).ToList();
         }
 
         public int CountGames()
