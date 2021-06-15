@@ -7,7 +7,7 @@ namespace api.Business.User
 {
     public interface IUserBusinessLogic
     {
-        IUserDto GetUserById(string id, ConnectedUser currentUser);
+        object GetUserById(string id, ConnectedUser currentUser);
         UserModel GetUserModelById(string id);
         (int page, int pageSize, int maxPage, IList<UserPublicDto> users) GetUsers(PagingDto paging,
             UserFiltersDto filters);

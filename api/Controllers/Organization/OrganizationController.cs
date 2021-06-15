@@ -19,11 +19,11 @@ namespace api.Controllers.Organization
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetDto<IOrganizationDto>> GetOrganization(string id)
+        public ActionResult<GetDto<object>> GetOrganization(string id)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<IOrganizationDto>(_business.GetOrganizationById(id, currentUser)));
+            return Ok(new GetDto<object>(_business.GetOrganizationById(id, currentUser)));
         }
 
         [HttpGet]
