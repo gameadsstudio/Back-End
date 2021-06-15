@@ -80,11 +80,6 @@ namespace api.Business.Game
         {
             var game = GetGameModelById(id);
 
-            if (game == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
-            }
-
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
@@ -99,11 +94,6 @@ namespace api.Business.Game
         public void DeleteGameById(string id, ConnectedUser currentUser)
         {
             var game = GetGameModelById(id);
-
-            if (game == null)
-            {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
-            }
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
