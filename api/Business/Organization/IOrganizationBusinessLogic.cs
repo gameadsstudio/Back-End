@@ -9,7 +9,7 @@ namespace api.Business.Organization
     public interface IOrganizationBusinessLogic
     {
         OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, ConnectedUser currentUser);
-        IOrganizationDto GetOrganizationById(string id, ConnectedUser currentUser);
+        object GetOrganizationById(string id, ConnectedUser currentUser);
         OrganizationModel GetOrganizationModelById(string id);
         public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging, OrganizationFiltersDto filters);
         OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, ConnectedUser currentUser);
