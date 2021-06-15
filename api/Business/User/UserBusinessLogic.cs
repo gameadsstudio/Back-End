@@ -26,7 +26,8 @@ namespace api.Business.User
             _mapper = mapper;
         }
 
-        public IUserDto GetUserById(string id, ConnectedUser currentUser)
+        // Todo : Find a better return type
+        public object GetUserById(string id, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 

@@ -73,7 +73,8 @@ namespace api.Business.Organization
             }
         }
 
-        public IOrganizationDto GetOrganizationById(string id, ConnectedUser currentUser)
+        // Todo : find a better return type
+        public object GetOrganizationById(string id, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 

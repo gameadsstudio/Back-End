@@ -27,10 +27,10 @@ namespace api.Controllers.User
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetDto<IUserDto>> GetUser(string id)
+        public ActionResult<GetDto<object>> GetUser(string id)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            return Ok(new GetDto<IUserDto>(_business.GetUserById(id, currentUser)));
+            return Ok(new GetDto<object>(_business.GetUserById(id, currentUser)));
         }
 
         [HttpGet]
