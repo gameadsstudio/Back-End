@@ -108,12 +108,12 @@ namespace api
             }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
-            services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
-            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
-            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
-            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
-            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
-            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
+            services.AddScoped<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
+            services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
+            services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
+            services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
