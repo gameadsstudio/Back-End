@@ -2,7 +2,7 @@ namespace api.Enums
 {
     public enum OrganizationType
     {
-        Developers,
+        Developers = 1,
         Advertisers
     }
 }

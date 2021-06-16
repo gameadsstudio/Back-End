@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.Enums.User;
 
 namespace api.Models.User
 {
     public class UserUpdateDto
     {
+        public UserRole? Role { get; set; }
+
         [EmailAddress]
         public string Email { get; set; }
 

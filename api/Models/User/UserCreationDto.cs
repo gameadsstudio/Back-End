@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.DataAnnotations;
+using api.Enums.User;
 
 namespace api.Models.User
 {
     public class UserCreationDto
     {
+        public UserRole Role { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -22,5 +26,8 @@ namespace api.Models.User
         [MinLength(8)]
         [MaxLength(128)]
         public string Password { get; set; }
+
+        [RequiredEnumAttribute]
+        public UserType Type { get; set; }
     }
 }

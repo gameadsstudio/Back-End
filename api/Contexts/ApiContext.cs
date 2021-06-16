@@ -2,6 +2,7 @@
 using System.Linq;
 using api.Enums;
 using api.Enums.AdContainer;
+using api.Enums.User;
 using api.Models.Advertisement;
 using api.Models.AdContainer;
 using api.Models.Campaign;
@@ -57,6 +58,10 @@ namespace api.Contexts
             modelBuilder.Entity<UserModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Role)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (UserRole) Enum.Parse(typeof(UserRole), v));
             });
 
             modelBuilder.Entity<CampaignModel>(entity =>

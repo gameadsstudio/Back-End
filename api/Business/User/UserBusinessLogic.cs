@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using api.Contexts;
+using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.User;
@@ -25,7 +26,7 @@ namespace api.Business.User
             _mapper = mapper;
         }
 
-        public IUserDto GetUserById(string id, Claim currentUser)
+        public IUserDto GetUserById(string id, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
@@ -34,7 +35,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            if (user.Id.ToString() == currentUser.Value)
+            if (user.Id == currentUser.Id)
             {
                 return _mapper.Map(user, new UserPrivateDto());
             }
@@ -45,32 +46,43 @@ namespace api.Business.User
         public UserModel GetUserModelById(string id)
         {
             var user = _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
-            
+
             if (user == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
-            
+
             return user;
         }
-        
-        public UserPrivateDto GetSelf(Claim currentUser)
+
+        public UserPrivateDto GetSelf(ConnectedUser currentUser)
         {
-            var user = GetUserModelById(currentUser.Value);
+            var user = GetUserModelById(currentUser.Id.ToString());
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Value}");
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Id}");
             }
 
             return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int, int, int, List<UserPublicDto>) GetUsers(PagingDto paging)
+        public (int page, int pageSize, int maxPage, IList<UserPublicDto> items) SearchUser(string search,
+            PagingDto paging,
+            ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountUsers() / paging.PageSize + 1;
-            var users = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var (users, maxPage) = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search);
+
+            return (paging.Page, paging.PageSize, maxPage / paging.PageSize + 1,
+                _mapper.Map(users, new List<UserPublicDto>()));
+        }
+
+        public (int page, int pageSize, int maxPage, IList<UserPublicDto> users) GetUsers(PagingDto paging,
+            UserFiltersDto filters)
+        {
+            paging = PagingHelper.Check(paging);
+            var (users, maxPage) = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
             return (paging.Page, paging.PageSize, maxPage, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
@@ -93,7 +105,7 @@ namespace api.Business.User
             return _mapper.Map(result, new UserPrivateDto());
         }
 
-        public int DeleteUserById(string id, Claim currentUser)
+        public int DeleteUserById(string id, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
@@ -102,7 +114,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
             }
 
-            if (user.Id.ToString() != currentUser.Value)
+            if (user.Id != currentUser.Id && currentUser.Role != UserRole.Admin)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
             }
@@ -110,11 +122,11 @@ namespace api.Business.User
             return _repository.DeleteUser(user);
         }
 
-        public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, Claim currentUser)
+        public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, ConnectedUser currentUser)
         {
             var user = GetUserModelById(id);
 
-            if (user.Id.ToString() != currentUser.Value)
+            if (user.Id != currentUser.Id)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot modify another user's account");
             }
@@ -135,6 +147,11 @@ namespace api.Business.User
                 updatedUser.Password = HashHelper.HashPassword(user.Password);
             }
 
+            if (updatedUser.Role != null && updatedUser.Role != UserRole.User && currentUser.Role != UserRole.Admin)
+            {
+                updatedUser.Role = UserRole.User;
+            }
+
             user = _mapper.Map(updatedUser, user);
             var result = _repository.UpdateUser(user);
             return _mapper.Map(result, new UserPrivateDto());
@@ -142,16 +159,9 @@ namespace api.Business.User
 
         public UserLoginResponseDto Login(UserLoginDto loginDto)
         {
-            UserModel user;
-
-            if (EmailHelper.IsValidEmail(loginDto.Identifier))
-            {
-                user = _repository.GetUserByEmail(loginDto.Identifier);
-            }
-            else
-            {
-                user = _repository.GetUserByUsername(loginDto.Identifier);
-            }
+            var user = EmailHelper.IsValidEmail(loginDto.Identifier)
+                ? _repository.GetUserByEmail(loginDto.Identifier)
+                : _repository.GetUserByUsername(loginDto.Identifier);
 
             if (user == null)
             {
@@ -167,13 +177,19 @@ namespace api.Business.User
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] {new(ClaimTypes.NameIdentifier, user.Id.ToString())}),
+                Subject = new ClaimsIdentity(
+                    new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Role, user.Role.ToString()),
+                    }
+                ),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new UserLoginResponseDto()
+            return new UserLoginResponseDto
             {
                 Token = tokenHandler.WriteToken(token)
             };

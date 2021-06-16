@@ -12,8 +12,11 @@ using api.Business.Organization;
 using api.Business.Campaign;
 using api.Configuration;
 using api.Contexts;
+using api.Enums.User;
+using api.Helpers;
 using api.Mappings;
 using api.Middlewares;
+using api.Models.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -47,7 +50,7 @@ namespace api
             services.AddDbContext<ApiContext>(
                 p => p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
-                    .UseSnakeCaseNamingConvention(), ServiceLifetime.Singleton);
+                    .UseSnakeCaseNamingConvention());
 
             services.AddSwaggerGen(c =>
             {
@@ -56,23 +59,23 @@ namespace api
             services.AddSingleton(
                 new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); }).CreateMapper());
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication(options =>
                 {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(x =>
+                .AddJwtBearer(options =>
                 {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
-                    x.Events = new JwtBearerEvents()
+                    options.Events = new JwtBearerEvents()
                     {
                         OnTokenValidated = context =>
                         {
@@ -91,25 +94,26 @@ namespace api
                         }
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin",
+                    policy => policy.RequireRole(UserRole.Admin.ToString()));
+            });
             services.AddMvc(o =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
-            }).AddJsonOptions(opts =>
-            {
-                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            });
+            }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Business Logic
-            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
-            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
-            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
-            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
             services.AddSingleton<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
+            services.AddSingleton<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
+            services.AddSingleton<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
+            services.AddSingleton<ITagBusinessLogic, TagBusinessLogic>();
+            services.AddSingleton<IUserBusinessLogic, UserBusinessLogic>();
             services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
@@ -123,6 +127,8 @@ namespace api
 
             // Auto migrate database on startup
             context.Database.Migrate();
+            CreateAdmin(context);
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -136,6 +142,29 @@ namespace api
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private void CreateAdmin(ApiContext context)
+        {
+            // Creating default admin user
+            context.Database.EnsureCreated();
+            var testBlog = context.User.FirstOrDefault(user =>
+                user.Username == (Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin"));
+            if (testBlog == null)
+            {
+                context.User.Add(new UserModel()
+                {
+                    Id = Guid.NewGuid(),
+                    Username = Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin",
+                    Email =
+                        Environment.GetEnvironmentVariable("GAS_ADMIN_EMAIL") ?? "contact@gameadsstudio.com",
+                    Role = UserRole.Admin,
+                    Password = HashHelper.HashPassword(
+                        Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password")
+                });
+            }
+
+            context.SaveChanges();
         }
     }
 }

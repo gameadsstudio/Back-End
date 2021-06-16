@@ -2,7 +2,7 @@ namespace api.Enums
 {
     public enum OrganizationState
     {
-        Created,
+        Created = 1,
         Active,
         Inactive
     }

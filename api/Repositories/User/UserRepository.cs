@@ -30,12 +30,23 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
-        public List<UserModel> GetUsers(int offset, int limit)
+        public (IList<UserModel> users, int count) GetUsers(int offset, int limit, UserFiltersDto filters)
         {
-            return _context.User.OrderBy(p => p.Id)
+            IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
+
+            if (!string.IsNullOrEmpty(filters.Username))
+            {
+                query = query.Where(user => user.Username.ToLower().Equals(filters.Username.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(filters.Email))
+            {
+                query = query.Where(user => user.Email.ToLower().Equals(filters.Email.ToLower()));
+            }
+
+            return (query
                 .Skip(offset)
                 .Take(limit)
-                .ToList();
+                .ToList(), query.Count());
         }
 
         public UserModel AddNewUser(UserModel user)
@@ -61,6 +72,19 @@ namespace api.Repositories.User
         public int CountUsers()
         {
             return _context.User.Count();
+        }
+
+        public (IList<UserModel> users, int count) SearchUser(int offset, int limit, string search)
+        {
+                var query = _context.User.Where(user =>
+                    user.Username.ToLower().Contains(search.ToLower()) ||
+                    user.Email.ToLower().Contains(search.ToLower()));
+
+                return (query
+                    .OrderBy(user => user.Username)
+                    .Skip(offset)
+                    .Take(limit)
+                    .ToList(), query.Count());
         }
     }
 }

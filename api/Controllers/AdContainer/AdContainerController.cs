@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
 using api.Business.AdContainer;
 using api.Helpers;
 using api.Models.AdContainer;
@@ -24,8 +22,8 @@ namespace api.Controllers.AdContainer
         [HttpGet("{id}")]
         public ActionResult<GetDto<AdContainerPublicDto>> Get(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(new GetDto<AdContainerPublicDto>(_business.GetAdContainerById(id, currentUser)));
         }
 
@@ -35,7 +33,7 @@ namespace api.Controllers.AdContainer
             [FromQuery] [Required] string orgId
             )
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetAllDto<AdContainerPublicDto>(_business.GetAdContainers(paging, orgId, currentUser)));
         }
@@ -43,7 +41,7 @@ namespace api.Controllers.AdContainer
         [HttpPost]
         public ActionResult<GetDto<AdContainerPublicDto>> Post([FromForm] AdContainerCreationDto newAdContainer)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             return Created("ad-container", new GetDto<AdContainerPublicDto>(_business.AddNewAdContainer(newAdContainer, currentUser)));
         }
@@ -51,18 +49,18 @@ namespace api.Controllers.AdContainer
         [HttpPatch("{id}")]
         public ActionResult<GetDto<AdContainerPublicDto>> Patch(string id, [FromForm] AdContainerUpdateDto newAdContainer)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(new GetDto<AdContainerPublicDto>(_business.UpdateAdContainerById(id, newAdContainer, currentUser)));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
+
             _business.DeleteAdContainerById(id, currentUser);
-            
+
             return Ok();
         }
     }

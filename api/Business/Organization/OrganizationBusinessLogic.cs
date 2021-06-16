@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using api.Contexts;
@@ -8,7 +9,6 @@ using api.Models.User;
 using api.Helpers;
 using api.Repositories.Organization;
 using api.Business.User;
-using System.Security.Claims;
 using AutoMapper;
 
 namespace api.Business.Organization
@@ -26,7 +26,7 @@ namespace api.Business.Organization
             _mapper = mapper;
         }
 
-        public OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, Claim currentUser)
+        public OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, ConnectedUser currentUser)
         {
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
@@ -42,7 +42,7 @@ namespace api.Business.Organization
                     $"Organization with private email: {organization.PrivateEmail} already exists");
             }
 
-            var user = _userBusinessLogic.GetUserModelById(currentUser.Value);
+            var user = _userBusinessLogic.GetUserModelById(currentUser.Id.ToString());
 
             organization.Users = new List<UserModel> {user};
 
@@ -58,11 +58,11 @@ namespace api.Business.Organization
                 _mapper.Map(organizations, new List<OrganizationPublicDto>()));
         }
 
-        public void DeleteOrganizationById(string id, Claim currentUser)
+        public void DeleteOrganizationById(string id, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users != null && organization.Users.Any(x => x.Id.ToString() == currentUser.Value))
+            if (organization.Users != null && organization.Users.Any(x => x.Id == currentUser.Id))
             {
                 _repository.DeleteOrganization(organization);
             }
@@ -73,11 +73,11 @@ namespace api.Business.Organization
             }
         }
 
-        public IOrganizationDto GetOrganizationById(string id, Claim currentUser)
+        public IOrganizationDto GetOrganizationById(string id, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users != null && organization.Users.Any(user => user.Id.ToString() == currentUser.Value))
+            if (organization.Users != null && organization.Users.Any(user => user.Id == currentUser.Id))
             {
                 return _mapper.Map(organization, new OrganizationPrivateDto());
             }
@@ -98,13 +98,13 @@ namespace api.Business.Organization
         }
 
         public OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization,
-            Claim currentUser)
+            ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users == null || organization.Users.All(user => user.Id.ToString() != currentUser.Value))
+            if (organization.Users == null || organization.Users.All(user => user.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.NotModified,
+                throw new ApiError(HttpStatusCode.Unauthorized,
                     "Cannot modify an organization which you are not a part of");
             }
 
@@ -115,13 +115,13 @@ namespace api.Business.Organization
             return _mapper.Map(result, new OrganizationPrivateDto());
         }
 
-        public OrganizationPrivateDto AddUserToOrganization(string id, string userId, Claim currentUser)
+        public OrganizationPrivateDto AddUserToOrganization(string id, string userId, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users == null || organization.Users.All(x => x.Id.ToString() != currentUser.Value))
+            if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.NotModified, "Cannot add user to an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.Unauthorized, "Cannot add user to an organization which you are not a part of");
             }
 
             if (organization.Users.Any(x => x.Id.ToString() == userId))
@@ -136,11 +136,11 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public List<UserPublicDto> GetOrganizationUsers(string id, Claim currentUser)
+        public List<UserPublicDto> GetOrganizationUsers(string id, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users != null && organization.Users.All(x => x.Id.ToString() != currentUser.Value))
+            if (organization.Users != null && organization.Users.All(x => x.Id != currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot get users from an organization which you are not a part of");
@@ -149,11 +149,11 @@ namespace api.Business.Organization
             return _mapper.Map(organization.Users, new List<UserPublicDto>());
         }
 
-        public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, Claim currentUser)
+        public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(id);
 
-            if (organization.Users == null || organization.Users.All(x => x.Id.ToString() != currentUser.Value))
+            if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot remove a user from an organization which you are not a part of");
@@ -173,11 +173,10 @@ namespace api.Business.Organization
                 new OrganizationPrivateDto());
         }
 
-        public bool IsUserInOrganization(string orgId, string userId)
+        public bool IsUserInOrganization(Guid orgId, Guid userId)
         {
-            var org = GetOrganizationModelById(orgId);
-            var userGuid = GuidHelper.StringToGuidConverter(userId);
-            return org.Users?.Any(user => userGuid == user.Id) ?? false;
+            var org = GetOrganizationModelById(orgId.ToString());
+            return org.Users?.Any(user => userId == user.Id) ?? false;
         }
     }
 }

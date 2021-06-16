@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Net;
-using System.Security.Claims;
 using api.Contexts;
 using api.Errors;
 using api.Helpers;
@@ -21,7 +20,7 @@ namespace api.Business.Advertisements
             _mapper = mapper;
         }
 
-        public AdvertisementPublicDto GetAdvertisementById(string id, Claim currentUser)
+        public AdvertisementPublicDto GetAdvertisementById(string id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
 
@@ -31,7 +30,7 @@ namespace api.Business.Advertisements
         public AdvertisementModel GetAdvertisementModelById(string id)
         {
             var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
-            
+
             if (advertisement == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find advertisement with Id: {id}");
@@ -57,7 +56,7 @@ namespace api.Business.Advertisements
         }
 
         public AdvertisementPublicDto UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
-            Claim currentUser)
+            ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
 
@@ -66,7 +65,7 @@ namespace api.Business.Advertisements
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
-        public void DeleteAdvertisementById(string id, Claim currentUser)
+        public void DeleteAdvertisementById(string id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
 

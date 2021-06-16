@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using api.Business.User;
+﻿using api.Business.User;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
@@ -23,24 +21,22 @@ namespace api.Controllers.User
         [HttpGet("self")]
         public ActionResult<GetDto<UserPrivateDto>> GetSelf()
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(new GetDto<UserPrivateDto>(_business.GetSelf(currentUser)));
         }
 
         [HttpGet("{id}")]
         public ActionResult<GetDto<IUserDto>> GetUser(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
             return Ok(new GetDto<IUserDto>(_business.GetUserById(id, currentUser)));
         }
 
         [HttpGet]
-        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging)
+        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] UserFiltersDto filters)
         {
-            return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging)));
-            
+            return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging, filters)));
         }
 
         [AllowAnonymous]
@@ -53,15 +49,15 @@ namespace api.Controllers.User
         [HttpPatch("{id}")]
         public ActionResult<GetDto<UserPrivateDto>> Patch(string id, [FromForm] UserUpdateDto newUser)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
-            
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(new GetDto<UserPrivateDto>(_business.UpdateUserById(id, newUser, currentUser)));
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var currentUser = User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteUserById(id, currentUser);
 
@@ -73,6 +69,14 @@ namespace api.Controllers.User
         public ActionResult<GetDto<UserLoginResponseDto>> Login([FromForm] UserLoginDto loginDto)
         {
             return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
+        }
+
+        [HttpGet("search/{search}")]
+        public ActionResult<GetAllDto<UserPublicDto>> SearchUser(string search, [FromQuery] PagingDto paging)
+        {
+            var currentUser = new ConnectedUser(User.Claims);
+
+            return Ok(new GetAllDto<UserPublicDto>(_business.SearchUser(search, paging, currentUser)));
         }
     }
 }
