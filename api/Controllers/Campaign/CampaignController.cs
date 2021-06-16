@@ -19,6 +19,14 @@ namespace api.Controllers.Campaign
             _business = campaignBusinessLogic;
         }
 
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public IActionResult Get(string id)
+        {
+            return Ok(_business.GetOrganizationCampaigns(id));
+        }
+
+		[AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromForm] CampaignCreationModel newCampaign)
         {
@@ -32,6 +40,7 @@ namespace api.Controllers.Campaign
             return Conflict(new { message = "Couldn't create Campaign" });
         }
 
+		[AllowAnonymous]
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
@@ -41,6 +50,7 @@ namespace api.Controllers.Campaign
             return Ok(_business.UpdateCampaignById(id, newCampaign));
         }
 
+		[AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
@@ -50,6 +60,7 @@ namespace api.Controllers.Campaign
             return Ok(_business.UpdateCampaignById(id, newCampaign));
         }
 
+		[AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
