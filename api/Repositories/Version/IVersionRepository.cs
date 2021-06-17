@@ -15,6 +15,6 @@ namespace api.Repositories.Version
 
         public VersionModel UpdateVersion(VersionModel updatedVersion);
 
-        public int DeleteUser(VersionModel version);
+        public int DeleteVersion(VersionModel version);
     }
 }

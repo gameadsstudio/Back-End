@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using api.Helpers;
 using api.Models.Version;
 
@@ -13,5 +14,6 @@ namespace api.Business.Version
         VersionPublicDto AddNewVersion(VersionCreationDto newVersion, ConnectedUser currentUser);
         VersionPublicDto UpdateVersionById(string id, VersionUpdateDto updatedVersion, ConnectedUser currentUser);
         int DeleteVersionById(string id, ConnectedUser currentUser);
+        VersionModel GetVersionModelById(Guid id);
     }
 }
