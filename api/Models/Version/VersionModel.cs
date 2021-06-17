@@ -15,6 +15,6 @@ namespace api.Models.Version
         
         public string Name { get; set; }
         
-        public SemVer
+        public string SemVer { get; set; }
     }
 }
