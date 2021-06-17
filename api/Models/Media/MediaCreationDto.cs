@@ -6,18 +6,20 @@ namespace api.Models.Media
 {
     public class MediaCreationDto
     {
-        public IFormFile Model { get; set; }
+        public Type Type { get; set; }
 
+        public IList<string> TagName { get; set; }
+        
+        public object Media { get; set; }
+
+        public AspectRatio AspectRatio { get; set; }
+        
         public IFormFile Texture { get; set; }
 
         public IFormFile NormalMap { get; set; }
 
-        public Type Type { get; set; }
-
-        public AspectRatio AspectRatio { get; set; }
-
-        public IList<string> TagName { get; set; }
-
+        public IFormFile Model { get; set; }
+        
         public int Width { get; set; }
 
         public int Height { get; set; }
