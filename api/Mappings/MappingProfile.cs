@@ -4,6 +4,7 @@ using api.Models.Tag;
 using api.Models.User;
 using api.Models.Organization;
 using api.Models.Game;
+using api.Models.Version;
 using AutoMapper;
 
 namespace api.Mappings
@@ -37,9 +38,15 @@ namespace api.Mappings
             CreateMap<AdContainerModel, AdContainerPublicDto>().ReverseMap();
             CreateMap<AdContainerModel, AdContainerUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
 
+            // Game
             CreateMap<GameModel, GameCreationDto>().ReverseMap();
             CreateMap<GameModel, GameUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<GameModel, GamePublicDto>().ReverseMap();
+            
+            // Version
+            CreateMap<VersionModel, VersionCreationDto>().ReverseMap();
+            CreateMap<VersionModel, VersionUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));;
+            CreateMap<VersionModel, VersionPublicDto>().ReverseMap();
         }
     }
 }
