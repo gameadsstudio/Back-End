@@ -93,7 +93,7 @@ namespace api.Business.Version
             return _mapper.Map(result, new VersionPublicDto());
         }
 
-        public int DeleteVersionById(string id, ConnectedUser currentUser)
+        public void DeleteVersionById(string id, ConnectedUser currentUser)
         {
             var version = this.GetVersionModelById(GuidHelper.StringToGuidConverter(id));
 
@@ -103,7 +103,7 @@ namespace api.Business.Version
                     "Cannot delete a game version from an organization to which you don't belong.");
             }
 
-            return _repository.DeleteVersion(version);
+            _repository.DeleteVersion(version);
         }
 
         public VersionModel GetVersionModelById(Guid id)
