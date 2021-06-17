@@ -6,7 +6,6 @@ namespace api.Repositories.Version
 {
     public interface IVersionRepository
     {
-
         public VersionModel AddNewVersion(VersionModel version);
 
         public VersionModel GetVersionById(Guid id);

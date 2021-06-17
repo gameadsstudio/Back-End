@@ -31,6 +31,5 @@ namespace api.Models.Game
         public OrganizationModel Organization { get; set; }
         
         public ICollection<VersionModel> Versions { get; set; }
-        
     }
 }
