@@ -15,13 +15,11 @@ namespace api.Models.Organization
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-
-        [Required]
+        
         public string Name { get; set; }
 
         public string PublicEmail { get; set; }
-
-        [Required]
+        
         public string PrivateEmail { get; set; }
 
         public string Localization { get; set; }

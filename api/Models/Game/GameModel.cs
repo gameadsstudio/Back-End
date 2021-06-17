@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Models.Organization;
+using api.Models.Version;
 
 namespace api.Models.Game
 {
@@ -24,9 +26,11 @@ namespace api.Models.Game
         public DateTimeOffset DateCreation { get; set; }
 
         public DateTimeOffset DateUpdate { get; set; }
-
-        [Required]
+        
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
+        
+        public ICollection<VersionModel> Versions { get; set; }
+        
     }
 }
