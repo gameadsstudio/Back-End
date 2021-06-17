@@ -8,8 +8,9 @@ namespace api.Business.Game
     {
         public GamePublicDto AddNewGame(GameCreationDto newGame, ConnectedUser currentUser);
         public GamePublicDto GetGameById(string id, ConnectedUser currentUser);
-        GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser);
-        void DeleteGameById(string id, ConnectedUser currentUser);
-        (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging);
+        public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser);
+        public void DeleteGameById(string id, ConnectedUser currentUser);
+        public (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging);
+        public GameModel GetGameModelById(string id);
     }
 }
