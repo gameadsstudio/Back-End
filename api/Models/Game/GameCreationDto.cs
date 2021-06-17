@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace api.Models.Game
 {
     public class GameCreationDto
     {
-        [Required]
+        [BindRequired]
         public Guid OrgId { get; set; }
 
         [Required]
