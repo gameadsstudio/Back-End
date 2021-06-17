@@ -55,7 +55,7 @@ namespace api.Repositories.Version
             return updatedVersion;
         }
         
-        public int DeleteUser(VersionModel version)
+        public int DeleteVersion(VersionModel version)
         {
             _context.Version.Remove(version);
             return _context.SaveChanges();
