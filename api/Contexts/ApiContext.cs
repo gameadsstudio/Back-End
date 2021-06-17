@@ -10,6 +10,7 @@ using api.Models.Game;
 using api.Models.Organization;
 using api.Models.Tag;
 using api.Models.User;
+using api.Models.Version;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Contexts
@@ -30,6 +31,7 @@ namespace api.Contexts
         public DbSet<TagModel> Tag { get; set; }
         public DbSet<AdvertisementModel> Advertisement { get; set; }
         public DbSet<AdContainerModel> AdContainer { get; set; }
+        public DbSet<VersionModel> Version { get; set; }
 
         public override int SaveChanges()
         {
@@ -116,6 +118,11 @@ namespace api.Contexts
                     .HasConversion(
                         v => v.ToString(),
                         v => (AdContainerAspectRatio) Enum.Parse(typeof(AdContainerAspectRatio), v));
+            });
+
+            modelBuilder.Entity<VersionModel>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
         }
     }
