@@ -67,6 +67,7 @@ namespace api.Business.Version
             }
 
             var version = _mapper.Map(newVersion, new VersionModel());
+            version.Game = game;
             var result = _repository.AddNewVersion(version);
             return _mapper.Map(result, new VersionPublicDto());
         }
@@ -122,8 +123,7 @@ namespace api.Business.Version
             var paging = new PagingDto();
             var filters = new VersionFiltersDto {SemVer = semVer, GameId = gameId};
 
-            var (versions, count) =
-                _repository.GetVersions((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
+            var (_, count) = _repository.GetVersions((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
 
             return count == 1;
         }
