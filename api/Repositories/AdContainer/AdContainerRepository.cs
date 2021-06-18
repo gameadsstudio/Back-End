@@ -26,8 +26,7 @@ namespace api.Repositories.AdContainer
         public AdContainerModel GetAdContainerById(Guid id)
         {
             return _context.AdContainer
-                // TODO: Check how this include can break the update but necessary for geta
-                // .Include(a => a.Version)
+                .Include(a => a.Version)
                 .Include(a => a.Tags)
                 .Include(a => a.Organization)
                 .SingleOrDefault(a => a.Id == id);
