@@ -45,7 +45,7 @@ namespace api.Mappings
             
             // Version
             CreateMap<VersionModel, VersionCreationDto>().ReverseMap();
-            CreateMap<VersionModel, VersionUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));;
+            CreateMap<VersionModel, VersionUpdateDto>().ReverseMap().ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<VersionModel, VersionPublicDto>().ReverseMap();
         }
     }
