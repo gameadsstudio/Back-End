@@ -23,8 +23,22 @@ namespace api.Controllers.Campaign
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-            return Ok(_business.GetOrganizationCampaigns(id));
+			CampaignModel campaign = _business.GetCampaignById(id);
+
+			if (campaign == null) {
+				return BadRequest();
+			}
+            return Ok(campaign);
         }
+
+		[AllowAnonymous]
+		[HttpGet]
+		public IActionResult Get([FromQuery] CampaignDto settings)
+		{
+			return Ok(
+				_business.GetOrganizationCampaigns(settings.OrganizationId)
+			);
+		}
 
 		[AllowAnonymous]
         [HttpPost]
