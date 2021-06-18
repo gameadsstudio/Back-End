@@ -31,7 +31,7 @@ namespace api.Controllers.AdContainer
         public ActionResult<GetAllDto<AdContainerPublicDto>> GetAll(
             [FromQuery] PagingDto paging,
             [FromQuery] [Required] string orgId
-            )
+        )
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -43,15 +43,18 @@ namespace api.Controllers.AdContainer
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Created("ad-container", new GetDto<AdContainerPublicDto>(_business.AddNewAdContainer(newAdContainer, currentUser)));
+            return Created("ad-container",
+                new GetDto<AdContainerPublicDto>(_business.AddNewAdContainer(newAdContainer, currentUser)));
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<GetDto<AdContainerPublicDto>> Patch(string id, [FromForm] AdContainerUpdateDto newAdContainer)
+        public ActionResult<GetDto<AdContainerPublicDto>> Patch(string id,
+            [FromForm] AdContainerUpdateDto newAdContainer)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<AdContainerPublicDto>(_business.UpdateAdContainerById(id, newAdContainer, currentUser)));
+            return Ok(
+                new GetDto<AdContainerPublicDto>(_business.UpdateAdContainerById(id, newAdContainer, currentUser)));
         }
 
         [HttpDelete("{id}")]
