@@ -26,6 +26,8 @@ namespace api.Repositories.AdContainer
         public AdContainerModel GetAdContainerById(Guid id)
         {
             return _context.AdContainer
+                // TODO: Check how this include can break the update but necessary for geta
+                // .Include(a => a.Version)
                 .Include(a => a.Tags)
                 .Include(a => a.Organization)
                 .SingleOrDefault(a => a.Id == id);
@@ -35,6 +37,8 @@ namespace api.Repositories.AdContainer
         {
             return _context.AdContainer
                 .Include(a => a.Tags)
+                .Include(a => a.Organization)
+                .Include(a => a.Version)
                 .SingleOrDefault(a => a.Name == name);
         }
 
@@ -48,6 +52,7 @@ namespace api.Repositories.AdContainer
         {
             var query = _context.AdContainer.OrderByDescending(p => p.DateCreation)
                 .Include(a => a.Tags)
+                .Include(a => a.Version)
                 .Include(a => a.Organization)
                 .ThenInclude(o => o.Users)
                 .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
