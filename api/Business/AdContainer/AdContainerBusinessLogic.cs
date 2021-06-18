@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using api.Business.Organization;
 using api.Business.Tag;
+using api.Business.Version;
 using api.Contexts;
 using api.Enums.User;
 using api.Errors;
@@ -23,16 +23,19 @@ namespace api.Business.AdContainer
 
         private readonly ITagBusinessLogic _tagBusinessLogic;
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
+        private readonly IVersionBusinessLogic _versionBusinessLogic;
 
         public AdContainerBusinessLogic(
             ApiContext context,
             IMapper mapper,
             ITagBusinessLogic tagBusinessLogic,
-            IOrganizationBusinessLogic organizationBusinessLogic)
+            IOrganizationBusinessLogic organizationBusinessLogic,
+            IVersionBusinessLogic versionBusinessLogic)
         {
             _repository = new AdContainerRepository(context);
             _tagBusinessLogic = tagBusinessLogic;
             _organizationBusinessLogic = organizationBusinessLogic;
+            _versionBusinessLogic = versionBusinessLogic;
             _mapper = mapper;
         }
 
@@ -59,8 +62,6 @@ namespace api.Business.AdContainer
             PagingDto paging,
             string orgId, ConnectedUser currentUser)
         {
-            // Todo : check if the user is admin
-
             paging = PagingHelper.Check(paging);
             var (adContainers, maxPage) = _repository.GetAdContainersByOrganizationId(
                 (paging.Page - 1) * paging.PageSize,
@@ -72,19 +73,19 @@ namespace api.Business.AdContainer
 
         public AdContainerPublicDto AddNewAdContainer(AdContainerCreationDto newAdContainer, ConnectedUser currentUser)
         {
-            if (!_organizationBusinessLogic.IsUserInOrganization(GuidHelper.StringToGuidConverter(newAdContainer.OrgId),
+            var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
+            adContainer.Version = _versionBusinessLogic.GetVersionModelById(newAdContainer.VersionId);
+
+            if (!_organizationBusinessLogic.IsUserInOrganization(
+                GuidHelper.StringToGuidConverter(adContainer.Version.Game.Organization.Id.ToString()),
                 currentUser.Id) && currentUser.Role != UserRole.User)
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot create an ad container for an organization you're not part of");
             }
 
-            var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
+            adContainer.Organization = adContainer.Version.Game.Organization;
             adContainer.Tags = ResolveTags(newAdContainer.TagNames);
-            /*
-             * Todo : Add version to model
-             */
-            adContainer.Organization = _organizationBusinessLogic.GetOrganizationModelById(newAdContainer.OrgId);
             return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicDto());
         }
 
@@ -99,13 +100,14 @@ namespace api.Business.AdContainer
                     "Cannot get the ad container of an organization you're not part of");
             }
 
-            var updated = _mapper.Map(updatedAdContainer, adContainer);
+            _mapper.Map(updatedAdContainer, adContainer);
+
             if (updatedAdContainer.TagNames != null)
             {
-                updated.Tags = ResolveTags(updatedAdContainer.TagNames);
+                adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
             }
 
-            return _mapper.Map(_repository.UpdateAdContainer(updated), new AdContainerPublicDto());
+            return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicDto());
         }
 
         public void DeleteAdContainerById(string id, ConnectedUser currentUser)
@@ -121,10 +123,10 @@ namespace api.Business.AdContainer
             _repository.DeleteAdContainer(adContainer);
         }
 
-        private List<TagModel> ResolveTags(List<string> tagNames)
+        private IList<TagModel> ResolveTags(IEnumerable<string> tagNames)
         {
             return (from tagName in tagNames
-                where !String.IsNullOrEmpty(tagName)
+                where !string.IsNullOrEmpty(tagName)
                 select _tagBusinessLogic.GetTagModelByName(tagName)).ToList();
         }
     }
