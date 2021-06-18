@@ -36,7 +36,7 @@ namespace api.Repositories.Version
             IQueryable<VersionModel> query = _context.Version.OrderBy(a => a.SemVer);
 
             query = query.Where(a => a.Game.Id == filters.GameId);
-            
+
             if (!string.IsNullOrEmpty(filters.Name))
             {
                 query = query.Where(a => a.Name == filters.Name);
@@ -45,7 +45,7 @@ namespace api.Repositories.Version
             {
                 query = query.Where(a => a.SemVer == filters.SemVer);
             }
-            
+
             return (query
                 .Skip(offset)
                 .Take(limit)
@@ -58,7 +58,7 @@ namespace api.Repositories.Version
             _context.SaveChanges();
             return updatedVersion;
         }
-        
+
         public int DeleteVersion(VersionModel version)
         {
             _context.Version.Remove(version);
