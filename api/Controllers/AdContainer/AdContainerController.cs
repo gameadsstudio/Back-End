@@ -28,10 +28,8 @@ namespace api.Controllers.AdContainer
         }
 
         [HttpGet]
-        public ActionResult<GetAllDto<AdContainerPublicDto>> GetAll(
-            [FromQuery] PagingDto paging,
-            [FromQuery] [Required] string orgId
-        )
+        public ActionResult<GetAllDto<AdContainerPublicDto>> GetAll([FromQuery] PagingDto paging,
+            [FromQuery] [Required] string orgId)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
