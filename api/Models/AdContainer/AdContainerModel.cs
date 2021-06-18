@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums.AdContainer;
 using api.Models.Organization;
 using api.Models.Tag;
+using api.Models.Version;
 
 namespace api.Models.AdContainer
 {
@@ -18,14 +19,9 @@ namespace api.Models.AdContainer
         [Required]
         public string Name { get; set; }
 
-        /*
-          Todo: implement when versions are done
-        [Required]
         [ForeignKey("VersionId")]
         public VersionModel Version { get; set; }
-        */
 
-        [Required]
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
 
