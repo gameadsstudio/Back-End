@@ -111,8 +111,9 @@ namespace api.Business.AdContainer
 
             if (updatedAdContainer.VersionId != null)
             {
-                //get the version for the given id
-                //buffer.Version = correctVersion;
+                adContainer.Version =
+                    _versionBusinessLogic.GetVersionModelById(
+                        GuidHelper.StringToGuidConverter(updatedAdContainer.VersionId));
             }
 
             if (updatedAdContainer.TagNames != null)
