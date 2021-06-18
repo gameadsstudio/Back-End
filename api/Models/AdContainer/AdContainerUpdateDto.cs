@@ -7,14 +7,9 @@ namespace api.Models.AdContainer
     {
         public string Name { get; set; }
 
-        /*
-            Todo: implement when versions are done
         public string VersionId { get; set; }
-        */
 
-        public string OrgId { get; set; }
-
-        public List<string> TagNames { get; set; }
+        public IList<string> TagNames { get; set; }
 
         public AdContainerType? Type { get; set; }
 
