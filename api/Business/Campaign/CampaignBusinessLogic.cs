@@ -61,6 +61,11 @@ namespace api.Business.Campaign
 			return 0;
         }
 
+		public CampaignModel GetCampaignById(string id)
+		{
+			return _repository.GetCampaignById(Guid.Parse(id));
+		}
+
 		public IList<CampaignModel> GetOrganizationCampaigns(string id)
 		{
 			return _repository.GetOrganizationCampaigns(Guid.Parse(id));
