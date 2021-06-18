@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Version;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Version
 {
@@ -24,7 +25,10 @@ namespace api.Repositories.Version
 
         public VersionModel GetVersionById(Guid id)
         {
-            return _context.Version.SingleOrDefault(a => a.Id == id);
+            return _context.Version
+                .Include(v => v.Game)
+                .ThenInclude(g => g.Organization)
+                .SingleOrDefault(a => a.Id == id);
         }
 
         public (IList<VersionModel> versions, int count) GetVersions(int offset, int limit, VersionFiltersDto filters)
