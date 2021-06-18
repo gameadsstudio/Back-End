@@ -36,7 +36,7 @@ namespace api.Repositories.Campaign
 			return _context.SaveChanges();
         }
 
-		public List<CampaignModel> GetOrganizationCampaigns(Guid id)
+		public IList<CampaignModel> GetOrganizationCampaigns(Guid id)
 		{
 			return _context.Campaign
 				.Where(x => x.Organization.Id == id)

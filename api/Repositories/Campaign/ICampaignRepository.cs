@@ -9,7 +9,7 @@ namespace api.Repositories.Campaign
         CampaignModel AddNewCampaign(CampaignModel campaign);
         CampaignModel UpdateCampaign(CampaignModel campaign);
         int DeleteCampaign(CampaignModel campaign);
-		List<CampaignModel> GetOrganizationCampaigns(Guid id);
+		IList<CampaignModel> GetOrganizationCampaigns(Guid id);
 		CampaignModel GetCampaignById(Guid id);
     }
 }
