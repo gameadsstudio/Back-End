@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -76,6 +77,11 @@ namespace api.Business.AdContainer
             var adContainer = _mapper.Map(newAdContainer, new AdContainerModel());
             adContainer.Version = _versionBusinessLogic.GetVersionModelById(newAdContainer.VersionId);
 
+            Console.WriteLine("adContainer version id in creation: " + adContainer.Version.Id);
+            Console.WriteLine("adContainer version game in creation: " + adContainer.Version.Game);
+            Console.WriteLine("adContainer version name in creation: " + adContainer.Version.Name);
+            Console.WriteLine("adContainer version semver in creation: " + adContainer.Version.SemVer);
+
             if (!_organizationBusinessLogic.IsUserInOrganization(
                 GuidHelper.StringToGuidConverter(adContainer.Version.Game.Organization.Id.ToString()),
                 currentUser.Id) && currentUser.Role != UserRole.User)
@@ -93,6 +99,7 @@ namespace api.Business.AdContainer
             ConnectedUser currentUser)
         {
             var adContainer = GetAdContainerModelById(id);
+
             if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
                 currentUser.Role == UserRole.User)
             {
@@ -101,6 +108,12 @@ namespace api.Business.AdContainer
             }
 
             _mapper.Map(updatedAdContainer, adContainer);
+
+            if (updatedAdContainer.VersionId != null)
+            {
+                //get the version for the given id
+                //buffer.Version = correctVersion;
+            }
 
             if (updatedAdContainer.TagNames != null)
             {

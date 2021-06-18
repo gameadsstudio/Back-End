@@ -49,6 +49,7 @@ namespace api.Middlewares
         
         private static Task ExceptionHandler(HttpContext context, Exception exception)
         {
+            Console.WriteLine(exception);
             var result = JsonSerializer.Serialize(new
             {
                 status = 500,
