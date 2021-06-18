@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using api.Enums.AdContainer;
-using api.Models.Organization;
 using api.Models.Tag;
+using api.Models.Version;
 
 namespace api.Models.AdContainer
 {
@@ -12,14 +12,9 @@ namespace api.Models.AdContainer
 
         public string Name { get; set; }
 
-        /*
-          Todo: implement when versions are done
-        public VersionModel Version { get; set; }
-        */
+        public VersionPublicDto Version { get; set; }
 
-        public OrganizationPublicDto Organization { get; set; }
-
-        public List<TagPublicDto> Tags { get; set; }
+        public IList<TagPublicDto> Tags { get; set; }
 
         public AdContainerType Type { get; set; }
 
