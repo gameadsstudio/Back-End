@@ -11,15 +11,15 @@ namespace api.Models.Media._2D
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        
+
         [Required]
         [ForeignKey("MediaId")]
         public MediaModel Media { get; set; }
-        
+
         public AspectRatio AspectRatio { get; set; }
-        
+
         public string TextureLink { get; set; }
-        
+
         public string NormalMapLink { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }

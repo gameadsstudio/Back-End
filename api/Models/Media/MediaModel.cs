@@ -14,12 +14,12 @@ namespace api.Models.Media
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        
+
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
-        
+
         public ICollection<TagModel> Tags { get; set; }
-        
+
         public Type Type { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }

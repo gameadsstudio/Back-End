@@ -9,11 +9,11 @@ namespace api.Models.Media.Engine.Unity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        
+
         [Required]
         [ForeignKey("MediaId")]
         public MediaModel Media { get; set; }
-        
+
         public string AssetBundleLink { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
