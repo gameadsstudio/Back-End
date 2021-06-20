@@ -5,6 +5,10 @@ using api.Models.Tag;
 using api.Models.User;
 using api.Models.Organization;
 using api.Models.Game;
+using api.Models.Media;
+using api.Models.Media._2D;
+using api.Models.Media._3D;
+using api.Models.Media.Engine.Unity;
 using api.Models.Version;
 using AutoMapper;
 
@@ -72,6 +76,14 @@ namespace api.Mappings
                 .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<CampaignModel, CampaignPublicDto>().ReverseMap();
+
+            // Medias
+            CreateMap<MediaModel, MediaCreationDto>().ReverseMap();
+            CreateMap<MediaModel, MediaUpdateDto>().ReverseMap();
+            CreateMap<MediaModel, MediaPublicDto>();
+            CreateMap<Media2DModel, Media2DPublicDto>();
+            CreateMap<Media3DModel, Media3DPublicDto>();
+            CreateMap<MediaUnityModel, MediaUnityPublicDto>();
         }
     }
 }
