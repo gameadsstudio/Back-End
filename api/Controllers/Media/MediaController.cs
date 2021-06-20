@@ -35,8 +35,9 @@ namespace api.Controllers.Media
         }
 
         // Todo : Find a better type for the object, matching engine dtos
+        // MediaPublicDto.Media -> Containing specified engine DTO
         [HttpGet("{id}/{engine}")]
-        public ActionResult<GetDto<object>> GetEngine(string id, string engine)
+        public ActionResult<GetDto<MediaPublicDto>> GetEngine(string id, string engine)
         {
             return Ok();
         }
