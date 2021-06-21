@@ -10,6 +10,7 @@ using api.Business.Tag;
 using api.Business.User;
 using api.Business.Organization;
 using api.Business.Game;
+using api.Business.Media;
 using api.Business.Version;
 using api.Business.Campaign;
 using api.Configuration;
@@ -118,6 +119,7 @@ namespace api
             services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
             services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
+            services.AddScoped<IMediaBusinessLogic, MediaBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)

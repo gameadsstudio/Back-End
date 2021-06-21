@@ -13,6 +13,9 @@ namespace api.Models.Media
         [Required]
         public IList<string> TagName { get; set; }
 
+        [Required]
+        public string OrgId { get; set; }
+
         public AspectRatio AspectRatio { get; set; }
 
         public IFormFile Texture { get; set; }
