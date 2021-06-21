@@ -18,7 +18,7 @@ namespace api.Repositories.Media
         (IList<MediaModel>, int) GetMediasByTags(int offset, int limit, Guid orgId, Guid userId, IList<TagModel> tags);
         MediaModel UpdateMedia(MediaModel updatedMedia);
         int DeleteMedia(MediaModel mediaModel);
-        
+
         // 2D Medias
         Media2DModel AddNew2DMedia(Media2DModel media);
         Media2DModel Get2DMediaById(Guid id);

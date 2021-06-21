@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using api.Business.Media;
+using api.Enums.Media;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.Media;
@@ -49,7 +50,7 @@ namespace api.Controllers.Media
         // Todo : Find a better type for the object, matching engine dtos
         // MediaPublicDto.Media -> Containing specified engine DTO
         [HttpGet("{id}/{engine}")]
-        public ActionResult<GetDto<MediaPublicDto>> GetEngine(string id, string engine)
+        public ActionResult<GetDto<MediaPublicDto>> GetEngine(string id, Engine engine)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
