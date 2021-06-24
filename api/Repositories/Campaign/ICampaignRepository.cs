@@ -12,8 +12,8 @@ namespace api.Repositories.Campaign
 
         int DeleteCampaign(CampaignModel campaign);
 
-        IList<CampaignModel> GetOrganizationCampaigns(Guid id);
-
         CampaignModel GetCampaignById(Guid id);
+
+        (IList<CampaignModel>, int) GetOrganizationCampaigns(Guid id, int offset, int limit);
     }
 }

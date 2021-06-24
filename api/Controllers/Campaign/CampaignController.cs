@@ -3,6 +3,8 @@ using api.Business.Campaign;
 using api.Models.Campaign;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using api.Helpers;
+using api.Models.Common;
 
 namespace api.Controllers.Campaign
 {
@@ -21,16 +23,19 @@ namespace api.Controllers.Campaign
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            // return Ok(new GetDto<NAME>(_business.GetCampaignById(id)));
-            return Ok(_business.GetCampaignById(id));
+            return Ok(
+                new GetDto<CampaignPublicDto>(_business.GetCampaignById(id))
+            );
         }
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Get([FromQuery] CampaignFiltersDto filters)
+        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
         {
             return Ok(
-                _business.GetAll(filters)
+                new GetAllDto<CampaignPublicDto>(
+                    _business.GetCampaigns(paging, filters)
+                )
             );
         }
 
@@ -78,6 +83,5 @@ namespace api.Controllers.Campaign
         {
             return Ok(_business.DeleteCampaignById(id));
         }
-
     }
 }

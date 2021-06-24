@@ -4,6 +4,7 @@ using api.Configuration;
 using api.Contexts;
 using api.Models.Campaign;
 using api.Repositories.Campaign;
+using api.Helpers;
 using Microsoft.Extensions.Options;
 using AutoMapper;
 
@@ -58,11 +59,22 @@ namespace api.Business.Campaign
             );
         }
 
-        public IList<CampaignPublicDto> GetAll(CampaignFiltersDto filters)
+        public (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters)
         {
-            return _mapper.Map(
-                _repository.GetOrganizationCampaigns(filters.OrganizationId),
-                new List<CampaignPublicDto>()
+            IList<CampaignModel> campaigns = null;
+            int maxPage = 0;
+
+            paging = PagingHelper.Check(paging);
+            (campaigns, maxPage) = _repository.GetOrganizationCampaigns(
+                filters.OrganizationId,
+                (paging.Page - 1) * paging.PageSize,
+                paging.PageSize
+            );
+            return (
+                paging.Page,
+                paging.PageSize,
+                (maxPage / paging.PageSize + 1),
+                _mapper.Map(campaigns, new List<CampaignPublicDto>())
             );
         }
     }

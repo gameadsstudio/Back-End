@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using api.Helpers;
 using api.Models.Campaign;
 
 namespace api.Business.Campaign
@@ -14,6 +15,6 @@ namespace api.Business.Campaign
 
         CampaignPublicDto GetCampaignById(Guid id);
 
-        IList<CampaignPublicDto> GetAll(CampaignFiltersDto filters);
+        (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters);
     }
 }
