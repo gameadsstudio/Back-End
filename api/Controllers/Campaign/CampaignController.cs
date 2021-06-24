@@ -1,10 +1,8 @@
-﻿using api.Business.Campaign;
-using api.Configuration;
-using api.Contexts;
+﻿using System;
+using api.Business.Campaign;
 using api.Models.Campaign;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace api.Controllers.Campaign
 {
@@ -21,71 +19,64 @@ namespace api.Controllers.Campaign
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult Get(Guid id)
         {
-			CampaignModel campaign = _business.GetCampaignById(id);
-
-			if (campaign == null) {
-				return BadRequest();
-			}
-            return Ok(campaign);
+            // return Ok(new GetDto<NAME>(_business.GetCampaignById(id)));
+            return Ok(_business.GetCampaignById(id));
         }
 
-		[AllowAnonymous]
-		[HttpGet]
-		public IActionResult Get([FromQuery] CampaignDto settings)
-		{
-			return Ok(
-				_business.GetOrganizationCampaigns(settings.OrganizationId)
-			);
-		}
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Get([FromQuery] CampaignFiltersDto filters)
+        {
+            return Ok(
+                _business.GetAll(filters)
+            );
+        }
 
-		[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Post([FromForm] CampaignCreationModel newCampaign)
+        public IActionResult Post([FromForm] CampaignCreationDto newCampaign)
         {
-            if (!ModelState.IsValid)
+            CampaignPublicDto success = null;
+
+            if (!ModelState.IsValid) {
                 return BadRequest();
-
-            var success = _business.AddNewCampaign(newCampaign);
-
-            if (success != null)
+            }
+            success = _business.AddNewCampaign(newCampaign);
+            if (success != null) {
                 return Created("Campaign", success);
-            return Conflict(new { message = "Couldn't create Campaign" });
+            }
+            return Conflict(new {message = "Couldn't create Campaign"});
         }
 
-		[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] CampaignUpdateModel newCampaign)
+        public IActionResult Patch(Guid id, [FromForm] CampaignUpdateDto newCampaign)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) {
                 return BadRequest();
-
-            return Ok(_business.UpdateCampaignById(id, newCampaign));
+            }
+            return Ok(
+                _business.UpdateCampaignById(id, newCampaign)
+            );
         }
 
-		[AllowAnonymous]
+        [AllowAnonymous]
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromForm] CampaignUpdateModel newCampaign)
+        public IActionResult Put(Guid id, [FromForm] CampaignUpdateDto newCampaign)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) {
                 return BadRequest();
-
+            }
             return Ok(_business.UpdateCampaignById(id, newCampaign));
         }
 
-		[AllowAnonymous]
+        [AllowAnonymous]
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(Guid id)
         {
-            var success = _business.DeleteCampaignById(id);
-
-            return success switch
-            {
-                1 => Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(_business.DeleteCampaignById(id));
         }
 
     }

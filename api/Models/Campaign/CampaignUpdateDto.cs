@@ -1,6 +1,6 @@
 ﻿namespace api.Models.Campaign
 {
-    public class CampaignUpdateModel
+    public class CampaignUpdateDto
     {
         public string Name { get; set; }
         public string AgeMin { get; set; }

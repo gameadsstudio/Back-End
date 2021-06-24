@@ -8,7 +8,6 @@ namespace api.Repositories.Campaign
 {
     public class CampaignRepository : ICampaignRepository
     {
-
         private readonly ApiContext _context;
 
         public CampaignRepository(ApiContext context)
@@ -25,27 +24,29 @@ namespace api.Repositories.Campaign
 
         public CampaignModel UpdateCampaign(CampaignModel campaign)
         {
-			_context.Update(campaign);
-			_context.SaveChanges();
+            _context.Update(campaign);
+            _context.SaveChanges();
             return campaign;
         }
 
         public int DeleteCampaign(CampaignModel campaign)
         {
-			_context.Campaign.Remove(campaign);
-			return _context.SaveChanges();
+            _context.Campaign.Remove(campaign);
+            return _context.SaveChanges();
         }
 
-		public IList<CampaignModel> GetOrganizationCampaigns(Guid id)
-		{
-			return _context.Campaign
-				.Where(x => x.Organization.Id == id)
-				.ToList();
-		}
+        public IList<CampaignModel> GetOrganizationCampaigns(Guid id)
+        {
+            return _context.Campaign
+                .Where(campaign => campaign.Organization.Id == id)
+                .ToList();
+        }
 
-		public CampaignModel GetCampaignById(Guid id)
-		{
-			return _context.Campaign.SingleOrDefault(x => x.Id == id);
-		}
+        public CampaignModel GetCampaignById(Guid id)
+        {
+            return _context.Campaign.SingleOrDefault(
+                campaign => campaign.Id == id
+            );
+        }
     }
 }
