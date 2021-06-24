@@ -118,7 +118,7 @@ namespace api
             services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
-            services.AddSingleton<ICampaignBusinessLogic, CampaignBusinessLogic>();
+            services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
         }
