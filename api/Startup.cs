@@ -118,9 +118,6 @@ namespace api
             services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
-            services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
-            services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
-            services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
