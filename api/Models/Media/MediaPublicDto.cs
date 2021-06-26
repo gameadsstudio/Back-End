@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using api.Models.Organization;
 using api.Models.Tag;
+using Type = api.Enums.Media.Type;
 
 namespace api.Models.Media
 {
