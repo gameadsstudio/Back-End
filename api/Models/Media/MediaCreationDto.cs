@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Enums.Media;
 using Microsoft.AspNetCore.Http;
+using Type = api.Enums.Media.Type;
 
 namespace api.Models.Media
 {

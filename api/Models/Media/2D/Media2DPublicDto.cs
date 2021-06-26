@@ -1,3 +1,4 @@
+using System;
 using api.Enums.Media;
 
 namespace api.Models.Media._2D
@@ -6,8 +7,8 @@ namespace api.Models.Media._2D
     {
         public AspectRatio AspectRatio { get; set; }
 
-        public string TextureLink { get; set; }
+        public Uri TextureLink { get; set; }
 
-        public string NormalMapLink { get; set; }
+        public Uri NormalMapLink { get; set; }
     }
 }

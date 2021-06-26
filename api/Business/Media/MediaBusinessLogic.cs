@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,8 @@ using api.Enums.Media;
 using api.Errors;
 using api.Helpers;
 using api.Models.Media;
+using api.Models.Media._2D;
+using api.Models.Media._3D;
 using api.Models.Tag;
 using api.Repositories.Media;
 using AutoMapper;
@@ -34,7 +37,7 @@ namespace api.Business.Media
         private MediaModel GetMediaModelById(string id)
         {
             return _repository.GetMediaById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Media with id ${id} not found");
+                   throw new ApiError(HttpStatusCode.NotFound, $"Media with id {id} not found");
         }
 
         private MediaPublicDto ConstructMediaDto(MediaModel media)
@@ -43,14 +46,16 @@ namespace api.Business.Media
 
             dto.Media = media.Type switch
             {
-                Type.Type2D => _repository.Get2DMediaByMediaId(media.Id) ??
-                               throw new ApiError(HttpStatusCode.ExpectationFailed,
-                                   $"Media with id ${media.Id} does not have a 2D media"),
-                Type.Type3D => _repository.Get3DMediaByMediaId(media.Id) ??
-                               throw new ApiError(HttpStatusCode.ExpectationFailed,
-                                   $"Media with id ${media.Id} does not have a 3D media"),
-                _ => throw new ApiError(HttpStatusCode.ExpectationFailed,
-                    $"Media with id ${media.Id} does not have media")
+                Type.Type2D => _mapper.Map(_repository.Get2DMediaByMediaId(media.Id) ??
+                                           throw new ApiError(HttpStatusCode.PartialContent,
+                                               $"Media with id {media.Id} does not have a 2D media"),
+                    new Media2DPublicDto()),
+                Type.Type3D => _mapper.Map(_repository.Get3DMediaByMediaId(media.Id) ??
+                                           throw new ApiError(HttpStatusCode.PartialContent,
+                                               $"Media with id {media.Id} does not have a 3D media"),
+                    new Media3DPublicDto()),
+                _ => throw new ApiError(HttpStatusCode.PartialContent,
+                    $"Media with id {media.Id} does not have media")
             };
             return dto;
         }
@@ -60,6 +65,30 @@ namespace api.Business.Media
             return (from tagName in tagNames
                 where !string.IsNullOrEmpty(tagName)
                 select _tagBusiness.GetTagModelByName(tagName)).ToList();
+        }
+
+        private void SaveMedia2D(MediaCreationDto mediaCDto, MediaModel media)
+        {
+            var media2DCreationDto = _mapper.Map(mediaCDto, new Media2DCreationDto());
+            var media2DModel = _mapper.Map(media2DCreationDto, new Media2DModel());
+
+            // TODO: Check if media2DCreationDto is valid
+
+            media2DModel.Media = media;
+            var _ = _repository.AddNew2DMedia(media2DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
+                $"Cannot save 2D media for media with id {media.Id}");
+        }
+
+        private void SaveMedia3D(MediaCreationDto mediaCDto, MediaModel media)
+        {
+            var media3DCreationDto = _mapper.Map(mediaCDto, new Media3DCreationDto());
+            var media3DModel = _mapper.Map(media3DCreationDto, new Media3DModel());
+
+            // TODO: Check if media3DCreationDto is valid
+
+            media3DModel.Media = media;
+            var _ = _repository.AddNew3DMedia(media3DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
+                $"Cannot save 3D media for media with id {media.Id}");
         }
 
         public MediaPublicDto GetMediaById(string id, ConnectedUser currentUser)
@@ -78,7 +107,7 @@ namespace api.Business.Media
             string versionId,
             ConnectedUser currentUser)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public MediaPublicDto AddNewMedia(MediaCreationDto newMedia, ConnectedUser currentUser)
@@ -89,13 +118,26 @@ namespace api.Business.Media
                 currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Unauthorized,
-                    $"You cannot add a media to an organization you are not part of");
+                    "You cannot add a media to an organization you are not part of");
             }
 
             media.Tags = ResolveTags(newMedia.TagName);
             media.Organization = _organizationBusiness.GetOrganizationModelById(newMedia.OrgId);
+            var savedMedia = _repository.AddNewMedia(media);
 
-            return _mapper.Map(_repository.AddNewMedia(media), new MediaPublicDto());
+            switch (newMedia.Type)
+            {
+                case Type.Type2D:
+                    SaveMedia2D(newMedia, savedMedia);
+                    break;
+                case Type.Type3D:
+                    SaveMedia3D(newMedia, savedMedia);
+                    break;
+                default:
+                    throw new ApiError(HttpStatusCode.BadRequest, "Media type not valid");
+            }
+
+            return ConstructMediaDto(savedMedia);
         }
 
         public MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia, ConnectedUser currentUser)
@@ -126,10 +168,10 @@ namespace api.Business.Media
             dto.Media = engine switch
             {
                 Engine.Unity => _repository.GetUnityMediaByMediaId(media.Id) ??
-                                throw new ApiError(HttpStatusCode.ExpectationFailed,
-                                    $"Media with id ${media.Id} does not have an Unity media"),
-                _ => throw new ApiError(HttpStatusCode.ExpectationFailed,
-                    $"Media with id ${media.Id} does not have specified media")
+                                throw new ApiError(HttpStatusCode.PartialContent,
+                                    $"Media with id {media.Id} does not have an Unity media"),
+                _ => throw new ApiError(HttpStatusCode.PartialContent,
+                    $"Media with id {media.Id} does not have specified media")
             };
             return dto;
         }

@@ -38,6 +38,7 @@ namespace api.Repositories.Media
             return _context.Media
                 .Include(a => a.Tags)
                 .Include(a => a.Organization)
+                .ThenInclude(o => o.Users)
                 .SingleOrDefault(a => a.Id == id);
         }
 
