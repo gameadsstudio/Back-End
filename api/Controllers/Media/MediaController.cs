@@ -21,7 +21,6 @@ namespace api.Controllers.Media
         }
 
         [HttpPost]
-        [Consumes("application/x-www-form-urlencoded")]
         public ActionResult<GetDto<MediaPublicDto>> Post([FromForm] MediaCreationDto newMedia)
         {
             var currentUser = new ConnectedUser(User.Claims);
