@@ -18,9 +18,9 @@ namespace api.Models.Media._2D
 
         public AspectRatio AspectRatio { get; set; }
 
-        public string TextureLink { get; set; }
+        public Uri TextureLink { get; set; }
 
-        public string NormalMapLink { get; set; }
+        public Uri NormalMapLink { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
