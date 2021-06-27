@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using api.Business.Organization;
@@ -14,6 +15,7 @@ using api.Models.Media._3D;
 using api.Models.Tag;
 using api.Repositories.Media;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Type = api.Enums.Media.Type;
 
 namespace api.Business.Media
@@ -24,14 +26,16 @@ namespace api.Business.Media
         private readonly IMediaRepository _repository;
         private readonly IOrganizationBusinessLogic _organizationBusiness;
         private readonly ITagBusinessLogic _tagBusiness;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public MediaBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusiness,
-            ITagBusinessLogic tagBusiness)
+            ITagBusinessLogic tagBusiness, IHttpContextAccessor httpContextAccessor)
         {
             _repository = new MediaRepository(context);
             _mapper = mapper;
             _organizationBusiness = organizationBusiness;
             _tagBusiness = tagBusiness;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         private MediaModel GetMediaModelById(string id)
@@ -67,6 +71,12 @@ namespace api.Business.Media
                 select _tagBusiness.GetTagModelByName(tagName)).ToList();
         }
 
+        private Uri UriBuilder(string filename)
+        {
+            return new Uri(
+                $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host.Host}{filename}");
+        }
+
         private void SaveMedia2D(MediaCreationDto mediaCDto, MediaModel media)
         {
             var media2DCreationDto = _mapper.Map(mediaCDto, new Media2DCreationDto());
@@ -77,6 +87,32 @@ namespace api.Business.Media
                 media2DCreationDto.AspectRatio == 0)
             {
                 throw new ApiError(HttpStatusCode.BadRequest, "2D media not valid");
+            }
+
+            // Create media dir if not exists
+            if (!Directory.Exists(media.Id.ToString()))
+            {
+                Directory.CreateDirectory(media.Id.ToString());
+            }
+
+            // Saving texture
+            using (var fileStream =
+                new FileStream(
+                    $"{media.Id.ToString()}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                    FileMode.Create))
+            {
+                media2DCreationDto.Texture.CopyToAsync(fileStream);
+                media2DModel.TextureLink = UriBuilder(fileStream.Name);
+            }
+
+            // Saving normal map
+            using (var fileStream =
+                new FileStream(
+                    $"{media.Id.ToString()}/nomal_map{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                    FileMode.Create))
+            {
+                media2DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media2DModel.NormalMapLink = UriBuilder(fileStream.Name);
             }
 
             media2DModel.Media = media;
@@ -97,6 +133,42 @@ namespace api.Business.Media
                 media3DCreationDto.Texture == null)
             {
                 throw new ApiError(HttpStatusCode.BadRequest, "3D media not valid");
+            }
+
+            // Create media dir if not exists
+            if (!Directory.Exists(media.Id.ToString()))
+            {
+                Directory.CreateDirectory(media.Id.ToString());
+            }
+
+            // Saving texture
+            using (var fileStream =
+                new FileStream(
+                    $"{media.Id.ToString()}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    FileMode.Create))
+            {
+                media3DCreationDto.Texture.CopyToAsync(fileStream);
+                media3DModel.TextureLink = UriBuilder(fileStream.Name);
+            }
+
+            // Saving model
+            using (var fileStream =
+                new FileStream(
+                    $"{media.Id.ToString()}/model{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    FileMode.Create))
+            {
+                media3DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media3DModel.ModelLink = UriBuilder(fileStream.Name);
+            }
+
+            // Saving normal map
+            using (var fileStream =
+                new FileStream(
+                    $"{media.Id.ToString()}/nomal_map{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    FileMode.Create))
+            {
+                media3DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media3DModel.NormalMapLink = UriBuilder(fileStream.Name);
             }
 
             media3DModel.Media = media;
