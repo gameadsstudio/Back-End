@@ -16,6 +16,9 @@ services:
         ports:
             - "5000:${GAS_PORT}"
         restart: unless-stopped
+        volumes:
+            - ./api:/app
+            - gas-assets-data:/assets
 
     gas-db:
         image: postgres:13.1-alpine
@@ -26,7 +29,16 @@ services:
             - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         volumes:
             - gas-db-data:/var/lib/postgresql/data
-
+    
+    gas-nginx:
+        image: nginx
+        ports:
+            - 80:80
+        volumes:
+            - gas-assets-data:/usr/share/nginx/wwwroot/assets
+            - ./nginx.conf:/etc/nginx/nginx.conf
 volumes:
     gas-db-data:
+        driver: local
+    gas-assets-data:
         driver: local

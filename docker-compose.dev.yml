@@ -17,6 +17,7 @@ services:
         ports:
             - "5000:${GAS_PORT}"
         volumes:
+            - gas-assets-data:/assets
             - ./api:/app
         restart: unless-stopped
 
@@ -38,14 +39,24 @@ services:
             PGADMIN_DEFAULT_PASSWORD: ${GAS_DB_ADMIN_PASSWORD}
             PGADMIN_LISTEN_PORT: 80
         ports:
-            - "80:${GAS_DB_ADMIN_PORT}"
+            - "81:${GAS_DB_ADMIN_PORT}"
         logging:
             driver: none
         volumes:
             - gas-pgadmin-data:/var/lib/pgadmin
+    
+    gas-nginx:
+        image: nginx
+        ports:
+            - 80:80
+        volumes:
+            - gas-assets-data:/usr/share/nginx/wwwroot/assets
+            - ./nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
     gas-db-data:
         driver: local
     gas-pgadmin-data:
+        driver: local
+    gas-assets-data:
         driver: local
