@@ -89,16 +89,18 @@ namespace api.Business.Media
                 throw new ApiError(HttpStatusCode.BadRequest, "2D media not valid");
             }
 
+            var assetsDir = $"/assets/{media.Id.ToString()}";
+
             // Create media dir if not exists
-            if (!Directory.Exists(media.Id.ToString()))
+            if (!Directory.Exists(assetsDir))
             {
-                Directory.CreateDirectory(media.Id.ToString());
+                Directory.CreateDirectory(assetsDir);
             }
 
             // Saving texture
             using (var fileStream =
                 new FileStream(
-                    $"{media.Id.ToString()}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media2DCreationDto.Texture.CopyToAsync(fileStream);
@@ -108,7 +110,7 @@ namespace api.Business.Media
             // Saving normal map
             using (var fileStream =
                 new FileStream(
-                    $"{media.Id.ToString()}/nomal_map{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/nomal_map{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media2DCreationDto.NormalMap.CopyToAsync(fileStream);
@@ -135,16 +137,18 @@ namespace api.Business.Media
                 throw new ApiError(HttpStatusCode.BadRequest, "3D media not valid");
             }
 
+            var assetsDir = $"/assets/{media.Id.ToString()}";
+
             // Create media dir if not exists
-            if (!Directory.Exists(media.Id.ToString()))
+            if (!Directory.Exists(assetsDir))
             {
-                Directory.CreateDirectory(media.Id.ToString());
+                Directory.CreateDirectory(assetsDir);
             }
 
             // Saving texture
             using (var fileStream =
                 new FileStream(
-                    $"{media.Id.ToString()}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.Texture.CopyToAsync(fileStream);
@@ -154,7 +158,7 @@ namespace api.Business.Media
             // Saving model
             using (var fileStream =
                 new FileStream(
-                    $"{media.Id.ToString()}/model{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyToAsync(fileStream);
@@ -164,7 +168,7 @@ namespace api.Business.Media
             // Saving normal map
             using (var fileStream =
                 new FileStream(
-                    $"{media.Id.ToString()}/nomal_map{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyToAsync(fileStream);
