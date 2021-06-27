@@ -72,7 +72,12 @@ namespace api.Business.Media
             var media2DCreationDto = _mapper.Map(mediaCDto, new Media2DCreationDto());
             var media2DModel = _mapper.Map(media2DCreationDto, new Media2DModel());
 
-            // TODO: Check if media2DCreationDto is valid
+            if (media2DCreationDto.Texture == null ||
+                media2DCreationDto.NormalMap == null ||
+                media2DCreationDto.AspectRatio == 0)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, "2D media not valid");
+            }
 
             media2DModel.Media = media;
             var _ = _repository.AddNew2DMedia(media2DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
@@ -84,7 +89,15 @@ namespace api.Business.Media
             var media3DCreationDto = _mapper.Map(mediaCDto, new Media3DCreationDto());
             var media3DModel = _mapper.Map(media3DCreationDto, new Media3DModel());
 
-            // TODO: Check if media3DCreationDto is valid
+            if (media3DCreationDto.Model == null ||
+                media3DCreationDto.NormalMap == null ||
+                media3DCreationDto.Width == 0 ||
+                media3DCreationDto.Height == 0 ||
+                media3DCreationDto.Depth == 0 ||
+                media3DCreationDto.Texture == null)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, "3D media not valid");
+            }
 
             media3DModel.Media = media;
             var _ = _repository.AddNew3DMedia(media3DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
