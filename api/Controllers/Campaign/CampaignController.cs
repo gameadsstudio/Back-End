@@ -23,8 +23,12 @@ namespace api.Controllers.Campaign
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
+			var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(
-                new GetDto<CampaignPublicDto>(_business.GetCampaignById(id))
+                new GetDto<CampaignPublicDto>(
+					_business.GetCampaignById(id, currentUser)
+				)
             );
         }
 

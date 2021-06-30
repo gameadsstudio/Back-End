@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using Microsoft.Extensions.Options;
+using AutoMapper;
+using api.Business.Organization;
 using api.Configuration;
 using api.Contexts;
+using api.Errors;
 using api.Models.Campaign;
 using api.Repositories.Campaign;
 using api.Helpers;
-using Microsoft.Extensions.Options;
-using AutoMapper;
 
 namespace api.Business.Campaign
 {
     public class CampaignBusinessLogic : ICampaignBusinessLogic
     {
         private readonly IMapper _mapper;
+
+        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
+
         private readonly ICampaignRepository _repository;
 
-        public CampaignBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper)
+        public CampaignBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings, IMapper mapper, IOrganizationBusinessLogic organizationBusinessLogic)
         {
             _repository = new CampaignRepository(context);
             _mapper = mapper;
+            _organizationBusinessLogic = organizationBusinessLogic;
         }
 
         public CampaignPublicDto AddNewCampaign(CampaignCreationDto newCampaign)
@@ -51,12 +58,15 @@ namespace api.Business.Campaign
             return _repository.DeleteCampaign(campaign);
         }
 
-        public CampaignPublicDto GetCampaignById(Guid id)
+        public CampaignPublicDto GetCampaignById(Guid id, ConnectedUser currentUser)
         {
-            return _mapper.Map(
-                _repository.GetCampaignById(id),
-                new CampaignPublicDto()
-            );
+            var campaign = _repository.GetCampaignById(id);
+
+            /*if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get a campaign from an organization to which you don't belong.");
+            }*/
+            return _mapper.Map(campaign, new CampaignPublicDto());
         }
 
         public (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters)

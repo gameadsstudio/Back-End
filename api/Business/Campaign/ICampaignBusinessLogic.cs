@@ -13,7 +13,7 @@ namespace api.Business.Campaign
 
         int DeleteCampaignById(Guid id);
 
-        CampaignPublicDto GetCampaignById(Guid id);
+        CampaignPublicDto GetCampaignById(Guid id, ConnectedUser currentUser);
 
         (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters);
     }
