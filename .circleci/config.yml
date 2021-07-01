@@ -1,0 +1,57 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.1
+  aws-ecr: circleci/aws-ecr@7.0.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Linting
+          command: yarn build
+    
+  test-and-lint:  
+    docker:
+      - image: cimg/node:15.1
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Linting
+          command: yarn lint
+      - run:
+          name: Run tests
+          command: yarn test --passWithNoTests
+      
+workflows:
+  build-and-deploy: 
+    jobs:
+      - build
+      - test-and-lint
+      - aws-ecr/build-and-push-image:
+          context: frontend
+          repo: $AWS_ECR_REPOSITORY
+          tag: "latest"
+          filters:
+            branches:
+              only: dev
+          requires:
+            - build
+            - test-and-lint
+      - aws-ecr/build-and-push-image:
+          context: frontend
+          repo: $AWS_ECR_REPOSITORY
+          tag: "production"
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
+            - test-and-lint
