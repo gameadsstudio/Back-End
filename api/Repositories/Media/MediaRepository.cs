@@ -20,12 +20,8 @@ namespace api.Repositories.Media
             _context = context;
         }
 
-        /*
-        ** ===============================
-        **             MEDIA
-        ** ===============================
-        */
-        
+        #region Media
+
         public MediaModel AddNewMedia(MediaModel media)
         {
             _context.Media.Add(media);
@@ -46,7 +42,7 @@ namespace api.Repositories.Media
         {
             return _context.Media.Count();
         }
-        
+
         public (IList<MediaModel>, int) GetMediasByOrganizationId(int offset, int limit,
             Guid orgId, Guid userId)
         {
@@ -57,9 +53,9 @@ namespace api.Repositories.Media
                 .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
 
             return (query.Skip(offset)
-                        .Take(limit)
-                        .ToList(),
-                    query.Count());
+                    .Take(limit)
+                    .ToList(),
+                query.Count());
         }
 
         public (IList<MediaModel>, int) GetMediasByTags(int offset, int limit, Guid orgId, Guid userId, IList<TagModel> tags)
@@ -71,9 +67,9 @@ namespace api.Repositories.Media
                 .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
 
             return (query.Skip(offset)
-                        .Take(limit)
-                        .ToList(),
-                    query.Count());
+                    .Take(limit)
+                    .ToList(),
+                query.Count());
         }
 
         public MediaModel UpdateMedia(MediaModel updatedMedia)
@@ -88,12 +84,10 @@ namespace api.Repositories.Media
             _context.Media.Remove(media);
             return _context.SaveChanges();
         }
-        
-        /*
-        ** ===============================
-        **            2D MEDIA
-        ** ===============================
-        */
+
+        #endregion
+
+        #region 2DMedia
 
         public Media2DModel AddNew2DMedia(Media2DModel media)
         {
@@ -127,12 +121,10 @@ namespace api.Repositories.Media
             _context.Media2D.Remove(media);
             return _context.SaveChanges();
         }
-        
-        /*
-        ** ===============================
-        **            3D MEDIA
-        ** ===============================
-        */
+
+        #endregion
+
+        #region 3DMedia
 
         public Media3DModel AddNew3DMedia(Media3DModel media)
         {
@@ -167,11 +159,10 @@ namespace api.Repositories.Media
             return _context.SaveChanges();
         }
         
-        /*
-        ** ===============================
-        **           UNITY MEDIA
-        ** ===============================
-        */
+
+        #endregion
+
+        #region UnityMedia
 
         public MediaUnityModel AddNewUnityMedia(MediaUnityModel media)
         {
@@ -205,5 +196,7 @@ namespace api.Repositories.Media
             _context.MediaUnity.Remove(media);
             return _context.SaveChanges();
         }
+
+        #endregion
     }
 }
