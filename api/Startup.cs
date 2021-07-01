@@ -141,7 +141,6 @@ namespace api
                 app.UseDeveloperExceptionPage();
             }
 
-            context.Database.EnsureDeleted();
             // Auto migrate database on startup
             context.Database.Migrate();
             CreateAdmin(context);
