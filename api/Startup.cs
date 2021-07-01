@@ -25,7 +25,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
@@ -113,7 +112,11 @@ namespace api
             }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Configure max request size. Default is 30 MB
-            services.Configure<KestrelServerOptions>(options => { options.Limits.MaxRequestBodySize = int.MaxValue; });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize =
+                    long.Parse(Environment.GetEnvironmentVariable("GAS_FILE_MAX_SIZE") ??
+                                   int.MaxValue.ToString()); });
 
             services.AddHttpContextAccessor();
 
@@ -138,6 +141,7 @@ namespace api
                 app.UseDeveloperExceptionPage();
             }
 
+            context.Database.EnsureDeleted();
             // Auto migrate database on startup
             context.Database.Migrate();
             CreateAdmin(context);
@@ -157,10 +161,9 @@ namespace api
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
-        private void CreateAdmin(ApiContext context)
+        private static void CreateAdmin(ApiContext context)
         {
             // Creating default admin user
-            context.Database.EnsureCreated();
             var admin = context.User.FirstOrDefault(user =>
                 user.Username == (Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin"));
             if (admin == null)
@@ -176,7 +179,6 @@ namespace api
                         Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password")
                 });
             }
-
             context.SaveChanges();
         }
     }
