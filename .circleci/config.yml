@@ -19,7 +19,7 @@ workflows:
   build-and-deploy: 
     jobs:
       - build:
-          context: backend
+          context: registry
           # filters:
           #   branches:
           #     only:
