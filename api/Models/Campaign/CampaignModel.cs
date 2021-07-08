@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using api.Models.Organization;
 
 namespace api.Models.Campaign
@@ -31,7 +32,7 @@ namespace api.Models.Campaign
 
         public DateTimeOffset DateUpdate { get; set; }
 
-        [Required]
+        [BindRequired]
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
     }
