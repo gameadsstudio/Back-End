@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace api.Models.Campaign
 {
     public class CampaignCreationDto
     {
-        [Required]
+        [BindRequired]
         public Guid OrganizationId { get; set; }
 
         [Required]
