@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using api.Contexts;
 using api.Models.Campaign;
+using api.Models.Organization;
 
 namespace api.Repositories.Campaign
 {
@@ -38,18 +39,10 @@ namespace api.Repositories.Campaign
 
         public CampaignModel GetCampaignById(Guid id)
         {
-            /* Throw an error :
-            Must specify valid information for
-            parsing in the string. (Parameter 'value')
-
             return _context.Campaign
                 .Include(x => x.Organization)
                 .Where(campaign => campaign.Id == id)
                 .SingleOrDefault();
-            */
-            return _context.Campaign.SingleOrDefault(
-                campaign => campaign.Id == id
-            );
         }
 
         public (IList<CampaignModel>, int) GetOrganizationCampaigns(Guid id, int offset, int limit)
