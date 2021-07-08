@@ -19,7 +19,6 @@ namespace api.Controllers.Campaign
             _business = campaignBusinessLogic;
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
@@ -32,7 +31,6 @@ namespace api.Controllers.Campaign
             );
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
         {
@@ -45,7 +43,6 @@ namespace api.Controllers.Campaign
             );
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult Post([FromForm] CampaignCreationDto newCampaign)
         {
@@ -62,7 +59,6 @@ namespace api.Controllers.Campaign
             return Conflict(new {message = "Couldn't create Campaign"});
         }
 
-        [AllowAnonymous]
         [HttpPatch("{id}")]
         public IActionResult Patch(Guid id, [FromForm] CampaignUpdateDto newCampaign)
         {
@@ -76,7 +72,6 @@ namespace api.Controllers.Campaign
             );
         }
 
-        [AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromForm] CampaignUpdateDto newCampaign)
         {
@@ -90,7 +85,6 @@ namespace api.Controllers.Campaign
             );
         }
 
-        [AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
