@@ -57,7 +57,7 @@ namespace api.Repositories.Organization
 
             if (filters.UserId != null)
             {
-                query = query.Where(o => o.Users.All(u => u.Id == filters.UserId));
+                query = query.Where(o => o.Users.Any(u => u.Id == filters.UserId));
             }
 
             return query.Skip(offset).Take(limit).ToList();
@@ -69,7 +69,7 @@ namespace api.Repositories.Organization
 
             if (filters?.UserId != null)
             {
-                query = query.Where(o => o.Users.All(u => u.Id == filters.UserId));
+                query = query.Where(o => o.Users.Any(u => u.Id == filters.UserId));
             }
 
             return query.Count();
