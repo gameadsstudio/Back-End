@@ -24,8 +24,12 @@ namespace api.Controllers.Campaign
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(
-                new GetDto<CampaignPublicDto>(_business.GetCampaignById(id))
+                new GetDto<CampaignPublicDto>(
+                    _business.GetCampaignById(id, currentUser)
+                )
             );
         }
 
@@ -33,9 +37,11 @@ namespace api.Controllers.Campaign
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
         {
+            var currentUser = new ConnectedUser(User.Claims);
+
             return Ok(
                 new GetAllDto<CampaignPublicDto>(
-                    _business.GetCampaigns(paging, filters)
+                    _business.GetCampaigns(paging, filters, currentUser)
                 )
             );
         }
@@ -53,12 +59,14 @@ namespace api.Controllers.Campaign
         [HttpPost]
         public IActionResult Post([FromForm] CampaignCreationModel newCampaign)
         {
-            if (!ModelState.IsValid)
+            CampaignPublicDto success = null;
+            var currentUser = new ConnectedUser(User.Claims);
+
+            if (!ModelState.IsValid) {
                 return BadRequest();
-
-            var success = _business.AddNewCampaign(newCampaign);
-
-            if (success != null)
+            }
+            success = _business.AddNewCampaign(newCampaign, currentUser);
+            if (success != null) {
                 return Created("Campaign", success);
             return Conflict(new { message = "Couldn't create Campaign" });
         }
@@ -67,34 +75,37 @@ namespace api.Controllers.Campaign
         [HttpPatch("{id}")]
         public IActionResult Patch(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(_business.UpdateCampaignById(id, newCampaign));
+            if (!ModelState.IsValid) {
+                return BadRequest();
+            }
+            return Ok(
+                _business.UpdateCampaignById(id, newCampaign, currentUser)
+            );
         }
 
 		[AllowAnonymous]
         [HttpPut("{id}")]
         public IActionResult Put(string id, [FromForm] CampaignUpdateModel newCampaign)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(_business.UpdateCampaignById(id, newCampaign));
+            if (!ModelState.IsValid) {
+                return BadRequest();
+            }
+            return Ok(
+                _business.UpdateCampaignById(id, newCampaign, currentUser)
+            );
         }
 
 		[AllowAnonymous]
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var success = _business.DeleteCampaignById(id);
+            var currentUser = new ConnectedUser(User.Claims);
 
-            return success switch
-            {
-                1 => Ok(),
-                2 => Unauthorized(),
-                _ => BadRequest()
-            };
+            return Ok(_business.DeleteCampaignById(id, currentUser));
         }
     }
 }
