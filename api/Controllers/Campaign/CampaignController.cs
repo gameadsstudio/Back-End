@@ -4,7 +4,8 @@ using api.Contexts;
 using api.Models.Campaign;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using api.Helpers;
+using api.Models.Common;
 
 namespace api.Controllers.Campaign
 {
@@ -23,12 +24,20 @@ namespace api.Controllers.Campaign
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-			CampaignModel campaign = _business.GetCampaignById(id);
+            return Ok(
+                new GetDto<CampaignPublicDto>(_business.GetCampaignById(id))
+            );
+        }
 
-			if (campaign == null) {
-				return BadRequest();
-			}
-            return Ok(campaign);
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
+        {
+            return Ok(
+                new GetAllDto<CampaignPublicDto>(
+                    _business.GetCampaigns(paging, filters)
+                )
+            );
         }
 
 		[AllowAnonymous]
@@ -87,6 +96,5 @@ namespace api.Controllers.Campaign
                 _ => BadRequest()
             };
         }
-
     }
 }
