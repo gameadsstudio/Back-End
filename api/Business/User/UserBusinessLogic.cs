@@ -145,7 +145,7 @@ namespace api.Business.User
 
             if (updatedUser.Password != null)
             {
-                updatedUser.Password = HashHelper.HashPassword(user.Password);
+                updatedUser.Password = HashHelper.HashPassword(updatedUser.Password);
             }
 
             if (updatedUser.Role != null && updatedUser.Role != UserRole.User && currentUser.Role != UserRole.Admin)
