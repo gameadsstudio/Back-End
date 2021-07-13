@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Campaign;
+using api.Models.Organization;
 
 namespace api.Repositories.Campaign
 {
@@ -38,9 +39,10 @@ namespace api.Repositories.Campaign
 
         public CampaignModel GetCampaignById(Guid id)
         {
-            return _context.Campaign.SingleOrDefault(
-                campaign => campaign.Id == id
-            );
+            return _context.Campaign
+                .Include(x => x.Organization)
+                .Where(campaign => campaign.Id == id)
+                .SingleOrDefault();
         }
 
         public (IList<CampaignModel>, int) GetOrganizationCampaigns(Guid id, int offset, int limit)
