@@ -36,16 +36,20 @@ namespace api.Repositories.Campaign
 			return _context.SaveChanges();
         }
 
-		public IList<CampaignModel> GetOrganizationCampaigns(Guid id)
-		{
-			return _context.Campaign
-				.Where(x => x.Organization.Id == id)
-				.ToList();
-		}
+        public CampaignModel GetCampaignById(Guid id)
+        {
+            return _context.Campaign.SingleOrDefault(
+                campaign => campaign.Id == id
+            );
+        }
 
-		public CampaignModel GetCampaignById(Guid id)
-		{
-			return _context.Campaign.SingleOrDefault(x => x.Id == id);
-		}
+        public (IList<CampaignModel>, int) GetOrganizationCampaigns(Guid id, int offset, int limit)
+        {
+            var query = _context.Campaign.OrderByDescending(
+                campaign => campaign.DateCreation
+            ).Where(campaign => campaign.Organization.Id == id);
+
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
+        }
     }
 }
