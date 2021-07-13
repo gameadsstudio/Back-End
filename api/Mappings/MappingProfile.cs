@@ -1,5 +1,6 @@
 using api.Models.Advertisement;
 using api.Models.AdContainer;
+using api.Models.Campaign;
 using api.Models.Tag;
 using api.Models.User;
 using api.Models.Organization;
@@ -15,7 +16,8 @@ namespace api.Mappings
         {
             // User
             CreateMap<UserModel, UserCreationDto>().ReverseMap();
-            CreateMap<UserModel, UserUpdateDto>().ReverseMap()
+            CreateMap<UserModel, UserUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<UserModel, UserPrivateDto>().ReverseMap();
             CreateMap<UserModel, UserPublicDto>().ReverseMap();
@@ -23,18 +25,21 @@ namespace api.Mappings
             // Tag
             CreateMap<TagModel, TagCreationDto>().ReverseMap();
             CreateMap<TagModel, TagPublicDto>().ReverseMap();
-            CreateMap<TagModel, TagUpdateDto>().ReverseMap()
+            CreateMap<TagModel, TagUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
 
             // Advertisement
             CreateMap<AdvertisementModel, AdvertisementCreationDto>().ReverseMap();
-            CreateMap<AdvertisementModel, AdvertisementUpdateDto>().ReverseMap()
+            CreateMap<AdvertisementModel, AdvertisementUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<AdvertisementModel, AdvertisementPublicDto>().ReverseMap();
 
             // Organization
             CreateMap<OrganizationModel, OrganizationCreationDto>().ReverseMap();
-            CreateMap<OrganizationModel, OrganizationUpdateDto>().ReverseMap()
+            CreateMap<OrganizationModel, OrganizationUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<OrganizationModel, OrganizationPrivateDto>().ReverseMap();
             CreateMap<OrganizationModel, OrganizationPublicDto>().ReverseMap();
@@ -42,21 +47,31 @@ namespace api.Mappings
             // AdContainer
             CreateMap<AdContainerModel, AdContainerCreationDto>().ReverseMap();
             CreateMap<AdContainerModel, AdContainerPublicDto>().ReverseMap();
-            CreateMap<AdContainerModel, AdContainerUpdateDto>().ReverseMap()
+            CreateMap<AdContainerModel, AdContainerUpdateDto>()
+                .ReverseMap()
                 .ForMember(x => x.Version, opt => opt.Ignore())
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
 
             // Game
             CreateMap<GameModel, GameCreationDto>().ReverseMap();
-            CreateMap<GameModel, GameUpdateDto>().ReverseMap()
+            CreateMap<GameModel, GameUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<GameModel, GamePublicDto>().ReverseMap();
 
             // Version
             CreateMap<VersionModel, VersionCreationDto>().ReverseMap();
-            CreateMap<VersionModel, VersionUpdateDto>().ReverseMap()
+            CreateMap<VersionModel, VersionUpdateDto>()
+                .ReverseMap()
                 .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             CreateMap<VersionModel, VersionPublicDto>().ReverseMap();
+
+            // Campaigns
+            CreateMap<CampaignModel, CampaignCreationDto>().ReverseMap();
+            CreateMap<CampaignModel, CampaignUpdateDto>()
+                .ReverseMap()
+                .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<CampaignModel, CampaignPublicDto>().ReverseMap();
         }
     }
 }
