@@ -56,7 +56,7 @@ namespace api.Controllers.Campaign
             var currentUser = new ConnectedUser(User.Claims);
 
             _business.DeleteCampaignById(id, currentUser);
-            
+
             return Ok();
         }
     }
