@@ -22,44 +22,53 @@ namespace api.Business.Campaign
 			_mapper = mapper;
         }
 
-        public CampaignModel AddNewCampaign(CampaignCreationModel newCampaign)
+        public CampaignPublicDto AddNewCampaign(CampaignCreationDto newCampaign, ConnectedUser currentUser)
         {
-            var campaign = new CampaignModel
-            {
-                Name = newCampaign.Name,
-                AgeMin = newCampaign.AgeMin,
-                AgeMax = newCampaign.AgeMax,
-                Type = newCampaign.Type,
-                Status = newCampaign.Status,
-                DateBegin = newCampaign.DateBegin,
-                DateEnd = newCampaign.DateEnd,
-                DateCreation = DateTime.Now,
-                DateUpdate = DateTime.Now,
-                Organization = new OrganizationModel
-                {
-                    Id = Guid.Parse(newCampaign.OrganizationId)
-                }
-            };
+            CampaignModel campaign = _mapper.Map(
+                newCampaign,
+                new CampaignModel()
+            );
+            var organization = _organizationBusinessLogic.GetOrganizationModelById(
+                newCampaign.OrganizationId.ToString()
+            );
 
-			return _repository.AddNewCampaign(campaign);
+            if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot create a campaign for an organization you're not part of");
+            }
+            campaign.Organization = organization;
+            return _mapper.Map(
+                _repository.AddNewCampaign(campaign),
+                new CampaignPublicDto()
+            );
         }
 
-        public CampaignModel UpdateCampaignById(string id, CampaignUpdateModel updatedCampaign)
+        public CampaignPublicDto UpdateCampaignById(Guid id, CampaignUpdateDto updatedCampaign, ConnectedUser currentUser)
         {
 			var campaignMerge =_mapper.Map<CampaignUpdateModel, CampaignModel>(
 				updatedCampaign,
 				_repository.GetCampaignById(Guid.Parse(id))
 			);
 
-            return _repository.UpdateCampaign(campaignMerge);
+            if (!_organizationBusinessLogic.IsUserInOrganization(campaignMerge.Organization.Id, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot update a campaign for an organization you're not part of");
+            }
+            return _mapper.Map(
+                _repository.UpdateCampaign(campaignMerge),
+                new CampaignPublicDto()
+            );
         }
 
-        public int DeleteCampaignById(string id)
+        public int DeleteCampaignById(Guid id, ConnectedUser currentUser)
         {
 			var campaign = _repository.GetCampaignById(Guid.Parse(id));
 
-			_repository.DeleteCampaign(campaign);
-			return 0;
+            if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot delete a campaign for an organization you're not part of");
+            }
+            return _repository.DeleteCampaign(campaign);
         }
 
 		public CampaignModel GetCampaignById(string id)
@@ -67,11 +76,22 @@ namespace api.Business.Campaign
 			return _repository.GetCampaignById(Guid.Parse(id));
 		}
 
-        public (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters)
+            if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get a campaign from an organization to which you don't belong.");
+            }
+            return _mapper.Map(campaign, new CampaignPublicDto());
+        }
+
+        public (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters, ConnectedUser currentUser)
         {
             IList<CampaignModel> campaigns = null;
             int maxPage = 0;
 
+            if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id)) {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get a campaign from an organization to which you don't belong.");
+            }
             paging = PagingHelper.Check(paging);
             (campaigns, maxPage) = _repository.GetOrganizationCampaigns(
                 filters.OrganizationId,
