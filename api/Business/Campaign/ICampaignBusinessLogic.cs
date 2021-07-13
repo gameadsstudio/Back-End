@@ -11,9 +11,9 @@ namespace api.Business.Campaign
 
         CampaignPublicDto UpdateCampaignById(Guid id, CampaignUpdateDto updatedCampaign, ConnectedUser currentUser);
 
-        int DeleteCampaignById(Guid id, ConnectedUser currentUser);
+        void DeleteCampaignById(Guid id, ConnectedUser currentUser);
 
-        CampaignPublicDto GetCampaignById(Guid id);
+        CampaignPublicDto GetCampaignById(Guid id, ConnectedUser currentUser);
 
         (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging, CampaignFiltersDto filters, ConnectedUser currentUser);
     }

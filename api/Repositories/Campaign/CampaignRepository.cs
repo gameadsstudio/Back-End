@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Campaign;
-using api.Models.Organization;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Campaign
 {
@@ -41,8 +41,7 @@ namespace api.Repositories.Campaign
         {
             return _context.Campaign
                 .Include(x => x.Organization)
-                .Where(campaign => campaign.Id == id)
-                .SingleOrDefault();
+                .SingleOrDefault(campaign => campaign.Id == id);
         }
 
         public (IList<CampaignModel>, int) GetOrganizationCampaigns(Guid id, int offset, int limit)
