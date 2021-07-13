@@ -11,6 +11,7 @@ using api.Business.User;
 using api.Business.Organization;
 using api.Business.Game;
 using api.Business.Version;
+using api.Business.Campaign;
 using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
@@ -116,6 +117,7 @@ namespace api
             services.AddScoped<IAdContainerBusinessLogic, AdContainerBusinessLogic>();
             services.AddScoped<IGameBusinessLogic, GameBusinessLogic>();
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
+            services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)

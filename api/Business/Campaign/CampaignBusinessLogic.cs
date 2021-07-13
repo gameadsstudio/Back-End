@@ -11,12 +11,10 @@ namespace api.Business.Campaign
     public class CampaignBusinessLogic : ICampaignBusinessLogic
     {
         private readonly ICampaignRepository _repository;
-        private readonly AppSettings _appSettings;
 
         public CampaignBusinessLogic(ApiContext context, IOptions<AppSettings> appSettings)
         {
             _repository = new CampaignRepository(context);
-            _appSettings = appSettings.Value;
         }
 
         public CampaignModel AddNewCampaign(CampaignCreationModel newCampaign)
