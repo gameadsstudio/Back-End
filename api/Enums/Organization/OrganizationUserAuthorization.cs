@@ -1,4 +1,4 @@
-namespace api.Enums
+namespace api.Enums.Organization
 {
     public enum OrganizationUserAuthorization
     {

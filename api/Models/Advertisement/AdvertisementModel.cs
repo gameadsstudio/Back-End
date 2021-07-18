@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums;
+using api.Enums.Advertisement;
 
 namespace api.Models.Advertisement
 {

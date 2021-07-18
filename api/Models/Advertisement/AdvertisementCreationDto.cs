@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using api.DataAnnotations;
 using api.Enums;
+using api.Enums.Advertisement;
 
 namespace api.Models.Advertisement
 {
