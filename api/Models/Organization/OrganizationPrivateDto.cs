@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using api.Enums;
+using api.Enums.Organization;
 using api.Models.Campaign;
 using api.Models.Game;
 using api.Models.User;

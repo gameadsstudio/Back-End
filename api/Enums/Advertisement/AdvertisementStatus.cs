@@ -1,4 +1,4 @@
-namespace api.Enums
+namespace api.Enums.Advertisement
 {
     public enum AdvertisementStatus
     {

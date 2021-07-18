@@ -2,7 +2,9 @@
 using System.Linq;
 using api.Enums;
 using api.Enums.AdContainer;
+using api.Enums.Advertisement;
 using api.Enums.User;
+using api.Enums.Organization;
 using api.Models.Advertisement;
 using api.Models.AdContainer;
 using api.Models.Campaign;
