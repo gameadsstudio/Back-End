@@ -1,4 +1,6 @@
-﻿namespace api.Models.Campaign
+﻿using api.Enums.Campaign;
+
+namespace api.Models.Campaign
 {
     public class CampaignUpdateDto
     {
@@ -10,6 +12,6 @@
         
         public string Type { get; set; }
         
-        public string Status { get; set; }
+        public CampaignStatus Status { get; set; }
     }
 }
