@@ -1,32 +1,37 @@
 version: 2.1
 
+orbs:
+  kubernetes: circleci/kubernetes@0.12.0
+
 jobs:
   push-to-registry-latest:
     machine: true
     steps:
       - checkout
-      # start proprietary DB using private Docker image
-      # with credentials stored in the UI
       - run: echo "$DOCKER_PASS" | docker login $REGISTRY_URL --username $DOCKER_USER --password-stdin
-
-      # build the application image
       - run: docker build -t $REGISTRY_URL/gas-api:latest ./api/
-
-      # deploy the image
       - run: docker push $REGISTRY_URL/gas-api:latest
   push-to-registry-production:
     machine: true
     steps:
      - checkout
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
      - run: echo "$DOCKER_PASS" | docker login $REGISTRY_URL --username $DOCKER_USER --password-stdin
-
-     # build the application image
      - run: docker build -t $REGISTRY_URL/gas-api:production ./api/
-
-     # deploy the image
      - run: docker push $REGISTRY_URL/gas-api:production
+  rollout-latest:
+    docker:
+      - image: 'cimg/base:stable'
+    steps:
+      - checkout
+      - kubernetes/install-kubectl
+      - kubernetes/install-kubeconfig:
+          kubeconfig: KUBECONFIG_DATA
+      - kubernetes/update-container-image:
+          container-image-updates: 'gas-api=registry.gameadsstudio.com/gas-api:latest'
+          get-rollout-status: true
+          record: true
+          resource-name: deployment/gas-api-deployment
+          watch-timeout: '5m'
       
 workflows:
   build-and-deploy: 
@@ -43,3 +48,6 @@ workflows:
             branches:
               only:
                 - master
+      - rollout-latest:
+          requires:
+            - push-to-registry-latest
