@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using api.Enums.Campaign;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace api.Models.Campaign
@@ -18,7 +19,7 @@ namespace api.Models.Campaign
 
         public string Type { get; set; }
 
-        public string Status { get; set; }
+        public CampaignStatus Status { get; set; }
 
         public DateTimeOffset DateBegin { get; set; }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using api.Enums;
 using api.Enums.AdContainer;
-using api.Enums.Advertisement;
 using api.Enums.User;
 using api.Enums.Organization;
 using api.Models.Advertisement;
@@ -103,10 +101,6 @@ namespace api.Contexts
             modelBuilder.Entity<AdvertisementModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-                entity.Property(e => e.Status)
-                    .HasConversion(
-                        v => v.ToString(),
-                        v => (AdvertisementStatus) Enum.Parse(typeof(AdvertisementStatus), v));
             });
 
             modelBuilder.Entity<AdContainerModel>(entity =>

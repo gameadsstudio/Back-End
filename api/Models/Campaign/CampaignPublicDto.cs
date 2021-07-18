@@ -1,4 +1,5 @@
 ﻿using System;
+using api.Enums.Campaign;
 
 namespace api.Models.Campaign
 {
@@ -14,7 +15,7 @@ namespace api.Models.Campaign
 
         public string Type { get; set; }
 
-        public string Status { get; set; }
+        public CampaignStatus Status { get; set; }
 
         public DateTimeOffset DateBegin { get; set; }
 

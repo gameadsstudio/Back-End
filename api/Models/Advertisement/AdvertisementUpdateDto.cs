@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using api.Enums;
-using api.Enums.Advertisement;
 
 namespace api.Models.Advertisement
 {
@@ -11,7 +9,5 @@ namespace api.Models.Advertisement
         
         [RangeAttribute(0, 120)]
         public int AgeMax { get; set; }
-        
-        public AdvertisementStatus Status { get; set; }
     }
 }
