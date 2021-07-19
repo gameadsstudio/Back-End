@@ -26,12 +26,15 @@ jobs:
       - kubernetes/install-kubectl
       - kubernetes/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
-      - kubernetes/update-container-image:
-          container-image-updates: 'gas-api=registry.gameadsstudio.com/gas-api:latest'
-          get-rollout-status: true
-          record: true
+      # - kubernetes/update-container-image:
+      #     container-image-updates: 'gas-api=registry.gameadsstudio.com/gas-api:latest'
+      #     get-rollout-status: true
+      #     record: true
+      #     resource-name: deployment/gas-api-deployment
+      #     watch-timeout: '5m'
+      - run: kubectl rollout restart deploy/gas-api-deployment
+      - kubernetes/get-rollout-status:
           resource-name: deployment/gas-api-deployment
-          watch-timeout: '5m'
       
 workflows:
   build-and-deploy: 
