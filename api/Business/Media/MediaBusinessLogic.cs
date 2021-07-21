@@ -110,7 +110,7 @@ namespace api.Business.Media
             // Saving normal map
             using (var fileStream =
                 new FileStream(
-                    $"{assetsDir}/nomal_map{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/normal_map{Path.GetExtension(media2DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
                 media2DCreationDto.NormalMap.CopyToAsync(fileStream);
@@ -168,7 +168,7 @@ namespace api.Business.Media
             // Saving normal map
             using (var fileStream =
                 new FileStream(
-                    $"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyToAsync(fileStream);
@@ -211,7 +211,7 @@ namespace api.Business.Media
             }
 
             media.Tags = ResolveTags(newMedia.TagName);
-            media.Organization = _organizationBusiness.GetOrganizationModelById(newMedia.OrgId);
+            media.Organization = _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrgId));
             var savedMedia = _repository.AddNewMedia(media);
 
             switch (newMedia.Type)
