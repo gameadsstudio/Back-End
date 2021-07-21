@@ -83,8 +83,8 @@ namespace api.Mappings
             CreateMap<MediaModel, MediaPublicDto>();
             // Medias - 2D
             CreateMap<Media2DModel, Media2DPublicDto>();
-            CreateMap<Media2DCreationDto, Media2DModel>();
-            CreateMap<MediaCreationDto, Media2DCreationDto>();
+            CreateMap<Media2DCreationDto, Media2DModel>().ReverseMap();
+            CreateMap<MediaCreationDto, Media2DCreationDto>().ReverseMap();
             // Medias - 3D
             CreateMap<Media3DModel, Media3DPublicDto>();
             CreateMap<Media3DCreationDto, Media3DModel>();
