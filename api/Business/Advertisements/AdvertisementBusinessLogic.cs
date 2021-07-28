@@ -24,7 +24,8 @@ namespace api.Business.Advertisements
         private readonly ITagBusinessLogic _tagBusinessLogic;
 
         public AdvertisementBusinessLogic(ApiContext context, IMapper mapper,
-            IOrganizationBusinessLogic organizationBusinessLogic, ICampaignBusinessLogic campaignBusinessLogic, ITagBusinessLogic tagBusinessLogic)
+            IOrganizationBusinessLogic organizationBusinessLogic, ICampaignBusinessLogic campaignBusinessLogic,
+            ITagBusinessLogic tagBusinessLogic)
         {
             _repository = new AdvertisementRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
@@ -101,7 +102,15 @@ namespace api.Business.Advertisements
         {
             var advertisement = GetAdvertisementModelById(id);
 
+            if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
+                currentUser.Id) && currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot modify an advertisement in an organization you're not a part of");
+            }
+
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
+            advertisement.Tags = _tagBusinessLogic.ResolveTags(updatedAdvertisement.TagNames);
 
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
@@ -109,6 +118,13 @@ namespace api.Business.Advertisements
         public void DeleteAdvertisementById(Guid id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
+
+            if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
+                currentUser.Id) && currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot delete an advertisement in an organization you're not a part of");
+            }
 
             _repository.DeleteAdvertisement(advertisement);
         }
