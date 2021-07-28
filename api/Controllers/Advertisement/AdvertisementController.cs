@@ -30,36 +30,26 @@ namespace api.Controllers.Advertisement
         public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] AdvertisementFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            var result = _business.GetAdvertisements(paging, filters, currentUser);
 
-            return Ok(new
-            {
-                status = 200,
-                page = result.Item1,
-                pagesize = result.Item2,
-                maxPage = result.Item3,
-                advertisements = result.Item4
-            });
+            return Ok(new GetAllDto<AdvertisementPublicDto>(_business.GetAdvertisements(paging, filters, currentUser)));
         }
 
         [HttpPost]
         public IActionResult Post([FromForm] AdvertisementCreationDto newAdvertisement)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            
-            var advertisement = _business.AddNewAdvertisement(newAdvertisement, currentUser);
 
-            return Created("Advertisement", new {status = 201, advertisement});
+            return Created("Advertisement",
+                new GetDto<AdvertisementPublicDto>(_business.AddNewAdvertisement(newAdvertisement, currentUser)));
         }
 
         [HttpPatch("{id}")]
         public IActionResult Patch(Guid id, [FromForm] AdvertisementUpdateDto newAdvertisement)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            return Ok(new
-            {
-                status = "", advertisement = _business.UpdateAdvertisementById(id, newAdvertisement, currentUser),
-            });
+
+            return Ok(new GetDto<AdvertisementPublicDto>(
+                _business.UpdateAdvertisementById(id, newAdvertisement, currentUser)));
         }
 
         [HttpDelete("{id}")]
@@ -69,7 +59,7 @@ namespace api.Controllers.Advertisement
 
             _business.DeleteAdvertisementById(id, currentUser);
 
-            return Ok(new {status = 200,});
+            return Ok();
         }
     }
 }
