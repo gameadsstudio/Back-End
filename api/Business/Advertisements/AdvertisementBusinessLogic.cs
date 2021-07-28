@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using api.Business.Campaign;
+using api.Business.Organization;
+using api.Business.Tag;
 using api.Contexts;
+using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.Advertisement;
@@ -15,15 +19,30 @@ namespace api.Business.Advertisements
         private readonly IMapper _mapper;
         private readonly IAdvertisementRepository _repository;
 
-        public AdvertisementBusinessLogic(ApiContext context, IMapper mapper)
+        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
+        private readonly ICampaignBusinessLogic _campaignBusinessLogic;
+        private readonly ITagBusinessLogic _tagBusinessLogic;
+
+        public AdvertisementBusinessLogic(ApiContext context, IMapper mapper,
+            IOrganizationBusinessLogic organizationBusinessLogic, ICampaignBusinessLogic campaignBusinessLogic, ITagBusinessLogic tagBusinessLogic)
         {
             _repository = new AdvertisementRepository(context);
+            _organizationBusinessLogic = organizationBusinessLogic;
+            _campaignBusinessLogic = campaignBusinessLogic;
+            _tagBusinessLogic = tagBusinessLogic;
             _mapper = mapper;
         }
 
         public AdvertisementPublicDto GetAdvertisementById(Guid id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
+
+            if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
+                currentUser.Id) && currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the advertisement of an organization you're not a part of");
+            }
 
             return _mapper.Map(advertisement, new AdvertisementPublicDto());
         }
@@ -41,18 +60,38 @@ namespace api.Business.Advertisements
         }
 
         public (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(
-            PagingDto paging)
+            PagingDto paging, AdvertisementFiltersDto filters, ConnectedUser currentUser)
         {
+            if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id) &&
+                currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the advertisements of an organization you're not a part of");
+            }
+
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountAdvertisements() / paging.PageSize + 1;
-            var advertisements = _repository.GetAdvertisements((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage,
+            var (advertisements, maxPage) =
+                _repository.GetAdvertisements((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
+            return (paging.Page, paging.PageSize, maxPage / paging.PageSize + 1,
                 _mapper.Map(advertisements, new List<AdvertisementPublicDto>()));
         }
 
-        public AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement)
+        public AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement,
+            ConnectedUser currentUser)
         {
+            var campaign = _campaignBusinessLogic.GetCampaignModelById(newAdvertisement.CampaignId);
+
+            if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id) &&
+                currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot create an advertisement in an organization you're not a part of");
+            }
+
             var advertisement = _mapper.Map(newAdvertisement, new AdvertisementModel());
+
+            advertisement.Campaign = campaign;
+            advertisement.Tags = _tagBusinessLogic.ResolveTags(newAdvertisement.TagNames);
 
             return _mapper.Map(_repository.AddNewAdvertisement(advertisement), new AdvertisementPublicDto());
         }

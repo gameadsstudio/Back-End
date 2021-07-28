@@ -39,7 +39,7 @@ namespace api.Business.Game
                     "Cannot create a game for an organization you're not part of");
             }
 
-            game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId.ToString());
+            game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId);
 
             return _mapper.Map(_repository.AddNewGame(game), new GamePublicDto());
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using api.Models.Advertisement;
 
 namespace api.Repositories.Advertisement
@@ -7,7 +8,7 @@ namespace api.Repositories.Advertisement
     {
         AdvertisementModel AddNewAdvertisement(AdvertisementModel user);
         AdvertisementModel GetAdvertisementById(Guid id);
-        AdvertisementModel[] GetAdvertisements(int offset, int limit);
+        (List<AdvertisementModel>, int) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters);
         AdvertisementModel UpdateAdvertisement(AdvertisementModel updatedUser);
         int DeleteAdvertisement(AdvertisementModel user);
         int CountAdvertisements();

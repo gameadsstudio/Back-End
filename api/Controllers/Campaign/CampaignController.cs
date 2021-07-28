@@ -39,7 +39,7 @@ namespace api.Controllers.Campaign
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<CampaignPublicDto>(_business.AddNewCampaign(newCampaign, currentUser)));
+            return Created("Campaign", new GetDto<CampaignPublicDto>(_business.AddNewCampaign(newCampaign, currentUser)));
         }
 
         [HttpPatch("{id}")]

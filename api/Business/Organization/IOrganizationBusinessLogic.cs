@@ -10,7 +10,7 @@ namespace api.Business.Organization
     {
         OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, ConnectedUser currentUser);
         object GetOrganizationById(string id, ConnectedUser currentUser);
-        OrganizationModel GetOrganizationModelById(string id);
+        OrganizationModel GetOrganizationModelById(Guid id);
         public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging, OrganizationFiltersDto filters);
         OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, ConnectedUser currentUser);
         void DeleteOrganizationById(string id, ConnectedUser currentUser);

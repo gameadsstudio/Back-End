@@ -9,9 +9,7 @@ namespace api.Models.Campaign
         public string AgeMin { get; set; }
         
         public string AgeMax { get; set; }
-        
-        public string Type { get; set; }
-        
+
         public CampaignStatus Status { get; set; }
     }
 }

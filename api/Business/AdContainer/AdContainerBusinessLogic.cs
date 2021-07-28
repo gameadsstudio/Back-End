@@ -79,7 +79,7 @@ namespace api.Business.AdContainer
             }
 
             adContainer.Organization = adContainer.Version.Game.Organization;
-            adContainer.Tags = ResolveTags(newAdContainer.TagNames);
+            adContainer.Tags = _tagBusinessLogic.ResolveTags(newAdContainer.TagNames);
             return _mapper.Map(_repository.AddNewAdContainer(adContainer), new AdContainerPublicDto());
         }
 
@@ -106,7 +106,7 @@ namespace api.Business.AdContainer
 
             if (updatedAdContainer.TagNames != null)
             {
-                adContainer.Tags = ResolveTags(updatedAdContainer.TagNames);
+                adContainer.Tags = _tagBusinessLogic.ResolveTags(updatedAdContainer.TagNames);
             }
 
             return _mapper.Map(_repository.UpdateAdContainer(adContainer), new AdContainerPublicDto());
@@ -123,13 +123,6 @@ namespace api.Business.AdContainer
             }
 
             _repository.DeleteAdContainer(adContainer);
-        }
-
-        private IList<TagModel> ResolveTags(IEnumerable<string> tagNames)
-        {
-            return (from tagName in tagNames
-                where !string.IsNullOrEmpty(tagName)
-                select _tagBusinessLogic.GetTagModelByName(tagName)).ToList();
         }
     }
 }

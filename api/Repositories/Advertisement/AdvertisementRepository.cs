@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Advertisement;
@@ -26,9 +27,21 @@ namespace api.Repositories.Advertisement
             return _context.Advertisement.SingleOrDefault(a => a.Id == id);
         }
 
-        public AdvertisementModel[] GetAdvertisements(int offset, int limit)
+        public (List<AdvertisementModel>, int) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters)
         {
-            return _context.Advertisement.OrderBy(p => p.Id).Skip(offset).Take(limit).ToArray();
+            IQueryable<AdvertisementModel> query = _context.Advertisement.OrderBy(a => a.DateCreation);
+
+            if (filters.OrganizationId != Guid.Empty)
+            {
+                query = query.Where(o => o.Campaign.Organization.Id == filters.OrganizationId);
+            }
+
+            if (filters.CampaignId != Guid.Empty)
+            {
+                query = query.Where(o => o.Campaign.Id == filters.CampaignId);
+            }
+
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
 
         public AdvertisementModel UpdateAdvertisement(AdvertisementModel advertisement)

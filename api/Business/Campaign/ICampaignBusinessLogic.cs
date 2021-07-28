@@ -17,5 +17,7 @@ namespace api.Business.Campaign
 
         (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging,
             CampaignFiltersDto filters, ConnectedUser currentUser);
+
+        public CampaignModel GetCampaignModelById(Guid id);
     }
 }

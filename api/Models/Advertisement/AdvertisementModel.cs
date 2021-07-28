@@ -14,6 +14,8 @@ namespace api.Models.Advertisement
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
+        public string Name { get; set; }
+        
         public CampaignModel Campaign { get; set; }
         
         public IList<TagModel> Tags { get; set; }

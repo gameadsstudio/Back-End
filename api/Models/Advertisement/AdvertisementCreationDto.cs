@@ -8,7 +8,10 @@ namespace api.Models.Advertisement
     public class AdvertisementCreationDto
     {
         [BindRequired]
-        public Guid OrganizationId { get; set; }
+        public Guid CampaignId { get; set; }
+        
+        [Required]
+        public string Name { get; set; }
         
         public IList<string> TagNames { get; set; }
         
