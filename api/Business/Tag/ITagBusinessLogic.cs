@@ -12,5 +12,6 @@ namespace api.Business.Tag
         TagPublicDto UpdateTagById(string id, TagUpdateDto updatedTag, ConnectedUser currentUser);
         TagModel GetTagModelByName(string name);
         void DeleteTagById(string id, ConnectedUser currentUser);
+        public IList<TagModel> ResolveTags(IEnumerable<string> tagNames);
     }
 }

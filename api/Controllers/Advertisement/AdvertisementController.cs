@@ -27,10 +27,10 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] PagingDto paging)
+        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] AdvertisementFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            var result = _business.GetAdvertisements(paging);
+            var result = _business.GetAdvertisements(paging, filters, currentUser);
 
             return Ok(new
             {
@@ -45,7 +45,9 @@ namespace api.Controllers.Advertisement
         [HttpPost]
         public IActionResult Post([FromForm] AdvertisementCreationDto newAdvertisement)
         {
-            var advertisement = _business.AddNewAdvertisement(newAdvertisement);
+            var currentUser = new ConnectedUser(User.Claims);
+            
+            var advertisement = _business.AddNewAdvertisement(newAdvertisement, currentUser);
 
             return Created("Advertisement", new {status = 201, advertisement});
         }

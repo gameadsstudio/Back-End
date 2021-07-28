@@ -9,12 +9,14 @@ namespace api.Models.Advertisement
     public class AdvertisementPublicDto
     {
         public Guid Id { get; set; }
+        
+        public string Name { get; set; }
 
         public int AgeMin { get; set; }
         
         public int AgeMax { get; set; }
         
-        public IList<CampaignPublicDto> Campaigns { get; set; }
+        // public CampaignPublicDto Campaign { get; set; }
         
         public IList<TagPublicDto> Tags { get; set; }
 

@@ -8,6 +8,7 @@ using api.Errors;
 using api.Models.Campaign;
 using api.Repositories.Campaign;
 using api.Helpers;
+using api.Models.Advertisement;
 
 namespace api.Business.Campaign
 {
@@ -31,7 +32,7 @@ namespace api.Business.Campaign
         {
             CampaignModel campaign = _mapper.Map(newCampaign, new CampaignModel());
             var organization =
-                _organizationBusinessLogic.GetOrganizationModelById(newCampaign.OrganizationId.ToString());
+                _organizationBusinessLogic.GetOrganizationModelById(newCampaign.OrganizationId);
 
             if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id))
             {
@@ -40,6 +41,7 @@ namespace api.Business.Campaign
             }
 
             campaign.Organization = organization;
+            campaign.Advertisements = new List<AdvertisementModel>();
             return _mapper.Map(_repository.AddNewCampaign(campaign), new CampaignPublicDto());
         }
 
@@ -97,6 +99,18 @@ namespace api.Business.Campaign
                 (paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
                 _mapper.Map(campaigns, new List<CampaignPublicDto>()));
+        }
+
+        public CampaignModel GetCampaignModelById(Guid id)
+        {
+            var campaign = _repository.GetCampaignById(id);
+
+            if (campaign == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find campaign with Id: {id}");
+            }
+
+            return campaign;
         }
     }
 }

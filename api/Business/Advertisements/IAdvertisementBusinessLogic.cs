@@ -9,8 +9,8 @@ namespace api.Business.Advertisements
     {
         AdvertisementPublicDto GetAdvertisementById(Guid id, ConnectedUser currentUser);
         AdvertisementModel GetAdvertisementModelById(Guid id);
-        (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(PagingDto paging);
-        AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement);
+        (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(PagingDto paging, AdvertisementFiltersDto filters, ConnectedUser currentUser);
+        AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement, ConnectedUser currentUser);
         AdvertisementPublicDto UpdateAdvertisementById(Guid id, AdvertisementUpdateDto updatedAdvertisement, ConnectedUser currentUser);
         void DeleteAdvertisementById(Guid id, ConnectedUser currentUser);
     }

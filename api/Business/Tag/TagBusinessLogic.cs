@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using api.Contexts;
 using api.Errors;
@@ -78,6 +79,13 @@ namespace api.Business.Tag
                 throw new ApiError(HttpStatusCode.Conflict,
                     $"Tag with name: {name} already exists");
             }
+        }
+        
+        public IList<TagModel> ResolveTags(IEnumerable<string> tagNames)
+        {
+            return (from tagName in tagNames
+                where !string.IsNullOrEmpty(tagName)
+                select this.GetTagModelByName(tagName)).ToList();
         }
     }
 }

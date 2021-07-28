@@ -60,7 +60,7 @@ namespace api.Business.Organization
 
         public void DeleteOrganizationById(string id, ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users != null && organization.Users.Any(x => x.Id == currentUser.Id))
             {
@@ -76,7 +76,7 @@ namespace api.Business.Organization
         // Todo : find a better return type
         public object GetOrganizationById(string id, ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users != null && organization.Users.Any(user => user.Id == currentUser.Id))
             {
@@ -86,9 +86,9 @@ namespace api.Business.Organization
             return _mapper.Map(organization, new OrganizationPublicDto());
         }
 
-        public OrganizationModel GetOrganizationModelById(string id)
+        public OrganizationModel GetOrganizationModelById(Guid id)
         {
-            var organization = _repository.GetOrganizationById(GuidHelper.StringToGuidConverter(id));
+            var organization = _repository.GetOrganizationById(id);
 
             if (organization == null)
             {
@@ -101,7 +101,7 @@ namespace api.Business.Organization
         public OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization,
             ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users == null || organization.Users.All(user => user.Id != currentUser.Id))
             {
@@ -118,7 +118,7 @@ namespace api.Business.Organization
 
         public OrganizationPrivateDto AddUserToOrganization(string id, string userId, ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
@@ -139,7 +139,7 @@ namespace api.Business.Organization
 
         public List<UserPublicDto> GetOrganizationUsers(string id, ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users != null && organization.Users.All(x => x.Id != currentUser.Id))
             {
@@ -152,7 +152,7 @@ namespace api.Business.Organization
 
         public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser)
         {
-            var organization = GetOrganizationModelById(id);
+            var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
             if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
@@ -176,7 +176,7 @@ namespace api.Business.Organization
 
         public bool IsUserInOrganization(Guid orgId, Guid userId)
         {
-            var org = GetOrganizationModelById(orgId.ToString());
+            var org = GetOrganizationModelById(orgId);
             return org.Users?.Any(user => userId == user.Id) ?? false;
         }
     }
