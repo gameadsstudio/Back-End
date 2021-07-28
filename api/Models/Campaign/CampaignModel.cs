@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums.Campaign;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using api.Models.Organization;
+using api.Models.Tag;
 
 namespace api.Models.Campaign
 {
@@ -36,5 +38,7 @@ namespace api.Models.Campaign
         [BindRequired]
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
+        
+        public IList<TagModel> Tags { get; set; }
     }
 }

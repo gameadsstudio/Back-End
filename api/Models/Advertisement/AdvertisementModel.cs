@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Models.Campaign;
+using api.Models.Tag;
 
 namespace api.Models.Advertisement
 {
@@ -11,16 +14,13 @@ namespace api.Models.Advertisement
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         
-        // [ForeignKey("AdvertisementTypeId")]
-        // public AdvertisementTypeModel AdvertisementType { get; set; }
+        public CampaignModel Campaign { get; set; }
         
-        // [ForeignKey("CampaignId")]
-        // public CampaignModel Campaign { get; set; }
+        public IList<TagModel> Tags { get; set; }
         
         public int AgeMin { get; set; }
         
         public int AgeMax { get; set; }
-        
         
         public DateTimeOffset DateCreation { get; set; }
         
