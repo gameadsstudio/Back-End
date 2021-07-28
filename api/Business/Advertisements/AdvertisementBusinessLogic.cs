@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using api.Contexts;
@@ -20,16 +21,16 @@ namespace api.Business.Advertisements
             _mapper = mapper;
         }
 
-        public AdvertisementPublicDto GetAdvertisementById(string id, ConnectedUser currentUser)
+        public AdvertisementPublicDto GetAdvertisementById(Guid id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
 
             return _mapper.Map(advertisement, new AdvertisementPublicDto());
         }
 
-        public AdvertisementModel GetAdvertisementModelById(string id)
+        public AdvertisementModel GetAdvertisementModelById(Guid id)
         {
-            var advertisement = _repository.GetAdvertisementById(GuidHelper.StringToGuidConverter(id));
+            var advertisement = _repository.GetAdvertisementById(id);
 
             if (advertisement == null)
             {
@@ -45,7 +46,8 @@ namespace api.Business.Advertisements
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountAdvertisements() / paging.PageSize + 1;
             var advertisements = _repository.GetAdvertisements((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(advertisements, new List<AdvertisementPublicDto>()));
+            return (paging.Page, paging.PageSize, maxPage,
+                _mapper.Map(advertisements, new List<AdvertisementPublicDto>()));
         }
 
         public AdvertisementPublicDto AddNewAdvertisement(AdvertisementCreationDto newAdvertisement)
@@ -55,7 +57,7 @@ namespace api.Business.Advertisements
             return _mapper.Map(_repository.AddNewAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
-        public AdvertisementPublicDto UpdateAdvertisementById(string id, AdvertisementUpdateDto updatedAdvertisement,
+        public AdvertisementPublicDto UpdateAdvertisementById(Guid id, AdvertisementUpdateDto updatedAdvertisement,
             ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
@@ -65,7 +67,7 @@ namespace api.Business.Advertisements
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
-        public void DeleteAdvertisementById(string id, ConnectedUser currentUser)
+        public void DeleteAdvertisementById(Guid id, ConnectedUser currentUser)
         {
             var advertisement = GetAdvertisementModelById(id);
 

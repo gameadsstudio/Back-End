@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using api.Enums.Campaign;
+using api.Models.Advertisement;
 
 namespace api.Models.Campaign
 {
@@ -14,6 +16,8 @@ namespace api.Models.Campaign
         public string AgeMax { get; set; }
 
         public string Type { get; set; }
+        
+        public IList<AdvertisementPublicDto> Advertisements { get; set; }
 
         public CampaignStatus Status { get; set; }
 

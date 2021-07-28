@@ -1,6 +1,8 @@
+using System;
 using api.Business.Advertisements;
 using api.Helpers;
 using api.Models.Advertisement;
+using api.Models.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.Advertisement
@@ -17,15 +19,17 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(string id)
+        public IActionResult Get(Guid id)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            return Ok(new {status = 200, advertisement = _business.GetAdvertisementById(id, currentUser)});
+
+            return Ok(new GetDto<AdvertisementPublicDto>(_business.GetAdvertisementById(id, currentUser)));
         }
 
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging)
         {
+            var currentUser = new ConnectedUser(User.Claims);
             var result = _business.GetAdvertisements(paging);
 
             return Ok(new
@@ -47,7 +51,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(string id, [FromForm] AdvertisementUpdateDto newAdvertisement)
+        public IActionResult Patch(Guid id, [FromForm] AdvertisementUpdateDto newAdvertisement)
         {
             var currentUser = new ConnectedUser(User.Claims);
             return Ok(new
@@ -57,7 +61,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(Guid id)
         {
             var currentUser = new ConnectedUser(User.Claims);
 

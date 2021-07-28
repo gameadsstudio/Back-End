@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Models.AdContainer;
+using api.Models.Advertisement;
 
 namespace api.Models.Tag
 {
@@ -19,6 +20,8 @@ namespace api.Models.Tag
         public string Description { get; set; }
 
         public ICollection<AdContainerModel> AdContainers { get; set; }
+        
+        public ICollection<AdvertisementModel> Advertisements { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
