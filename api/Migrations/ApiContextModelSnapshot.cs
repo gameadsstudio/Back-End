@@ -38,6 +38,25 @@ namespace api.Migrations
                     b.ToTable("ad_container_model_tag_model");
                 });
 
+            modelBuilder.Entity("AdvertisementModelTagModel", b =>
+                {
+                    b.Property<Guid>("AdvertisementsId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("advertisements_id");
+
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tags_id");
+
+                    b.HasKey("AdvertisementsId", "TagsId")
+                        .HasName("pk_advertisement_model_tag_model");
+
+                    b.HasIndex("TagsId")
+                        .HasDatabaseName("ix_advertisement_model_tag_model_tags_id");
+
+                    b.ToTable("advertisement_model_tag_model");
+                });
+
             modelBuilder.Entity("OrganizationModelUserModel", b =>
                 {
                     b.Property<Guid>("OrganizationsId")
@@ -134,6 +153,10 @@ namespace api.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("age_min");
 
+                    b.Property<Guid?>("CampaignId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("campaign_id");
+
                     b.Property<DateTimeOffset>("DateCreation")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_creation");
@@ -142,13 +165,15 @@ namespace api.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_update");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<string>("Name")
                         .HasColumnType("text")
-                        .HasColumnName("status");
+                        .HasColumnName("name");
 
                     b.HasKey("Id")
                         .HasName("pk_advertisement");
+
+                    b.HasIndex("CampaignId")
+                        .HasDatabaseName("ix_advertisement_campaign_id");
 
                     b.ToTable("advertisement");
                 });
@@ -168,17 +193,9 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("age_min");
 
-                    b.Property<DateTimeOffset>("DateBegin")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_begin");
-
                     b.Property<DateTimeOffset>("DateCreation")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateEnd")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_end");
 
                     b.Property<DateTimeOffset>("DateUpdate")
                         .HasColumnType("timestamp with time zone")
@@ -192,14 +209,6 @@ namespace api.Migrations
                     b.Property<Guid?>("OrgId")
                         .HasColumnType("uuid")
                         .HasColumnName("org_id");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("text")
-                        .HasColumnName("type");
 
                     b.HasKey("Id")
                         .HasName("pk_campaign");
@@ -459,6 +468,23 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AdvertisementModelTagModel", b =>
+                {
+                    b.HasOne("api.Models.Advertisement.AdvertisementModel", null)
+                        .WithMany()
+                        .HasForeignKey("AdvertisementsId")
+                        .HasConstraintName("fk_advertisement_model_tag_model_advertisement_advertisements_")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Tag.TagModel", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .HasConstraintName("fk_advertisement_model_tag_model_tag_tags_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OrganizationModelUserModel", b =>
                 {
                     b.HasOne("api.Models.Organization.OrganizationModel", null)
@@ -493,6 +519,16 @@ namespace api.Migrations
                     b.Navigation("Version");
                 });
 
+            modelBuilder.Entity("api.Models.Advertisement.AdvertisementModel", b =>
+                {
+                    b.HasOne("api.Models.Campaign.CampaignModel", "Campaign")
+                        .WithMany("Advertisements")
+                        .HasForeignKey("CampaignId")
+                        .HasConstraintName("fk_advertisement_campaign_campaign_id");
+
+                    b.Navigation("Campaign");
+                });
+
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
                 {
                     b.HasOne("api.Models.Organization.OrganizationModel", "Organization")
@@ -521,6 +557,11 @@ namespace api.Migrations
                         .HasConstraintName("fk_version_game_game_id");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
+                {
+                    b.Navigation("Advertisements");
                 });
 
             modelBuilder.Entity("api.Models.Game.GameModel", b =>
