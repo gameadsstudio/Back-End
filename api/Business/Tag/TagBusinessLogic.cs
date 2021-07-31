@@ -83,6 +83,12 @@ namespace api.Business.Tag
         
         public IList<TagModel> ResolveTags(IEnumerable<string> tagNames)
         {
+
+            if (tagNames == null || tagNames.Count() == 0)
+            {
+                return new List<TagModel>();
+            }
+            
             return (from tagName in tagNames
                 where !string.IsNullOrEmpty(tagName)
                 select this.GetTagModelByName(tagName)).ToList();
