@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Advertisement;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.Advertisement
 {
@@ -24,7 +25,10 @@ namespace api.Repositories.Advertisement
 
         public AdvertisementModel GetAdvertisementById(Guid id)
         {
-            return _context.Advertisement.SingleOrDefault(a => a.Id == id);
+            return _context.Advertisement
+                .Include(v => v.Campaign)
+                .ThenInclude(g => g.Organization)
+                .SingleOrDefault(a => a.Id == id);
         }
 
         public (List<AdvertisementModel>, int) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters)
