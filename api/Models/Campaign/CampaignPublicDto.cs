@@ -14,6 +14,10 @@ namespace api.Models.Campaign
         public string AgeMin { get; set; }
 
         public string AgeMax { get; set; }
+        
+        public DateTimeOffset DateBegin { get; set; }
+        
+        public DateTimeOffset DateEnd { get; set; }
 
         public IList<AdvertisementPublicDto> Advertisements { get; set; }
 

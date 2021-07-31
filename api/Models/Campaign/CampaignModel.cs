@@ -24,6 +24,10 @@ namespace api.Models.Campaign
 
         public string AgeMax { get; set; }
 
+        public DateTimeOffset DateBegin { get; set; }
+        
+        public DateTimeOffset DateEnd { get; set; }
+        
         public DateTimeOffset DateCreation { get; set; }
 
         public DateTimeOffset DateUpdate { get; set; }

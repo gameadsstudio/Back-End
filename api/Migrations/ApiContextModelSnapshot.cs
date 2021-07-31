@@ -193,9 +193,17 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("age_min");
 
+                    b.Property<DateTimeOffset>("DateBegin")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_begin");
+
                     b.Property<DateTimeOffset>("DateCreation")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_creation");
+
+                    b.Property<DateTimeOffset>("DateEnd")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_end");
 
                     b.Property<DateTimeOffset>("DateUpdate")
                         .HasColumnType("timestamp with time zone")

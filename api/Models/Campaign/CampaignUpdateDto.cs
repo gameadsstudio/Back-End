@@ -1,4 +1,5 @@
-﻿using api.Enums.Campaign;
+﻿using System;
+using api.Enums.Campaign;
 
 namespace api.Models.Campaign
 {
@@ -9,6 +10,10 @@ namespace api.Models.Campaign
         public string AgeMin { get; set; }
         
         public string AgeMax { get; set; }
+        
+        public DateTimeOffset DateBegin { get; set; }
+        
+        public DateTimeOffset DateEnd { get; set; }
 
         public CampaignStatus Status { get; set; }
     }
