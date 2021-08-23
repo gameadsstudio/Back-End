@@ -193,10 +193,34 @@ namespace api.Business.Media
         }
 
         public (int page, int pageSize, int maxPage, IList<MediaPublicDto> medias) GetMedias(PagingDto paging,
-            string versionId,
+            IList<string> tagNames,
+            string orgId,
             ConnectedUser currentUser)
         {
-            throw new NotImplementedException();
+            var org = _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(orgId));
+
+            if (!_organizationBusiness.IsUserInOrganization(org.Id, currentUser.Id))
+            {
+                throw new ApiError(HttpStatusCode.Unauthorized,
+                    "You cannot add a media to an organization you are not part of");
+            }
+
+            paging = PagingHelper.Check(paging);
+
+            if (tagNames.Count > 0)
+            {
+                var (mediaModels, count) = _repository.GetMediasByTags((paging.Page - 1) * paging.PageSize,
+                    paging.PageSize, org.Id, currentUser.Id, ResolveTags(tagNames));
+                return (paging.Page, paging.PageSize, count / paging.PageSize,
+                    _mapper.Map(mediaModels, new List<MediaPublicDto>()));
+            }
+            else
+            {
+                var (mediaModels, count) = _repository.GetMediasByOrganizationId((paging.Page - 1) * paging.PageSize,
+                    paging.PageSize, org.Id, currentUser.Id);
+                return (paging.Page, paging.PageSize, count / paging.PageSize,
+                    _mapper.Map(mediaModels, new List<MediaPublicDto>()));
+            }
         }
 
         public MediaPublicDto AddNewMedia(MediaCreationDto newMedia, ConnectedUser currentUser)
@@ -211,7 +235,8 @@ namespace api.Business.Media
             }
 
             media.Tags = ResolveTags(newMedia.TagName);
-            media.Organization = _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrgId));
+            media.Organization =
+                _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrgId));
             var savedMedia = _repository.AddNewMedia(media);
 
             switch (newMedia.Type)

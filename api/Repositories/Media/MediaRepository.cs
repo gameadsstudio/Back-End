@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
+using api.Helpers;
 using api.Models.Media;
 using api.Models.Media._2D;
 using api.Models.Media._3D;
@@ -64,7 +65,8 @@ namespace api.Repositories.Media
                 .Include(a => a.Tags)
                 .Include(a => a.Organization)
                 .ThenInclude(o => o.Users)
-                .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
+                .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId))
+                .Where(m => m.Tags.Any(tm => tags.Any(t => tm.Name == t.Name)));
 
             return (query.Skip(offset)
                     .Take(limit)
