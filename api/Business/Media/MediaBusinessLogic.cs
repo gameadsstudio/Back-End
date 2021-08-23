@@ -104,7 +104,7 @@ namespace api.Business.Media
                     $"{assetsDir}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
-                media2DCreationDto.Texture.CopyToAsync(fileStream);
+                media2DCreationDto.Texture.CopyTo(fileStream);
                 media2DModel.TextureLink = UriBuilder(fileStream.Name);
             }
 
@@ -114,7 +114,7 @@ namespace api.Business.Media
                     $"{assetsDir}/normal_map{Path.GetExtension(media2DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
-                media2DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media2DCreationDto.NormalMap.CopyTo(fileStream);
                 media2DModel.NormalMapLink = UriBuilder(fileStream.Name);
             }
 
@@ -152,7 +152,7 @@ namespace api.Business.Media
                     $"{assetsDir}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
-                media3DCreationDto.Texture.CopyToAsync(fileStream);
+                media3DCreationDto.Texture.CopyTo(fileStream);
                 media3DModel.TextureLink = UriBuilder(fileStream.Name);
             }
 
@@ -162,7 +162,7 @@ namespace api.Business.Media
                     $"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
-                media3DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media3DCreationDto.NormalMap.CopyTo(fileStream);
                 media3DModel.ModelLink = UriBuilder(fileStream.Name);
             }
 
@@ -172,7 +172,7 @@ namespace api.Business.Media
                     $"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
-                media3DCreationDto.NormalMap.CopyToAsync(fileStream);
+                media3DCreationDto.NormalMap.CopyTo(fileStream);
                 media3DModel.NormalMapLink = UriBuilder(fileStream.Name);
             }
 
@@ -337,7 +337,7 @@ namespace api.Business.Media
                     $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
                     FileMode.Create))
             {
-                newMediaUnity.AssetBundle.CopyToAsync(fileStream);
+                newMediaUnity.AssetBundle.CopyTo(fileStream);
                 mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
             }
 
