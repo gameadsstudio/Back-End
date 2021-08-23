@@ -18,6 +18,8 @@ namespace api.Models.Media
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
 
+        public string Name { get; set; }
+
         public ICollection<TagModel> Tags { get; set; }
 
         public Type Type { get; set; }
