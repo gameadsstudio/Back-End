@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Business.Media;
 using api.Enums.Media;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.Media;
+using api.Models.Media.Engine.Unity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.Media
@@ -28,14 +31,23 @@ namespace api.Controllers.Media
             return Created("medias",new GetDto<MediaPublicDto>(_business.AddNewMedia(newMedia, currentUser)));
         }
 
+        // TODO: remove allow anonymous
+        [AllowAnonymous]
+        [HttpPost("{id}/unity")]
+        public ActionResult<GetDto<MediaPublicDto>> Post([FromForm] MediaUnityCreationDto newMediaUnity, string id)
+        {
+            return Created("medias",new GetDto<MediaUnityPublicDto>(_business.AddNewMediaUnity(newMediaUnity)));
+        }
+
         [HttpGet]
         public ActionResult<GetAllDto<MediaPublicDto>> GetAll(
             [FromQuery] PagingDto paging,
-            [FromQuery] [Required] string versionId)
+            [FromQuery] [Required] string orgId,
+            [FromQuery] IList<string> tagNames)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetAllDto<MediaPublicDto>(_business.GetMedias(paging, versionId, currentUser)));
+            return Ok(new GetAllDto<MediaPublicDto>(_business.GetMedias(paging, tagNames, orgId, currentUser)));
         }
 
         [HttpGet("{id}")]

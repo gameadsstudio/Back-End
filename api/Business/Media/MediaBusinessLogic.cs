@@ -12,6 +12,7 @@ using api.Helpers;
 using api.Models.Media;
 using api.Models.Media._2D;
 using api.Models.Media._3D;
+using api.Models.Media.Engine.Unity;
 using api.Models.Tag;
 using api.Repositories.Media;
 using AutoMapper;
@@ -308,6 +309,11 @@ namespace api.Business.Media
             }
 
             _repository.DeleteMedia(media);
+        }
+
+        public MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity)
+        {
+            throw new NotImplementedException();
         }
     }
 }
