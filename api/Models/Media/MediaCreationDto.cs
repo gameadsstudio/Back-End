@@ -11,6 +11,8 @@ namespace api.Models.Media
         [Required]
         public Type Type { get; set; }
 
+        public string Name { get; set; }
+
         [Required]
         public IList<string> TagName { get; set; }
 

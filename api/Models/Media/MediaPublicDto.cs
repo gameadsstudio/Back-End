@@ -10,6 +10,8 @@ namespace api.Models.Media
     {
         public Guid Id { get; set; }
 
+        public string Name { get; set; }
+
         public OrganizationPublicDto Organization { get; set; }
 
         public IList<TagPublicDto> Tags { get; set; }

@@ -238,7 +238,15 @@ namespace api.Business.Media
                 throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
             }
 
-            media.Tags = ResolveTags(updatedMedia.TagName);
+            if (media.Tags.Count > 0)
+            {
+                media.Tags = ResolveTags(updatedMedia.TagName);
+            }
+
+            if (!string.IsNullOrEmpty(updatedMedia.Name))
+            {
+                media.Name = updatedMedia.Name;
+            }
 
             return _mapper.Map(_repository.UpdateMedia(media), new MediaPublicDto());
         }
