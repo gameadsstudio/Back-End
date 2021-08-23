@@ -238,6 +238,8 @@ namespace api.Business.Media
             media.Tags = ResolveTags(newMedia.TagName);
             media.Organization =
                 _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrgId));
+            media.State = MediaStateEnum.Pending;
+            media.StateMessage = "Awaiting processing";
             var savedMedia = _repository.AddNewMedia(media);
 
             switch (newMedia.Type)
@@ -346,6 +348,31 @@ namespace api.Business.Media
                 $"Cannot save Unity media for media with id {media.Id}");
 
             return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
+        }
+
+        public MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string id, string mediaId)
+        {
+            var unityMedia = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
+                throw new ApiError(HttpStatusCode.NotFound,
+                    $"Media with id ${mediaId} does not have an unity media");
+            if (unityMedia.Id.ToString() != id)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest,
+                    $"Unity media with ID ${id} does not belong to media with id ${mediaId}");
+            }
+
+            unityMedia.State = newState.State;
+            unityMedia.StateMessage = newState.Message;
+            return _mapper.Map(_repository.UpdateUnityMedia(unityMedia), new MediaUnityPublicDto());
+        }
+
+        public MediaPublicDto UpdateMediaState(MediaState newState, string mediaId)
+        {
+            var media = _repository.GetMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
+                        throw new ApiError(HttpStatusCode.NotFound, $"media with ID ${mediaId} not found");
+            media.State = newState.State;
+            media.StateMessage = newState.Message;
+            return _mapper.Map(_repository.UpdateMedia(media), new MediaPublicDto());
         }
     }
 }

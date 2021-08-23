@@ -34,9 +34,16 @@ namespace api.Controllers.Media
         // TODO: remove allow anonymous
         [AllowAnonymous]
         [HttpPost("{id}/unity")]
-        public ActionResult<GetDto<MediaPublicDto>> Post([FromForm] MediaUnityCreationDto newMediaUnity, string id)
+        public ActionResult<GetDto<MediaUnityPublicDto>> Post([FromForm] MediaUnityCreationDto newMediaUnity, string id)
         {
             return Created("medias",new GetDto<MediaUnityPublicDto>(_business.AddNewMediaUnity(newMediaUnity, id)));
+        }
+
+        [AllowAnonymous]
+        [HttpPut("{mediaId}/unity/{id}/state")]
+        public ActionResult<GetDto<MediaUnityPublicDto>> Put([FromForm] MediaState newState, string id, string mediaId)
+        {
+            return Ok(new GetDto<MediaUnityPublicDto>(_business.UpdateMediaUnityState(newState, id, mediaId)));
         }
 
         [HttpGet]
@@ -75,6 +82,12 @@ namespace api.Controllers.Media
             var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetDto<MediaPublicDto>(_business.UpdateMediaById(id, updateDto, currentUser)));
+        }
+
+        [HttpPut("{mediaId}/state")]
+        public ActionResult<GetDto<MediaPublicDto>> Put([FromForm] MediaState newState, string mediaId)
+        {
+            return Ok(new GetDto<MediaPublicDto>(_business.UpdateMediaState(newState, mediaId)));
         }
 
         [HttpDelete("{id}")]

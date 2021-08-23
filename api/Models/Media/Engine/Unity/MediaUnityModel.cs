@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Enums.Media;
 
 namespace api.Models.Media.Engine.Unity
 {
@@ -15,6 +16,10 @@ namespace api.Models.Media.Engine.Unity
         public MediaModel Media { get; set; }
 
         public Uri AssetBundleLink { get; set; }
+
+        public MediaStateEnum State { get; set; }
+
+        public string StateMessage { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
