@@ -311,9 +311,41 @@ namespace api.Business.Media
             _repository.DeleteMedia(media);
         }
 
-        public MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity)
+        public MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId)
         {
-            throw new NotImplementedException();
+            var mediaUnityModel = new MediaUnityModel();
+
+            var media = _repository.GetMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
+                        throw new ApiError(HttpStatusCode.NotFound, $"Media with id ${mediaId} not found");
+
+            if (newMediaUnity.AssetBundle == null)
+            {
+                throw new ApiError(HttpStatusCode.BadRequest, "Unity media not valid");
+            }
+
+            var assetsDir = $"/assets/{mediaId}";
+
+            // Create media dir if not exists
+            if (!Directory.Exists(assetsDir))
+            {
+                Directory.CreateDirectory(assetsDir);
+            }
+
+            // Saving asset bundle
+            using (var fileStream =
+                new FileStream(
+                    $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
+                    FileMode.Create))
+            {
+                newMediaUnity.AssetBundle.CopyToAsync(fileStream);
+                mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
+            }
+
+            mediaUnityModel.Media = media;
+            var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(HttpStatusCode.Conflict,
+                $"Cannot save Unity media for media with id {media.Id}");
+
+            return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
         }
     }
 }

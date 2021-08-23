@@ -14,7 +14,7 @@ namespace api.Models.Media.Engine.Unity
         [ForeignKey("MediaId")]
         public MediaModel Media { get; set; }
 
-        public string AssetBundleLink { get; set; }
+        public Uri AssetBundleLink { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
