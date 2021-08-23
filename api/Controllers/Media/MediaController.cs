@@ -36,7 +36,7 @@ namespace api.Controllers.Media
         [HttpPost("{id}/unity")]
         public ActionResult<GetDto<MediaPublicDto>> Post([FromForm] MediaUnityCreationDto newMediaUnity, string id)
         {
-            return Created("medias",new GetDto<MediaUnityPublicDto>(_business.AddNewMediaUnity(newMediaUnity)));
+            return Created("medias",new GetDto<MediaUnityPublicDto>(_business.AddNewMediaUnity(newMediaUnity, id)));
         }
 
         [HttpGet]

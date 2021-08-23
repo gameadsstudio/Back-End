@@ -16,6 +16,6 @@ namespace api.Business.Media
         // Todo : Check how to change engine string to enum
         MediaPublicDto GetEngineMediaById(string id, ConnectedUser currentUser, Engine engine);
         void DeleteMediaById(string id, ConnectedUser currentUser);
-        MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity);
+        MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId);
     }
 }
