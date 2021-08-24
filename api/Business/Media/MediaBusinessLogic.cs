@@ -39,7 +39,7 @@ namespace api.Business.Media
             _httpContextAccessor = httpContextAccessor;
         }
 
-        private MediaModel GetMediaModelById(string id)
+        public MediaModel GetMediaModelById(string id)
         {
             return _repository.GetMediaById(GuidHelper.StringToGuidConverter(id)) ??
                    throw new ApiError(HttpStatusCode.NotFound, $"Media with id {id} not found");
@@ -343,6 +343,8 @@ namespace api.Business.Media
                 mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
             }
 
+            mediaUnityModel.State = MediaStateEnum.Processed;
+            mediaUnityModel.StateMessage = "Unity media processed";
             mediaUnityModel.Media = media;
             var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {media.Id}");

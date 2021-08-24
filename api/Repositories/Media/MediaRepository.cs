@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
-using api.Helpers;
 using api.Models.Media;
 using api.Models.Media._2D;
 using api.Models.Media._3D;

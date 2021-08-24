@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using api.Models.Campaign;
+using api.Models.Media;
 using api.Models.Tag;
 
 namespace api.Models.Advertisement
@@ -15,6 +16,8 @@ namespace api.Models.Advertisement
         public int AgeMin { get; set; }
         
         public int AgeMax { get; set; }
+        
+        public MediaPublicDto Media { get; set; }
         
         // public CampaignPublicDto Campaign { get; set; }
         

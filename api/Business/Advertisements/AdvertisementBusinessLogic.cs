@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using api.Business.Campaign;
+using api.Business.Media;
 using api.Business.Organization;
 using api.Business.Tag;
 using api.Contexts;
@@ -22,15 +23,20 @@ namespace api.Business.Advertisements
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly ICampaignBusinessLogic _campaignBusinessLogic;
         private readonly ITagBusinessLogic _tagBusinessLogic;
+        private readonly IMediaBusinessLogic _mediaBusinessLogic;
 
-        public AdvertisementBusinessLogic(ApiContext context, IMapper mapper,
-            IOrganizationBusinessLogic organizationBusinessLogic, ICampaignBusinessLogic campaignBusinessLogic,
-            ITagBusinessLogic tagBusinessLogic)
+        public AdvertisementBusinessLogic(ApiContext context,
+            IMapper mapper,
+            IOrganizationBusinessLogic organizationBusinessLogic,
+            ICampaignBusinessLogic campaignBusinessLogic,
+            ITagBusinessLogic tagBusinessLogic,
+            IMediaBusinessLogic mediaBusinessLogic)
         {
             _repository = new AdvertisementRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
             _campaignBusinessLogic = campaignBusinessLogic;
             _tagBusinessLogic = tagBusinessLogic;
+            _mediaBusinessLogic = mediaBusinessLogic;
             _mapper = mapper;
         }
 
@@ -109,8 +115,24 @@ namespace api.Business.Advertisements
                     "Cannot modify an advertisement in an organization you're not a part of");
             }
 
+            if (updatedAdvertisement.MediaId != null)
+            {
+                var media = _mediaBusinessLogic.GetMediaModelById(updatedAdvertisement.MediaId);
+                if (media.Organization.Id != advertisement.Campaign.Organization.Id)
+                {
+                    throw new ApiError(HttpStatusCode.Forbidden,
+                        "Cannot add an media from another organisation to this advertisement");
+                }
+
+                advertisement.Media = media;
+            }
+
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
-            advertisement.Tags = _tagBusinessLogic.ResolveTags(updatedAdvertisement.TagNames);
+
+            if (updatedAdvertisement.TagNames != null)
+            {
+                advertisement.Tags = _tagBusinessLogic.ResolveTags(updatedAdvertisement.TagNames);
+            }
 
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
