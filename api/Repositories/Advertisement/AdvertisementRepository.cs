@@ -28,6 +28,8 @@ namespace api.Repositories.Advertisement
             return _context.Advertisement
                 .Include(v => v.Campaign)
                 .ThenInclude(g => g.Organization)
+                .Include(a => a.Tags)
+                .Include(a => a.Media)
                 .SingleOrDefault(a => a.Id == id);
         }
 
@@ -50,7 +52,7 @@ namespace api.Repositories.Advertisement
 
         public AdvertisementModel UpdateAdvertisement(AdvertisementModel advertisement)
         {
-            _context.Advertisement.Add(advertisement);
+            _context.Advertisement.Update(advertisement);
             _context.SaveChanges();
             return advertisement;
         }

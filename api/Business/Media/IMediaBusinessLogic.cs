@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using api.Enums.Media;
 using api.Helpers;
@@ -13,11 +14,11 @@ namespace api.Business.Media
         MediaPublicDto AddNewMedia(MediaCreationDto newMedia, ConnectedUser currentUser);
         MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia,
             ConnectedUser currentUser);
-        // Todo : Check how to change engine string to enum
         MediaPublicDto GetEngineMediaById(string id, ConnectedUser currentUser, Engine engine);
         void DeleteMediaById(string id, ConnectedUser currentUser);
         MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId);
         MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string id, string mediaId);
         MediaPublicDto UpdateMediaState(MediaState newState, string mediaId);
+        MediaModel GetMediaModelById(string mediaId);
     }
 }

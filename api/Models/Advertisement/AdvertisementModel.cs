@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Models.Campaign;
+using api.Models.Media;
 using api.Models.Tag;
 
 namespace api.Models.Advertisement
@@ -17,6 +18,8 @@ namespace api.Models.Advertisement
         public string Name { get; set; }
         
         public CampaignModel Campaign { get; set; }
+        
+        public MediaModel Media { get; set; }
         
         public IList<TagModel> Tags { get; set; }
         
