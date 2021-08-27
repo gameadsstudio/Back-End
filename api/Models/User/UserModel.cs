@@ -26,6 +26,10 @@ namespace api.Models.User
 
         public string Email { get; set; }
 
+        public Boolean EmailValidated { get; set; }
+
+        public Guid EmailValidatedId { get; set; }
+
         public UserType Type { get; set; }
 
         public ICollection<OrganizationModel> Organizations { get; set; }
