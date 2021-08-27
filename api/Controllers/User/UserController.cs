@@ -1,4 +1,8 @@
-﻿using api.Business.User;
+﻿using System;
+using System.Diagnostics;
+using System.Net.Mail;
+using System.Net;
+using api.Business.User;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
@@ -48,7 +52,42 @@ namespace api.Controllers.User
         [HttpPost]
         public ActionResult<GetDto<UserPrivateDto>> Post([FromForm] UserCreationDto newUser)
         {
-            return Created("User", new GetDto<UserPrivateDto>(_business.AddNewUser(newUser)));
+            var user = _business.AddNewUser(newUser);
+            var client = new SmtpClient(
+                Environment.GetEnvironmentVariable(
+                    "GAS_MAIL_HOST"
+                ) ?? "smtp.mailtrap.io",
+                Int32.Parse(
+                    Environment.GetEnvironmentVariable(
+                        "GAS_MAIL_PORT"
+                    ) ?? "2525"
+                )
+            )
+            {
+                Credentials = new NetworkCredential(
+                    Environment.GetEnvironmentVariable(
+                        "GAS_MAIL_USERNAME"
+                    ) ?? "feae1f21794992",
+                    Environment.GetEnvironmentVariable(
+                        "GAS_MAIL_PASSWORD"
+                    ) ?? "42f8ea37006689"
+                ),
+                EnableSsl = bool.Parse(
+                    Environment.GetEnvironmentVariable("GAS_MAIL_SSL") ?? "true"
+                )
+            };
+            var userData = _business.GetUserModelById(user.Id.ToString());
+
+            client.Send(
+                Environment.GetEnvironmentVariable(
+                    "GAS_MAIL_ADR_NO_REPLY"
+                ) ?? "no-reply@gameadsstudio.com",
+                userData.Email,
+                "Confirm your email address",
+                $"You can confirm your email address with this URL: https://example.com/email/{userData.EmailValidatedId}"
+            );
+
+            return Created("User", new GetDto<UserPrivateDto>(user));
         }
 
         [HttpPatch("{id}")]
@@ -89,6 +128,15 @@ namespace api.Controllers.User
             var currentUser = new ConnectedUser(User.Claims);
 
             return Ok(new GetAllDto<UserPublicDto>(_business.SearchUser(search, paging, currentUser)));
+        }
+
+        [HttpPost("email/{id}")]
+        public IActionResult EmailValidation(Guid id)
+        {
+            var currentUser = new ConnectedUser(User.Claims);
+
+            _business.ConfirmEmail(currentUser, id);
+            return Ok();
         }
     }
 }
