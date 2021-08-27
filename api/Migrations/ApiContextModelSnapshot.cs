@@ -587,6 +587,14 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
+                    b.Property<bool>("EmailValidated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_validated");
+
+                    b.Property<Guid>("EmailValidatedId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("email_validated_id");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("text")
                         .HasColumnName("first_name");
