@@ -15,6 +15,7 @@ namespace api.Business.User
         int DeleteUserById(string id, ConnectedUser currentUser);
         UserLoginResponseDto Login(UserLoginDto userLoginDto);
         UserPrivateDto GetSelf(ConnectedUser currentUser);
+        void ConfirmEmail(ConnectedUser currentUser, Guid id);
         (int page, int pageSize, int totalItemCount, IList<UserPublicDto> items) SearchUser(string search, PagingDto paging, ConnectedUser currentUser);
     }
 }
