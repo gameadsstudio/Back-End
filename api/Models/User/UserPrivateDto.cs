@@ -19,6 +19,8 @@ namespace api.Models.User
 
         public Boolean EmailValidated { get; set; }
 
+        public Guid EmailValidatedId { get; set; }
+
         public UserType Type { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
