@@ -115,6 +115,8 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
             }
 
+            user.EmailValidated = false;
+            user.EmailValidatedId = Guid.NewGuid();
             user.Password = HashHelper.HashPassword(user.Password);
             user.Role = UserRole.User;
             user.ProfilePictureUrl = new Uri("about:blank");
@@ -248,5 +250,19 @@ namespace api.Business.User
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return new UserLoginResponseDto {Token = tokenHandler.WriteToken(token)};
         }
+
+		public void ConfirmEmail(ConnectedUser currentUser, Guid id)
+		{
+			var user = _repository.GetUserById(currentUser.Id);
+
+			if (user.EmailValidatedId != id) {
+				throw new ApiError(
+					HttpStatusCode.Forbidden,
+					"Invalid confirmation code"
+				);
+			}
+			user.EmailValidated = true;
+			_repository.UpdateUser(user);
+		}
     }
 }
