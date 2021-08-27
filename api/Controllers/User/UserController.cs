@@ -74,14 +74,19 @@ namespace api.Controllers.User
                 )
             };
             var userData = _business.GetUserModelById(user.Id.ToString());
+            var callbackUrl = Environment.GetEnvironmentVariable(
+                "GAS_MAIL_CALLBACK_URL"
+            ) ?? "https://example.com/email";
 
+            callbackUrl.TrimEnd('/');
             client.Send(
                 Environment.GetEnvironmentVariable(
                     "GAS_MAIL_ADR_NO_REPLY"
                 ) ?? "no-reply@gameadsstudio.com",
                 userData.Email,
                 "Confirm your email address",
-                $"You can confirm your email address with this URL: https://example.com/email/{userData.EmailValidatedId}"
+                "You can confirm your email address with this URL: "
+                + $"{callbackUrl}/{userData.EmailValidatedId}"
             );
 
             return Created("User", new GetDto<UserPrivateDto>(user));
