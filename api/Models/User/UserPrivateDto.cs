@@ -19,6 +19,10 @@ namespace api.Models.User
         
         public Uri ProfilePictureUrl { get; set; }
 
+        public Boolean EmailValidated { get; set; }
+
+        public Guid EmailValidatedId { get; set; }
+
         public UserType Type { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
