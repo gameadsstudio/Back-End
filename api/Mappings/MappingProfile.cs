@@ -10,6 +10,7 @@ using api.Models.Media._2D;
 using api.Models.Media._3D;
 using api.Models.Media.Engine.Unity;
 using api.Models.Version;
+using api.Models.Blog;
 using AutoMapper;
 
 namespace api.Mappings
@@ -91,6 +92,13 @@ namespace api.Mappings
             CreateMap<MediaCreationDto, Media3DCreationDto>();
             // Medias - Unity
             CreateMap<MediaUnityModel, MediaUnityPublicDto>();
+
+            // Blog
+            CreateMap<BlogModel, BlogCreationDto>().ReverseMap();
+            CreateMap<BlogModel, BlogUpdateDto>()
+                .ReverseMap()
+                .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            CreateMap<BlogModel, BlogPublicDto>().ReverseMap();
         }
     }
 }
