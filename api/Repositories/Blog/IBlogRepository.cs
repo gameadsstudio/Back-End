@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using api.Models.Blog;
 
 namespace api.Repositories.Blog
@@ -9,5 +10,6 @@ namespace api.Repositories.Blog
         BlogModel UpdatePost(BlogModel post);
         void DeletePost(BlogModel post);
         BlogModel GetPostById(Guid id);
+        (IList<BlogModel>, int) GetPosts(int offset, int limit);
     }
 }

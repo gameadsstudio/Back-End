@@ -26,6 +26,16 @@ namespace api.Controllers.Campaign
             return Ok(new GetDto<BlogPublicDto>(_business.GetPostById(id)));
         }
 
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] BlogFiltersDto filters)
+        {
+            return Ok(
+                new GetAllDto<BlogPublicDto>(
+                    _business.GetPosts(paging, filters)
+                )
+            );
+        }
+
         [HttpPost]
         public IActionResult Post([FromForm] BlogCreationDto newPost)
         {

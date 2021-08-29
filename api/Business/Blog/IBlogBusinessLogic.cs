@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using api.Helpers;
 using api.Models.Blog;
 
@@ -13,6 +14,8 @@ namespace api.Business.Blog
         void DeletePostById(Guid id, ConnectedUser currentUser);
 
         BlogPublicDto GetPostById(Guid id);
+
+        (int page, int pageSize, int maxPage, IList<BlogPublicDto> posts) GetPosts(PagingDto paging, BlogFiltersDto filters);
 
         BlogModel GetBlogModelById(Guid id);
     }

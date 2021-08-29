@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.Blog;
@@ -40,6 +41,15 @@ namespace api.Repositories.Blog
             return _context.Blog
                 .Include(x => x.Id)
                 .SingleOrDefault(post => post.Id == id);
+        }
+
+        public (IList<BlogModel>, int) GetPosts(int offset, int limit)
+        {
+            var query = _context.Blog.OrderByDescending(
+                post => post.DateCreation
+            );
+
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
     }
 }
