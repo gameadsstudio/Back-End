@@ -27,56 +27,72 @@ namespace api.Business.Blog
         {
             BlogModel post = _mapper.Map(newPost, new BlogModel());
 
-			if (currentUser.Role != Enums.User.UserRole.Admin) {
-				throw new ApiError(
-					HttpStatusCode.Forbidden,
-					"Cannot create a post if you aren't an administrator"
-				);
-			}
+            if (currentUser.Role != Enums.User.UserRole.Admin) {
+                throw new ApiError(
+                    HttpStatusCode.Forbidden,
+                    "Cannot create a post if you aren't an administrator"
+                );
+            }
             return _mapper.Map(
-				_repository.AddNewPost(post),
-				new BlogPublicDto()
-			);
+                _repository.AddNewPost(post),
+                new BlogPublicDto()
+            );
         }
 
         public BlogPublicDto UpdatePostById(Guid id, BlogUpdateDto updatedPost, ConnectedUser currentUser)
         {
             BlogModel postMerge = _mapper.Map(
-				updatedPost,
-				_repository.GetPostById(id)
-			);
+                updatedPost,
+                _repository.GetPostById(id)
+            );
 
-			if (currentUser.Role != Enums.User.UserRole.Admin) {
-				throw new ApiError(
-					HttpStatusCode.Forbidden,
-					"Cannot update a post if you aren't an administrator"
-				);
-			}
+            if (currentUser.Role != Enums.User.UserRole.Admin) {
+                throw new ApiError(
+                    HttpStatusCode.Forbidden,
+                    "Cannot update a post if you aren't an administrator"
+                );
+            }
             return _mapper.Map(
-				_repository.UpdatePost(postMerge),
-				new BlogPublicDto()
-			);
+                _repository.UpdatePost(postMerge),
+                new BlogPublicDto()
+            );
         }
 
         public void DeletePostById(Guid id, ConnectedUser currentUser)
         {
             BlogModel post = _repository.GetPostById(id);
 
-			if (currentUser.Role != Enums.User.UserRole.Admin) {
-				throw new ApiError(
-					HttpStatusCode.Forbidden,
-					"Cannot delete a post if you aren't an administrator"
-				);
-			}
+            if (currentUser.Role != Enums.User.UserRole.Admin) {
+                throw new ApiError(
+                    HttpStatusCode.Forbidden,
+                    "Cannot delete a post if you aren't an administrator"
+                );
+            }
             _repository.DeletePost(post);
         }
 
         public BlogPublicDto GetPostById(Guid id)
         {
             return _mapper.Map(
-				_repository.GetPostById(id),
-				new BlogPublicDto()
-			);
+                _repository.GetPostById(id),
+                new BlogPublicDto()
+            );
+        }
+
+        public (int page, int pageSize, int maxPage, IList<BlogPublicDto> posts) GetPosts(PagingDto paging, BlogFiltersDto filters)
+        {
+            paging = PagingHelper.Check(paging);
+            var (posts, maxPage) = _repository.GetPosts(
+                (paging.Page - 1) * paging.PageSize,
+                paging.PageSize
+            );
+
+            return (
+                paging.Page,
+                paging.PageSize,
+                (maxPage / paging.PageSize + 1),
+                _mapper.Map(posts, new List<BlogPublicDto>())
+            );
         }
 
         public BlogModel GetBlogModelById(Guid id)
@@ -85,9 +101,9 @@ namespace api.Business.Blog
 
             if (post == null) {
                 throw new ApiError(
-					HttpStatusCode.NotFound,
-					$"Couldn't find post with Id: {id}"
-				);
+                    HttpStatusCode.NotFound,
+                    $"Couldn't find post with Id: {id}"
+                );
             }
             return post;
         }
