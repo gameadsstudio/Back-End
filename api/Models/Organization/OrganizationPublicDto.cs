@@ -8,10 +8,8 @@ namespace api.Models.Organization
         
         public string Name { get; set; }
         
-        public string PublicEmail { get; set; }
-        
-        public string Localization { get; set; }
-        
+        public string Email { get; set; }
+
         public string LogoUrl { get; set; }
         
         public string WebsiteUrl { get; set; }

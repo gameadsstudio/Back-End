@@ -36,10 +36,10 @@ namespace api.Business.Organization
                     $"Organization with name: {organization.Name} already exists");
             }
 
-            if (_repository.GetOrganizationByPrivateEmail(organization.PrivateEmail) != null)
+            if (_repository.GetOrganizationByEmail(organization.Email) != null)
             {
                 throw new ApiError(HttpStatusCode.Conflict,
-                    $"Organization with private email: {organization.PrivateEmail} already exists");
+                    $"Organization with email: {organization.Email} already exists");
             }
 
             var user = _userBusinessLogic.GetUserModelById(currentUser.Id.ToString());

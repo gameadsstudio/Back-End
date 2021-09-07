@@ -9,7 +9,7 @@ namespace api.Repositories.Organization
         OrganizationModel AddNewOrganization(OrganizationModel organization);
         OrganizationModel GetOrganizationById(Guid id);
         OrganizationModel GetOrganizationByName(string name);
-        OrganizationModel GetOrganizationByPrivateEmail(string email);
+        OrganizationModel GetOrganizationByEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         void DeleteOrganization(OrganizationModel organization);
         List<OrganizationModel> GetOrganizations(OrganizationFiltersDto filters, int offset, int limit);
