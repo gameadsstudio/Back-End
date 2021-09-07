@@ -14,6 +14,7 @@ namespace api.Models.Organization
         [EmailAddress]
         public string PrivateEmail { get; set; }
 
+        [Required]
         [RequiredEnumAttribute]
         public OrganizationType Type { get; set; }
     }
