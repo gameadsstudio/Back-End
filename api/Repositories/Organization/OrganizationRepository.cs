@@ -60,6 +60,11 @@ namespace api.Repositories.Organization
                 query = query.Where(o => o.Users.Any(u => u.Id == filters.UserId));
             }
 
+            if (filters.Name != null)
+            {
+                query = query.Where(o => o.Name == filters.Name.Replace('+', ' '));
+            }
+
             return query.Skip(offset).Take(limit).ToList();
         }
 
