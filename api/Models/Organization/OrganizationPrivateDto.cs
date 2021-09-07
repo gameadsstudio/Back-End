@@ -13,11 +13,7 @@ namespace api.Models.Organization
 
         public string Name { get; set; }
 
-        public string PublicEmail { get; set; }
-
-        public string PrivateEmail { get; set; }
-
-        public string Localization { get; set; }
+        public string Email { get; set; }
 
         public string LogoUrl { get; set; }
 
@@ -25,18 +21,14 @@ namespace api.Models.Organization
 
         public OrganizationType Type { get; set; }
 
-        public OrganizationState State { get; set; }
-
-        public OrganizationUserAuthorization DefaultAuthorization { get; set; }
-
-        public DateTimeOffset DateCreation { get; set; }
-
-        public DateTimeOffset DateUpdate { get; set; }
-
         public List<CampaignModel> Campaigns { get; set; }
 
         public List<UserPublicDto> Users { get; set; }
 
         public List<GameModel> Games { get; set; }
+
+        public DateTimeOffset DateCreation { get; set; }
+
+        public DateTimeOffset DateUpdate { get; set; }
     }
 }

@@ -28,9 +28,9 @@ namespace api.Repositories.Organization
             return _context.Organization.SingleOrDefault(a => a.Name == name);
         }
 
-        public OrganizationModel GetOrganizationByPrivateEmail(string email)
+        public OrganizationModel GetOrganizationByEmail(string email)
         {
-            return _context.Organization.SingleOrDefault(a => a.PrivateEmail == email);
+            return _context.Organization.SingleOrDefault(a => a.Email == email);
         }
 
         public void DeleteOrganization(OrganizationModel organization)
