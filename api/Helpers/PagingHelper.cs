@@ -10,7 +10,7 @@ namespace api.Helpers
     {
         public static PagingDto Check(PagingDto paging)
         {
-            if (paging.Page < 1) paging.Page = 0;
+            if (paging.Page < 1) paging.Page = 1;
             if (paging.PageSize < 1 || paging.PageSize > 50) paging.PageSize = 50;
             return paging;
         }
