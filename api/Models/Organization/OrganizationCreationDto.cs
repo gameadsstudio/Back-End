@@ -12,7 +12,7 @@ namespace api.Models.Organization
 
         [Required]
         [EmailAddress]
-        public string PrivateEmail { get; set; }
+        public string Email { get; set; }
 
         [Required]
         [RequiredEnumAttribute]
