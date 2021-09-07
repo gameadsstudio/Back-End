@@ -9,8 +9,6 @@ namespace api.Models.Organization
         [EmailAddress]
         public string Email { get; set; }
 
-        public string Localization { get; set; }
-        
         public string LogoUrl { get; set; }
         
         public string WebsiteUrl { get; set; }
