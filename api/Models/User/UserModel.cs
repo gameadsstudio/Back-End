@@ -28,20 +28,10 @@ namespace api.Models.User
 
         public UserType Type { get; set; }
 
-        public string Alias { get; set; } // TODO: check if needed
-
-        public string Phone { get; set; }
-
-        public string Level { get; set; } // TODO: change to enum and rename to AdminLevel ?
-
-        public string Status { get; set; } // TODO: what is it ? Need documentation
-
-        public string DateStatus { get; set; } // TODO : Date as string ?
+        public ICollection<OrganizationModel> Organizations { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
         public DateTimeOffset DateUpdate { get; set; }
-
-        public ICollection<OrganizationModel> Organizations { get; set; }
     }
 }

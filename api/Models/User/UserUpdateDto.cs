@@ -20,13 +20,5 @@ namespace api.Models.User
         [MinLength(8)]
         [MaxLength(128)]
         public string Password { get; set; }
-
-        public string Alias { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Level { get; set; }
-
-        public string Status { get; set; }
     }
 }

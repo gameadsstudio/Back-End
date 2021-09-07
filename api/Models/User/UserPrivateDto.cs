@@ -19,16 +19,6 @@ namespace api.Models.User
 
         public UserType Type { get; set; }
 
-        public string Alias { get; set; }
-
-        public string Phone { get; set; }
-
-        public string Level { get; set; }
-
-        public string Status { get; set; }
-
-        public string DateStatus { get; set; }
-
         public DateTimeOffset DateCreation { get; set; }
 
         public DateTimeOffset DateUpdate { get; set; }
