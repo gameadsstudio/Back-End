@@ -19,7 +19,7 @@ namespace api.Controllers.Campaign
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        public ActionResult<GetDto<CampaignPublicDto>> Get(Guid id)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -27,7 +27,7 @@ namespace api.Controllers.Campaign
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
+        public ActionResult<GetAllDto<CampaignPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] CampaignFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -35,7 +35,7 @@ namespace api.Controllers.Campaign
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] CampaignCreationDto newCampaign)
+        public ActionResult<GetDto<CampaignPublicDto>> Post([FromForm] CampaignCreationDto newCampaign)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -43,7 +43,7 @@ namespace api.Controllers.Campaign
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(Guid id, [FromForm] CampaignUpdateDto newCampaign)
+        public ActionResult<GetDto<CampaignPublicDto>> Patch(Guid id, [FromForm] CampaignUpdateDto newCampaign)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
