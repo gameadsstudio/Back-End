@@ -9,6 +9,7 @@ using api.Models.User;
 using api.Helpers;
 using api.Repositories.Organization;
 using api.Business.User;
+using api.Enums.User;
 using AutoMapper;
 
 namespace api.Business.Organization
@@ -26,7 +27,8 @@ namespace api.Business.Organization
             _mapper = mapper;
         }
 
-        public OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization, ConnectedUser currentUser)
+        public OrganizationPrivateDto AddNewOrganization(OrganizationCreationDto newOrganization,
+            ConnectedUser currentUser)
         {
             var organization = _mapper.Map(newOrganization, new OrganizationModel());
 
@@ -49,11 +51,13 @@ namespace api.Business.Organization
             return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging, OrganizationFiltersDto filters)
+        public (int, int, int, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging,
+            OrganizationFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
             var maxPage = _repository.CountOrganizations(filters) / paging.PageSize + 1;
-            var organizations = _repository.GetOrganizations(filters, (paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var organizations =
+                _repository.GetOrganizations(filters, (paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, maxPage,
                 _mapper.Map(organizations, new List<OrganizationPublicDto>()));
         }
@@ -78,7 +82,8 @@ namespace api.Business.Organization
         {
             var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
-            if (organization.Users != null && organization.Users.Any(user => user.Id == currentUser.Id))
+            if (organization.Users != null && organization.Users.Any(user => user.Id == currentUser.Id) ||
+                currentUser.Role == UserRole.Admin)
             {
                 return _mapper.Map(organization, new OrganizationPrivateDto());
             }
@@ -122,7 +127,8 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, "Cannot add user to an organization which you are not a part of");
+                throw new ApiError(HttpStatusCode.Unauthorized,
+                    "Cannot add user to an organization which you are not a part of");
             }
 
             if (organization.Users.Any(x => x.Id.ToString() == userId))
