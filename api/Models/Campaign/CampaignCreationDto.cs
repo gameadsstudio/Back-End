@@ -17,8 +17,6 @@ namespace api.Models.Campaign
 
         public string AgeMax { get; set; }
 
-        public string Type { get; set; }
-
         public CampaignStatus Status { get; set; }
 
         public DateTimeOffset DateBegin { get; set; }
