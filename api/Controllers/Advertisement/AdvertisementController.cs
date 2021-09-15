@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.Advertisement
 {
-    [Route("/v1/ads")]
+    [Route("/v1/advertisements")]
     [ApiController]
     public class AdvertisementController : ControllerBase
     {
