@@ -19,7 +19,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        public ActionResult<GetDto<AdvertisementPublicDto>> Get(Guid id)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -27,7 +27,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] AdvertisementFiltersDto filters)
+        public ActionResult<GetAllDto<AdvertisementPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] AdvertisementFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -35,7 +35,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] AdvertisementCreationDto newAdvertisement)
+        public ActionResult<GetDto<AdvertisementPublicDto>> Post([FromForm] AdvertisementCreationDto newAdvertisement)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -44,7 +44,7 @@ namespace api.Controllers.Advertisement
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(Guid id, [FromForm] AdvertisementUpdateDto newAdvertisement)
+        public ActionResult<GetDto<AdvertisementPublicDto>> Patch(Guid id, [FromForm] AdvertisementUpdateDto newAdvertisement)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
