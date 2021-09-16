@@ -2,13 +2,10 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace api.Models.Blog
+namespace api.Models.Post
 {
-    public class BlogUpdateDto
+    public class PostCreationDto
     {
-        [BindRequired]
-        public Guid Id { get; set; }
-
         [Required]
         public string Name { get; set; }
 
