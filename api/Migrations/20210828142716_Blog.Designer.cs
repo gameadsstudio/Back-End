@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
@@ -9,9 +10,10 @@ using api.Contexts;
 namespace api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20210828142716_Blog")]
+    partial class Blog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,23 +40,23 @@ namespace api.Migrations
                     b.ToTable("ad_container_model_tag_model");
                 });
 
-            modelBuilder.Entity("MediaModelTagModel", b =>
+            modelBuilder.Entity("AdvertisementModelTagModel", b =>
                 {
-                    b.Property<Guid>("MediasId")
+                    b.Property<Guid>("AdvertisementsId")
                         .HasColumnType("uuid")
-                        .HasColumnName("medias_id");
+                        .HasColumnName("advertisements_id");
 
                     b.Property<Guid>("TagsId")
                         .HasColumnType("uuid")
                         .HasColumnName("tags_id");
 
-                    b.HasKey("MediasId", "TagsId")
-                        .HasName("pk_media_model_tag_model");
+                    b.HasKey("AdvertisementsId", "TagsId")
+                        .HasName("pk_advertisement_model_tag_model");
 
                     b.HasIndex("TagsId")
-                        .HasDatabaseName("ix_media_model_tag_model_tags_id");
+                        .HasDatabaseName("ix_advertisement_model_tag_model_tags_id");
 
-                    b.ToTable("media_model_tag_model");
+                    b.ToTable("advertisement_model_tag_model");
                 });
 
             modelBuilder.Entity("OrganizationModelUserModel", b =>
@@ -165,29 +167,15 @@ namespace api.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_update");
 
-                    b.Property<Guid?>("MediaId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("media_id");
-
                     b.Property<string>("Name")
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<Guid?>("TagModelId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tag_model_id");
 
                     b.HasKey("Id")
                         .HasName("pk_advertisement");
 
                     b.HasIndex("CampaignId")
                         .HasDatabaseName("ix_advertisement_campaign_id");
-
-                    b.HasIndex("MediaId")
-                        .HasDatabaseName("ix_advertisement_media_id");
-
-                    b.HasIndex("TagModelId")
-                        .HasDatabaseName("ix_advertisement_tag_model_id");
 
                     b.ToTable("advertisement");
                 });
@@ -232,12 +220,12 @@ namespace api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("AgeMax")
-                        .HasColumnType("integer")
+                    b.Property<string>("AgeMax")
+                        .HasColumnType("text")
                         .HasColumnName("age_max");
 
-                    b.Property<int>("AgeMin")
-                        .HasColumnType("integer")
+                    b.Property<string>("AgeMin")
+                        .HasColumnType("text")
                         .HasColumnName("age_min");
 
                     b.Property<DateTimeOffset>("DateBegin")
@@ -318,184 +306,6 @@ namespace api.Migrations
                     b.ToTable("game");
                 });
 
-            modelBuilder.Entity("api.Models.Media.Engine.Unity.MediaUnityModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("AssetBundleLink")
-                        .HasColumnType("text")
-                        .HasColumnName("asset_bundle_link");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<Guid>("MediaId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("media_id");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer")
-                        .HasColumnName("state");
-
-                    b.Property<string>("StateMessage")
-                        .HasColumnType("text")
-                        .HasColumnName("state_message");
-
-                    b.HasKey("Id")
-                        .HasName("pk_media_unity");
-
-                    b.HasIndex("MediaId")
-                        .HasDatabaseName("ix_media_unity_media_id");
-
-                    b.ToTable("media_unity");
-                });
-
-            modelBuilder.Entity("api.Models.Media.MediaModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<Guid?>("OrgId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("org_id");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer")
-                        .HasColumnName("state");
-
-                    b.Property<string>("StateMessage")
-                        .HasColumnType("text")
-                        .HasColumnName("state_message");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id")
-                        .HasName("pk_media");
-
-                    b.HasIndex("OrgId")
-                        .HasDatabaseName("ix_media_org_id");
-
-                    b.ToTable("media");
-                });
-
-            modelBuilder.Entity("api.Models.Media._2D.Media2DModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("AspectRatio")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("aspect_ratio");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<Guid>("MediaId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("media_id");
-
-                    b.Property<string>("NormalMapLink")
-                        .HasColumnType("text")
-                        .HasColumnName("normal_map_link");
-
-                    b.Property<string>("TextureLink")
-                        .HasColumnType("text")
-                        .HasColumnName("texture_link");
-
-                    b.HasKey("Id")
-                        .HasName("pk_media_2d");
-
-                    b.HasIndex("MediaId")
-                        .HasDatabaseName("ix_media_2d_media_id");
-
-                    b.ToTable("media_2D");
-                });
-
-            modelBuilder.Entity("api.Models.Media._3D.Media3DModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<int>("Depth")
-                        .HasColumnType("integer")
-                        .HasColumnName("depth");
-
-                    b.Property<int>("Height")
-                        .HasColumnType("integer")
-                        .HasColumnName("height");
-
-                    b.Property<Guid>("MediaId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("media_id");
-
-                    b.Property<string>("ModelLink")
-                        .HasColumnType("text")
-                        .HasColumnName("model_link");
-
-                    b.Property<string>("NormalMapLink")
-                        .HasColumnType("text")
-                        .HasColumnName("normal_map_link");
-
-                    b.Property<string>("TextureLink")
-                        .HasColumnType("text")
-                        .HasColumnName("texture_link");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("integer")
-                        .HasColumnName("width");
-
-                    b.HasKey("Id")
-                        .HasName("pk_media_3d");
-
-                    b.HasIndex("MediaId")
-                        .HasDatabaseName("ix_media_3d_media_id");
-
-                    b.ToTable("media_3D");
-                });
-
             modelBuilder.Entity("api.Models.Organization.OrganizationModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -511,9 +321,14 @@ namespace api.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_update");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("DefaultAuthorization")
+                        .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("email");
+                        .HasColumnName("default_authorization");
+
+                    b.Property<string>("Localization")
+                        .HasColumnType("text")
+                        .HasColumnName("localization");
 
                     b.Property<string>("LogoUrl")
                         .HasColumnType("text")
@@ -522,6 +337,19 @@ namespace api.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<string>("PrivateEmail")
+                        .HasColumnType("text")
+                        .HasColumnName("private_email");
+
+                    b.Property<string>("PublicEmail")
+                        .HasColumnType("text")
+                        .HasColumnName("public_email");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("state");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -575,9 +403,17 @@ namespace api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Alias")
+                        .HasColumnType("text")
+                        .HasColumnName("alias");
+
                     b.Property<DateTimeOffset>("DateCreation")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_creation");
+
+                    b.Property<string>("DateStatus")
+                        .HasColumnType("text")
+                        .HasColumnName("date_status");
 
                     b.Property<DateTimeOffset>("DateUpdate")
                         .HasColumnType("timestamp with time zone")
@@ -595,18 +431,29 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
+                    b.Property<string>("Level")
+                        .HasColumnType("text")
+                        .HasColumnName("level");
+
                     b.Property<string>("Password")
                         .HasColumnType("text")
                         .HasColumnName("password");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
 
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("role");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<string>("Status")
                         .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
                         .HasColumnName("type");
 
                     b.Property<string>("Username")
@@ -664,19 +511,19 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MediaModelTagModel", b =>
+            modelBuilder.Entity("AdvertisementModelTagModel", b =>
                 {
-                    b.HasOne("api.Models.Media.MediaModel", null)
+                    b.HasOne("api.Models.Advertisement.AdvertisementModel", null)
                         .WithMany()
-                        .HasForeignKey("MediasId")
-                        .HasConstraintName("fk_media_model_tag_model_media_medias_id")
+                        .HasForeignKey("AdvertisementsId")
+                        .HasConstraintName("fk_advertisement_model_tag_model_advertisement_advertisements_")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.Tag.TagModel", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
-                        .HasConstraintName("fk_media_model_tag_model_tag_tags_id")
+                        .HasConstraintName("fk_advertisement_model_tag_model_tag_tags_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -722,19 +569,7 @@ namespace api.Migrations
                         .HasForeignKey("CampaignId")
                         .HasConstraintName("fk_advertisement_campaign_campaign_id");
 
-                    b.HasOne("api.Models.Media.MediaModel", "Media")
-                        .WithMany()
-                        .HasForeignKey("MediaId")
-                        .HasConstraintName("fk_advertisement_media_media_id");
-
-                    b.HasOne("api.Models.Tag.TagModel", null)
-                        .WithMany("Advertisements")
-                        .HasForeignKey("TagModelId")
-                        .HasConstraintName("fk_advertisement_tag_tag_model_id");
-
                     b.Navigation("Campaign");
-
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("api.Models.Campaign.CampaignModel", b =>
@@ -755,52 +590,6 @@ namespace api.Migrations
                         .HasConstraintName("fk_game_organization_org_id");
 
                     b.Navigation("Organization");
-                });
-
-            modelBuilder.Entity("api.Models.Media.Engine.Unity.MediaUnityModel", b =>
-                {
-                    b.HasOne("api.Models.Media.MediaModel", "Media")
-                        .WithMany()
-                        .HasForeignKey("MediaId")
-                        .HasConstraintName("fk_media_unity_media_media_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("api.Models.Media.MediaModel", b =>
-                {
-                    b.HasOne("api.Models.Organization.OrganizationModel", "Organization")
-                        .WithMany()
-                        .HasForeignKey("OrgId")
-                        .HasConstraintName("fk_media_organization_org_id");
-
-                    b.Navigation("Organization");
-                });
-
-            modelBuilder.Entity("api.Models.Media._2D.Media2DModel", b =>
-                {
-                    b.HasOne("api.Models.Media.MediaModel", "Media")
-                        .WithMany()
-                        .HasForeignKey("MediaId")
-                        .HasConstraintName("fk_media_2d_media_media_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("api.Models.Media._3D.Media3DModel", b =>
-                {
-                    b.HasOne("api.Models.Media.MediaModel", "Media")
-                        .WithMany()
-                        .HasForeignKey("MediaId")
-                        .HasConstraintName("fk_media_3d_media_media_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Media");
                 });
 
             modelBuilder.Entity("api.Models.Version.VersionModel", b =>
@@ -828,11 +617,6 @@ namespace api.Migrations
                     b.Navigation("Campaigns");
 
                     b.Navigation("Games");
-                });
-
-            modelBuilder.Entity("api.Models.Tag.TagModel", b =>
-                {
-                    b.Navigation("Advertisements");
                 });
 #pragma warning restore 612, 618
         }
