@@ -13,6 +13,13 @@ services:
             - GAS_POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
             - GAS_CDN_URI=${GAS_CDN_URI}
             - GAS_RABBITMQ_HOSTNAME=${GAS_RABBITMQ_HOSTNAME}
+            - GAS_MAIL_HOST=${GAS_MAIL_HOST}
+            - GAS_MAIL_PORT=${GAS_MAIL_PORT}
+            - GAS_MAIL_USERNAME=${GAS_MAIL_USERNAME}
+            - GAS_MAIL_PASSWORD=${GAS_MAIL_PASSWORD}
+            - GAS_MAIL_SSL=${GAS_MAIL_SSL}
+            - GAS_MAIL_ADR_NO_REPLY=${GAS_MAIL_ADR_NO_REPLY}
+            - GAS_MAIL_CALLBACK_URL=${GAS_MAIL_CALLBACK_URL}
             - ASPNETCORE_ENVIRONMENT=${GAS_ENVIRONMENT}
             - GAS_SECRET=${GAS_SECRET}
         ports:
@@ -31,7 +38,7 @@ services:
             - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         volumes:
             - gas-db-data:/var/lib/postgresql/data
-    
+
     gas-nginx:
         image: nginx
         ports:
