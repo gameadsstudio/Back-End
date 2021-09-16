@@ -26,6 +26,7 @@ namespace api.Controllers.Post
             return Ok(new GetDto<PostPublicDto>(_business.GetPostById(id)));
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAll([FromQuery] PagingDto paging, [FromQuery] PostFiltersDto filters)
         {
@@ -36,37 +37,34 @@ namespace api.Controllers.Post
             );
         }
 
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPost]
         public IActionResult Post([FromForm] PostCreationDto newPost)
         {
-            ConnectedUser currentUser = new ConnectedUser(User.Claims);
-
             return Created(
                 "Post",
                 new GetDto<PostPublicDto>(
-                    _business.AddNewPost(newPost, currentUser)
+                    _business.AddNewPost(newPost)
                 )
             );
         }
 
+        [Authorize(Policy = "RequireAdmin")]
         [HttpPatch("{id}")]
         public IActionResult Patch(Guid id, [FromForm] PostUpdateDto newPost)
         {
-            ConnectedUser currentUser = new ConnectedUser(User.Claims);
-
             return Ok(
                 new GetDto<PostPublicDto>(
-                    _business.UpdatePostById(id, newPost, currentUser)
+                    _business.UpdatePostById(id, newPost)
                 )
             );
         }
 
+        [Authorize(Policy = "RequireAdmin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            ConnectedUser currentUser = new ConnectedUser(User.Claims);
-
-            _business.DeletePostById(id, currentUser);
+            _business.DeletePostById(id);
             return Ok();
         }
     }
