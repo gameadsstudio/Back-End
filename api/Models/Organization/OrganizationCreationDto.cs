@@ -17,5 +17,9 @@ namespace api.Models.Organization
         [Required]
         [RequiredEnumAttribute]
         public OrganizationType Type { get; set; }
+
+        public string LogoUrl { get; set; }
+
+        public string WebsiteUrl { get; set; }
     }
 }
