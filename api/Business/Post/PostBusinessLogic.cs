@@ -22,51 +22,33 @@ namespace api.Business.Post
             _mapper = mapper;
         }
 
-        public PostPublicDto AddNewPost(PostCreationDto newPost, ConnectedUser currentUser)
+        public PostPublicDto AddNewPost(PostCreationDto newPost)
         {
             PostModel post = _mapper.Map(newPost, new PostModel());
 
-            if (currentUser.Role != Enums.User.UserRole.Admin) {
-                throw new ApiError(
-                    HttpStatusCode.Forbidden,
-                    "Cannot create a post if you aren't an administrator"
-                );
-            }
             return _mapper.Map(
                 _repository.AddNewPost(post),
                 new PostPublicDto()
             );
         }
 
-        public PostPublicDto UpdatePostById(Guid id, PostUpdateDto updatedPost, ConnectedUser currentUser)
+        public PostPublicDto UpdatePostById(Guid id, PostUpdateDto updatedPost)
         {
             PostModel postMerge = _mapper.Map(
                 updatedPost,
                 _repository.GetPostById(id)
             );
 
-            if (currentUser.Role != Enums.User.UserRole.Admin) {
-                throw new ApiError(
-                    HttpStatusCode.Forbidden,
-                    "Cannot update a post if you aren't an administrator"
-                );
-            }
             return _mapper.Map(
                 _repository.UpdatePost(postMerge),
                 new PostPublicDto()
             );
         }
 
-        public void DeletePostById(Guid id, ConnectedUser currentUser)
+        public void DeletePostById(Guid id)
         {
             PostModel post = _repository.GetPostById(id);
 
-            if (currentUser.Role != Enums.User.UserRole.Admin) {
-                throw new ApiError(
-                    HttpStatusCode.Forbidden,
-                    "Cannot delete a post if you aren't an administrator"
-                );
-            }
             _repository.DeletePost(post);
         }
 

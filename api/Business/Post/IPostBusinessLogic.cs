@@ -7,11 +7,11 @@ namespace api.Business.Post
 {
     public interface IPostBusinessLogic
     {
-        PostPublicDto AddNewPost(PostCreationDto newPost, ConnectedUser currentUser);
+        PostPublicDto AddNewPost(PostCreationDto newPost);
 
-        PostPublicDto UpdatePostById(Guid id, PostUpdateDto updatedPost, ConnectedUser currentUser);
+        PostPublicDto UpdatePostById(Guid id, PostUpdateDto updatedPost);
 
-        void DeletePostById(Guid id, ConnectedUser currentUser);
+        void DeletePostById(Guid id);
 
         PostPublicDto GetPostById(Guid id);
 
