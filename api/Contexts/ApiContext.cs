@@ -15,7 +15,7 @@ using api.Models.Organization;
 using api.Models.Tag;
 using api.Models.User;
 using api.Models.Version;
-using api.Models.Blog;
+using api.Models.Post;
 using Microsoft.EntityFrameworkCore;
 using Type = api.Enums.Media.Type;
 
@@ -42,7 +42,7 @@ namespace api.Contexts
         public DbSet<Media2DModel> Media2D { get; set; }
         public DbSet<Media3DModel> Media3D { get; set; }
         public DbSet<MediaUnityModel> MediaUnity { get; set; }
-		public DbSet<BlogModel> Blog { get; set; }
+		public DbSet<PostModel> Post { get; set; }
 
         public override int SaveChanges()
         {
@@ -156,7 +156,7 @@ namespace api.Contexts
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
 
-            modelBuilder.Entity<BlogModel>(entity =>
+            modelBuilder.Entity<PostModel>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });

@@ -2,50 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
-using api.Models.Blog;
+using api.Models.Post;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Repositories.Blog
+namespace api.Repositories.Post
 {
-    public class BlogRepository : IBlogRepository
+    public class PostRepository : IPostRepository
     {
         private readonly ApiContext _context;
 
-        public BlogRepository(ApiContext context)
+        public PostRepository(ApiContext context)
         {
             _context = context;
         }
 
-        public BlogModel AddNewPost(BlogModel post)
+        public PostModel AddNewPost(PostModel post)
         {
-            _context.Blog.Add(post);
+            _context.Post.Add(post);
             _context.SaveChanges();
             return post;
         }
 
-        public BlogModel UpdatePost(BlogModel post)
+        public PostModel UpdatePost(PostModel post)
         {
             _context.Update(post);
             _context.SaveChanges();
             return post;
         }
 
-        public void DeletePost(BlogModel post)
+        public void DeletePost(PostModel post)
         {
-            _context.Blog.Remove(post);
+            _context.Post.Remove(post);
             _context.SaveChanges();
         }
 
-        public BlogModel GetPostById(Guid id)
+        public PostModel GetPostById(Guid id)
         {
-            return _context.Blog
+            return _context.Post
                 .Include(x => x.Id)
                 .SingleOrDefault(post => post.Id == id);
         }
 
-        public (IList<BlogModel>, int) GetPosts(int offset, int limit)
+        public (IList<PostModel>, int) GetPosts(int offset, int limit)
         {
-            var query = _context.Blog.OrderByDescending(
+            var query = _context.Post.OrderByDescending(
                 post => post.DateCreation
             );
 

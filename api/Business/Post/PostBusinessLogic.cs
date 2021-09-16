@@ -5,27 +5,27 @@ using AutoMapper;
 using api.Business.Organization;
 using api.Contexts;
 using api.Errors;
-using api.Models.Blog;
-using api.Repositories.Blog;
+using api.Models.Post;
+using api.Repositories.Post;
 using api.Helpers;
 
-namespace api.Business.Blog
+namespace api.Business.Post
 {
-    public class BlogBusinessLogic : IBlogBusinessLogic
+    public class PostBusinessLogic : IPostBusinessLogic
     {
         private readonly IMapper _mapper;
 
-        private readonly IBlogRepository _repository;
+        private readonly IPostRepository _repository;
 
-        public BlogBusinessLogic(ApiContext context, IMapper mapper)
+        public PostBusinessLogic(ApiContext context, IMapper mapper)
         {
-            _repository = new BlogRepository(context);
+            _repository = new PostRepository(context);
             _mapper = mapper;
         }
 
-        public BlogPublicDto AddNewPost(BlogCreationDto newPost, ConnectedUser currentUser)
+        public PostPublicDto AddNewPost(PostCreationDto newPost, ConnectedUser currentUser)
         {
-            BlogModel post = _mapper.Map(newPost, new BlogModel());
+            PostModel post = _mapper.Map(newPost, new PostModel());
 
             if (currentUser.Role != Enums.User.UserRole.Admin) {
                 throw new ApiError(
@@ -35,13 +35,13 @@ namespace api.Business.Blog
             }
             return _mapper.Map(
                 _repository.AddNewPost(post),
-                new BlogPublicDto()
+                new PostPublicDto()
             );
         }
 
-        public BlogPublicDto UpdatePostById(Guid id, BlogUpdateDto updatedPost, ConnectedUser currentUser)
+        public PostPublicDto UpdatePostById(Guid id, PostUpdateDto updatedPost, ConnectedUser currentUser)
         {
-            BlogModel postMerge = _mapper.Map(
+            PostModel postMerge = _mapper.Map(
                 updatedPost,
                 _repository.GetPostById(id)
             );
@@ -54,13 +54,13 @@ namespace api.Business.Blog
             }
             return _mapper.Map(
                 _repository.UpdatePost(postMerge),
-                new BlogPublicDto()
+                new PostPublicDto()
             );
         }
 
         public void DeletePostById(Guid id, ConnectedUser currentUser)
         {
-            BlogModel post = _repository.GetPostById(id);
+            PostModel post = _repository.GetPostById(id);
 
             if (currentUser.Role != Enums.User.UserRole.Admin) {
                 throw new ApiError(
@@ -71,15 +71,15 @@ namespace api.Business.Blog
             _repository.DeletePost(post);
         }
 
-        public BlogPublicDto GetPostById(Guid id)
+        public PostPublicDto GetPostById(Guid id)
         {
             return _mapper.Map(
                 _repository.GetPostById(id),
-                new BlogPublicDto()
+                new PostPublicDto()
             );
         }
 
-        public (int page, int pageSize, int maxPage, IList<BlogPublicDto> posts) GetPosts(PagingDto paging, BlogFiltersDto filters)
+        public (int page, int pageSize, int maxPage, IList<PostPublicDto> posts) GetPosts(PagingDto paging, PostFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
             var (posts, maxPage) = _repository.GetPosts(
@@ -91,13 +91,13 @@ namespace api.Business.Blog
                 paging.Page,
                 paging.PageSize,
                 (maxPage / paging.PageSize + 1),
-                _mapper.Map(posts, new List<BlogPublicDto>())
+                _mapper.Map(posts, new List<PostPublicDto>())
             );
         }
 
-        public BlogModel GetBlogModelById(Guid id)
+        public PostModel GetPostModelById(Guid id)
         {
-            BlogModel post = _repository.GetPostById(id);
+            PostModel post = _repository.GetPostById(id);
 
             if (post == null) {
                 throw new ApiError(

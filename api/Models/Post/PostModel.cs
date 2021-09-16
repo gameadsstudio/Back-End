@@ -2,10 +2,10 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Models.Blog
+namespace api.Models.Post
 {
-    [Table("blog")]
-    public class BlogModel
+    [Table("post")]
+    public class PostModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
