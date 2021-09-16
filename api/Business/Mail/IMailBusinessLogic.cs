@@ -2,7 +2,7 @@ using System.Net.Mail;
 
 namespace api.Business.Mail
 {
-    interface IMailBusinessLogic
+    public interface IMailBusinessLogic
     {
         void send(MailMessage mailMessage);
     }
