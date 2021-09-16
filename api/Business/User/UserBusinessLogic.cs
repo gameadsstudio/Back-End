@@ -204,18 +204,18 @@ namespace api.Business.User
             return new UserLoginResponseDto {Token = tokenHandler.WriteToken(token)};
         }
 
-		public void ConfirmEmail(ConnectedUser currentUser, Guid id)
-		{
-			var user = _repository.GetUserById(currentUser.Id);
+        public void ConfirmEmail(ConnectedUser currentUser, Guid id)
+        {
+            var user = _repository.GetUserById(currentUser.Id);
 
-			if (user.EmailValidatedId != id) {
-				throw new ApiError(
-					HttpStatusCode.Forbidden,
-					"Invalid confirmation code"
-				);
-			}
-			user.EmailValidated = true;
-			_repository.UpdateUser(user);
-		}
+            if (user.EmailValidatedId != id) {
+                throw new ApiError(
+                    HttpStatusCode.Forbidden,
+                    "Invalid confirmation code"
+                );
+            }
+            user.EmailValidated = true;
+            _repository.UpdateUser(user);
+        }
     }
 }
