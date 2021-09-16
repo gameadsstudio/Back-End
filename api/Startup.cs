@@ -14,6 +14,8 @@ using api.Business.Media;
 using api.Business.Version;
 using api.Business.Campaign;
 using api.Business.Mail;
+using api.Configuration;
+using api.Business.MediaQuery;
 using api.Contexts;
 using api.Enums.User;
 using api.Helpers;
