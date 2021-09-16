@@ -6,7 +6,7 @@ using api.Models.Post;
 using api.Helpers;
 using api.Models.Common;
 
-namespace api.Controllers.Campaign
+namespace api.Controllers.Post
 {
     [Route("/v1/post")]
     [ApiController]
