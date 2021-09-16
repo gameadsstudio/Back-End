@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using AutoMapper;
-using api.Business.Organization;
 using api.Contexts;
 using api.Errors;
 using api.Models.Post;
