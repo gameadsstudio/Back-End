@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
 using api.Business.User;
+using api.Business.Mail;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
@@ -16,13 +16,20 @@ namespace api.Controllers.User
     public class UserController : ControllerBase
     {
         private readonly IUserBusinessLogic _business;
-
         private readonly IUserAuthServiceBusinessLogic _businessAuthService;
+        private readonly IMailBusinessLogic _businessMail;
+        
+        public UserController(IUserBusinessLogic userBusinessLogic, IUserAuthServiceBusinessLogic userAuthServiceBusinessLogic, IMailBusinessLogic mailBusinessLogic)
+        private readonly IMailBusinessLogic _businessMail;
 
-        public UserController(IUserBusinessLogic userBusinessLogic, IUserAuthServiceBusinessLogic userAuthServiceBusinessLogic)
+        public UserController(
+            IUserBusinessLogic userBusinessLogic,
+            IMailBusinessLogic mailBusinessLogic
+        )
         {
             _business = userBusinessLogic;
             _businessAuthService = userAuthServiceBusinessLogic;
+            _businessMail = mailBusinessLogic;
         }
 
         [HttpGet("self")]
@@ -52,37 +59,15 @@ namespace api.Controllers.User
         [HttpPost]
         public ActionResult<GetDto<UserPrivateDto>> Post([FromForm] UserCreationDto newUser)
         {
-            var user = _business.AddNewUser(newUser);
-            var client = new SmtpClient(
-                Environment.GetEnvironmentVariable(
-                    "GAS_MAIL_HOST"
-                ) ?? "smtp.mailtrap.io",
-                Int32.Parse(
-                    Environment.GetEnvironmentVariable(
-                        "GAS_MAIL_PORT"
-                    ) ?? "2525"
-                )
-            )
-            {
-                Credentials = new NetworkCredential(
-                    Environment.GetEnvironmentVariable(
-                        "GAS_MAIL_USERNAME"
-                    ) ?? "feae1f21794992",
-                    Environment.GetEnvironmentVariable(
-                        "GAS_MAIL_PASSWORD"
-                    ) ?? "42f8ea37006689"
-                ),
-                EnableSsl = bool.Parse(
-                    Environment.GetEnvironmentVariable("GAS_MAIL_SSL") ?? "true"
-                )
-            };
-            var userData = _business.GetUserModelById(user.Id.ToString());
-            var callbackUrl = Environment.GetEnvironmentVariable(
+            MailMessage mailMessage = null;
+            UserPrivateDto user = _business.AddNewUser(newUser);
+            UserModel userData = _business.GetUserModelById(user.Id.ToString());
+            string callbackUrl = Environment.GetEnvironmentVariable(
                 "GAS_MAIL_CALLBACK_URL"
             ) ?? "https://example.com/email";
 
             callbackUrl.TrimEnd('/');
-            client.Send(
+            mailMessage = new MailMessage(
                 Environment.GetEnvironmentVariable(
                     "GAS_MAIL_ADR_NO_REPLY"
                 ) ?? "no-reply@gameadsstudio.com",
@@ -91,7 +76,7 @@ namespace api.Controllers.User
                 "You can confirm your email address with this URL: "
                 + $"{callbackUrl}/{userData.EmailValidatedId}"
             );
-
+            _businessMail.send(mailMessage);
             return Created("User", new GetDto<UserPrivateDto>(user));
         }
 
