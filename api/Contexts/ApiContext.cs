@@ -42,7 +42,7 @@ namespace api.Contexts
         public DbSet<Media2DModel> Media2D { get; set; }
         public DbSet<Media3DModel> Media3D { get; set; }
         public DbSet<MediaUnityModel> MediaUnity { get; set; }
-		public DbSet<PostModel> Post { get; set; }
+        public DbSet<PostModel> Post { get; set; }
 
         public override int SaveChanges()
         {
