@@ -175,7 +175,9 @@ namespace api
                         Environment.GetEnvironmentVariable("GAS_ADMIN_EMAIL") ?? "contact@gameadsstudio.com",
                     Role = UserRole.Admin,
                     Password = HashHelper.HashPassword(
-                        Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password")
+                        Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password"),
+                    FirstName = "",
+                    LastName = ""
                 });
             }
             context.SaveChanges();

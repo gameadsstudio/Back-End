@@ -73,6 +73,10 @@ namespace api.Contexts
                     .HasConversion(
                         v => v.ToString(),
                         v => (UserRole) Enum.Parse(typeof(UserRole), v));
+                entity.Property(e => e.Type)
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (UserType) Enum.Parse(typeof(UserType), v));
             });
 
             modelBuilder.Entity<CampaignModel>(entity =>
