@@ -46,7 +46,7 @@ namespace api.Middlewares
             else
                 return context.Response.CompleteAsync();
         }
-        
+
         private static Task ExceptionHandler(HttpContext context, Exception exception)
         {
             Console.WriteLine(exception);
