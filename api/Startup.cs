@@ -87,29 +87,39 @@ namespace api
                             {
                                 context.Fail("Invalid token");
                             }
-
                             return Task.CompletedTask;
                         }
                     };
                 });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdmin", policy => policy.RequireRole(UserRole.Admin.ToString()));
+                options.AddPolicy(
+                    "RequireAdmin",
+                    policy => policy.RequireRole(UserRole.Admin.ToString())
+                );
             });
             services.AddMvc(o =>
-                {
-                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                    o.Filters.Add(new AuthorizeFilter(policy));
-                })
-                .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                o.Filters.Add(new AuthorizeFilter(policy));
+            }).AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter()
+                );
+            });
 
             // Configure max request size. Default is 30 MB
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize =
-                    long.Parse(Environment.GetEnvironmentVariable("GAS_FILE_MAX_SIZE") ?? int.MaxValue.ToString());
+                options.Limits.MaxRequestBodySize = long.Parse(
+                    Environment.GetEnvironmentVariable(
+                        "GAS_FILE_MAX_SIZE"
+                    ) ?? int.MaxValue.ToString()
+                );
             });
-
             services.AddHttpContextAccessor();
 
             // Business Logic
@@ -153,6 +163,7 @@ namespace api
             });
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<UserAccountValidatedMiddleware>();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
