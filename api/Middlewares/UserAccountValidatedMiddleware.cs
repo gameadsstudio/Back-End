@@ -1,7 +1,5 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using api.Attributes;
