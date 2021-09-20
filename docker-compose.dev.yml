@@ -4,6 +4,7 @@ services:
     gas-api:
         depends_on:
             - gas-db
+            - rabbitmq
         build:
             context: ./api
             dockerfile: Dockerfile.dev
@@ -53,6 +54,11 @@ services:
         volumes:
             - gas-assets-data:/usr/share/nginx/wwwroot/assets
             - ./nginx.conf:/etc/nginx/nginx.conf
+              
+    rabbitmq:
+        image: rabbitmq
+        ports:
+            - "5672:5672"
 
     adminer:
         image: adminer
