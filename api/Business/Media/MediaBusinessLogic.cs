@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using api.Business.Organization;
 using api.Business.Tag;
 using api.Contexts;
@@ -262,8 +263,18 @@ namespace api.Business.Media
                 default:
                     throw new ApiError(HttpStatusCode.BadRequest, "Media type not valid");
             }
+            var mediaDto = ConstructMediaDto(savedMedia);
 
-            return ConstructMediaDto(savedMedia);
+            try
+            {
+                _unityRmqClient.SendPayload(mediaDto);
+            }
+            catch (ApiError error)
+            {
+                throw new ApiError(error.StatusCode, JsonSerializer.Serialize(mediaDto));
+            }
+
+            return mediaDto;
         }
 
         public MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia, ConnectedUser currentUser)
