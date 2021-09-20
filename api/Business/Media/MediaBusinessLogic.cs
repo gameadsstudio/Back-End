@@ -15,6 +15,7 @@ using api.Models.Media._3D;
 using api.Models.Media.Engine.Unity;
 using api.Models.Tag;
 using api.Repositories.Media;
+using api.Services.RabbitMQ;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Type = api.Enums.Media.Type;
@@ -29,6 +30,7 @@ namespace api.Business.Media
         private readonly ITagBusinessLogic _tagBusiness;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _cdnUri;
+        private readonly IClient _unityRmqClient;
 
         public MediaBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusiness,
             ITagBusinessLogic tagBusiness, IHttpContextAccessor httpContextAccessor)
@@ -39,6 +41,7 @@ namespace api.Business.Media
             _tagBusiness = tagBusiness;
             _httpContextAccessor = httpContextAccessor;
             _cdnUri = Environment.GetEnvironmentVariable("GAS_CDN_URI");
+            _unityRmqClient = new Client("unity");
         }
 
         public MediaModel GetMediaModelById(string id)
