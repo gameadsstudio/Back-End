@@ -13,7 +13,6 @@ using api.Business.Game;
 using api.Business.Media;
 using api.Business.Version;
 using api.Business.Campaign;
-using api.Configuration;
 using api.Contexts;
 using api.Enums.User;
 using api.Helpers;
@@ -28,7 +27,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -38,17 +36,9 @@ namespace api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        private IConfiguration Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
-            services.Configure<AppSettings>(Configuration.GetSection("Application"));
             services.AddControllers();
 
             services.AddDbContext<ApiContext>(
