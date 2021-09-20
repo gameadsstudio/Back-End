@@ -31,6 +31,14 @@ namespace api.Controllers.Media
             return Created("medias",new GetDto<MediaPublicDto>(_business.AddNewMedia(newMedia, currentUser)));
         }
 
+        [HttpPost("{id}/retry")]
+        public ActionResult<GetDto<MediaPublicDto>> RetryBuild(string id)
+        {
+            var currentUser = new ConnectedUser(User.Claims);
+
+            return Created("medias",new GetDto<MediaPublicDto>(_business.RetryBuild(id, currentUser)));
+        }
+
         // TODO: remove allow anonymous
         [AllowAnonymous]
         [HttpPost("{id}/unity")]

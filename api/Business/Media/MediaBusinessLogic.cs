@@ -51,6 +51,29 @@ namespace api.Business.Media
                    throw new ApiError(HttpStatusCode.NotFound, $"Media with id {id} not found");
         }
 
+        public MediaPublicDto RetryBuild(string id, ConnectedUser currentUser)
+        {
+            var media = GetMediaModelById(id);
+
+            if (media.Organization.Users.All(u => u.Id != currentUser.Id))
+            {
+                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+            }
+
+            var mediaDto = ConstructMediaDto(media);
+
+            try
+            {
+                _unityRmqClient.SendPayload(mediaDto);
+            }
+            catch (ApiError error)
+            {
+                throw new ApiError(error.StatusCode, JsonSerializer.Serialize(mediaDto));
+            }
+
+            return mediaDto;
+        }
+
         private MediaPublicDto ConstructMediaDto(MediaModel media)
         {
             var dto = _mapper.Map(media, new MediaPublicDto());

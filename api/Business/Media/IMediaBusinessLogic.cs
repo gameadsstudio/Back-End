@@ -20,5 +20,6 @@ namespace api.Business.Media
         MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string id, string mediaId);
         MediaPublicDto UpdateMediaState(MediaState newState, string mediaId);
         MediaModel GetMediaModelById(string mediaId);
+        MediaPublicDto RetryBuild(string id, ConnectedUser currentUser);
     }
 }
