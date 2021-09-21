@@ -28,6 +28,7 @@ namespace api.Business.Media
         private readonly IOrganizationBusinessLogic _organizationBusiness;
         private readonly ITagBusinessLogic _tagBusiness;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _cdnUri;
 
         public MediaBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusiness,
             ITagBusinessLogic tagBusiness, IHttpContextAccessor httpContextAccessor)
@@ -37,6 +38,7 @@ namespace api.Business.Media
             _organizationBusiness = organizationBusiness;
             _tagBusiness = tagBusiness;
             _httpContextAccessor = httpContextAccessor;
+            _cdnUri = Environment.GetEnvironmentVariable("GAS_CDN_URI");
         }
 
         public MediaModel GetMediaModelById(string id)
@@ -74,6 +76,10 @@ namespace api.Business.Media
 
         private Uri UriBuilder(string filename)
         {
+            if (!string.IsNullOrEmpty(_cdnUri))
+            {
+                return new Uri($"https://{_cdnUri}{filename}");
+            }
             return new Uri(
                 $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host.Host}{filename}");
         }
