@@ -10,29 +10,49 @@ namespace api.Services.RabbitMQ
     public class Client: IClient
     {
         private readonly string _hostname;
-        private readonly string _queueName;
         private IConnection _connection;
+        private readonly IModel _channel;
 
         public Client(string queueName)
         {
-            _queueName = queueName;
             _hostname = Environment.GetEnvironmentVariable("GAS_RABBITMQ_HOSTNAME") ??
                         throw new Exception("Env GAS_RABBITMQ_HOSTNAME not specified");
-        }
 
-        public void SendPayload(object payload)
-        {
             if (!ConnectionExists())
             {
                 throw new ApiError(HttpStatusCode.FailedDependency, "Cannot connect to message broker");
             }
-            using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queue: _queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _channel = _connection.CreateModel();
+            _channel.ExchangeDeclare(
+                exchange: "gas.media",
+                type: ExchangeType.Fanout,
+                durable: true,
+                autoDelete: false
+            );
+            _channel.QueueDeclare(
+                queue: $"gas.media.{queueName}",
+                durable: false,
+                exclusive: false,
+                autoDelete: false
+            );
+            _channel.QueueBind(
+                queue: $"gas.media.{queueName}",
+                exchange: "gas.media",
+                routingKey: ""
+            );
+        }
+
+        public void SendPayload(object payload)
+        {
+            var props = _channel.CreateBasicProperties();
+
+            props.ContentType = $"{System.Net.Mime.MediaTypeNames.Application.Json}; charset={Encoding.UTF8.HeaderName}";
+            props.ContentEncoding = "identity";
 
             var json = JsonSerializer.Serialize(payload);
             var body = Encoding.UTF8.GetBytes(json);
 
-            channel.BasicPublish(exchange: "", routingKey: _queueName, basicProperties: null, body: body);
+            _channel.BasicPublish(exchange: "gas.media", routingKey: "", basicProperties: props, body: body);
         }
 
         private void CreateConnection()
