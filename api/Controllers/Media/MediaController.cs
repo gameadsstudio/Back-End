@@ -47,11 +47,20 @@ namespace api.Controllers.Media
             return Created("medias",new GetDto<MediaUnityPublicDto>(_business.AddNewMediaUnity(newMediaUnity, id)));
         }
 
+        // TODO: remove allow anonymous
         [AllowAnonymous]
-        [HttpPut("{mediaId}/unity/{id}/state")]
-        public ActionResult<GetDto<MediaUnityPublicDto>> Put([FromForm] MediaState newState, string id, string mediaId)
+        [HttpPut("{mediaId}/unity/state")]
+        public ActionResult<GetDto<MediaUnityPublicDto>> PutUnityState([FromForm] MediaState newState, string mediaId)
         {
-            return Ok(new GetDto<MediaUnityPublicDto>(_business.UpdateMediaUnityState(newState, id, mediaId)));
+            return Ok(new GetDto<MediaUnityPublicDto>(_business.UpdateMediaUnityState(newState, mediaId)));
+        }
+
+        // TODO: remove allow anonymous
+        [AllowAnonymous]
+        [HttpPatch("{mediaId}/unity")]
+        public ActionResult<GetDto<MediaUnityPublicDto>> Patch([FromForm] MediaUnityUpdateDto updatedUnityMedia, string mediaId)
+        {
+            return Ok(new GetDto<MediaUnityPublicDto>(_business.UpdateMediaUnity(updatedUnityMedia, mediaId)));
         }
 
         [HttpGet]
