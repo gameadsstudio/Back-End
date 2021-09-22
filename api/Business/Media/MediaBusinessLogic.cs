@@ -335,13 +335,20 @@ namespace api.Business.Media
 
             dto.Media = engine switch
             {
-                Engine.Unity => _repository.GetUnityMediaByMediaId(media.Id) ??
-                                throw new ApiError(HttpStatusCode.PartialContent,
-                                    $"Media with id {media.Id} does not have an Unity media"),
+                Engine.Unity => GetMediaUnityPublicDtoByMediaId(media.Id.ToString()),
                 _ => throw new ApiError(HttpStatusCode.PartialContent,
                     $"Media with id {media.Id} does not have specified media")
             };
             return dto;
+        }
+
+        private MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
+        {
+                var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
+                                throw new ApiError(HttpStatusCode.PartialContent,
+                                    $"Media with id {mediaId} does not have an Unity media");
+
+                return _mapper.Map(mediaUnity, new MediaUnityPublicDto());
         }
 
         public void DeleteMediaById(string id, ConnectedUser currentUser)
