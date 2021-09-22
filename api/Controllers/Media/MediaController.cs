@@ -49,14 +49,6 @@ namespace api.Controllers.Media
 
         // TODO: remove allow anonymous
         [AllowAnonymous]
-        [HttpPut("{mediaId}/unity/state")]
-        public ActionResult<GetDto<MediaUnityPublicDto>> PutUnityState([FromForm] MediaState newState, string mediaId)
-        {
-            return Ok(new GetDto<MediaUnityPublicDto>(_business.UpdateMediaUnityState(newState, mediaId)));
-        }
-
-        // TODO: remove allow anonymous
-        [AllowAnonymous]
         [HttpPatch("{mediaId}/unity")]
         public ActionResult<GetDto<MediaUnityPublicDto>> Patch([FromForm] MediaUnityUpdateDto updatedUnityMedia, string mediaId)
         {
