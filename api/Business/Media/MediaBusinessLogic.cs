@@ -408,6 +408,12 @@ namespace api.Business.Media
                 mediaUnityModel.State = MediaStateEnum.Processed;
                 mediaUnityModel.StateMessage = "Unity media processed";
             }
+
+            UpdateMediaStateFromEngine(new MediaState
+            {
+                State = mediaUnityModel.State,
+                Message = mediaUnityModel.StateMessage
+            }, mediaId, "unity");
             mediaUnityModel.Media = media;
             var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {media.Id}");
@@ -415,15 +421,15 @@ namespace api.Business.Media
             return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
         }
 
-        public MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string mediaId)
+        private void UpdateMediaStateFromEngine(MediaState newState, string mediaId, string engine)
         {
-            var unityMedia = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
-                throw new ApiError(HttpStatusCode.NotFound,
-                    $"Media with id ${mediaId} does not have an unity media");
+            var media = GetMediaModelById(mediaId);
 
-            unityMedia.State = newState.State;
-            unityMedia.StateMessage = newState.Message;
-            return _mapper.Map(_repository.UpdateUnityMedia(unityMedia), new MediaUnityPublicDto());
+            if (newState.State != MediaStateEnum.Invalid && newState.State != MediaStateEnum.Processing) return;
+
+            media.State = newState.State;
+            media.StateMessage = $"|{engine}:{newState.Message}|";
+            _repository.UpdateMedia(media);
         }
 
         public MediaUnityPublicDto UpdateMediaUnity(MediaUnityUpdateDto updatedUnityMedia, string mediaId)
@@ -456,6 +462,7 @@ namespace api.Business.Media
             {
                 mediaUnity.State = updatedUnityMedia.State.State;
                 mediaUnity.StateMessage = updatedUnityMedia.State.Message;
+                UpdateMediaStateFromEngine(updatedUnityMedia.State, mediaId, "unity");
             }
             var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new ApiError(HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {mediaUnity.Media.Id}");
