@@ -369,7 +369,7 @@ namespace api.Business.Media
 
             var media = GetMediaModelById(mediaId);
 
-            if (newMediaUnity.AssetBundle == null && newMediaUnity.State == null)
+            if (newMediaUnity.AssetBundle == null && newMediaUnity.State == 0)
             {
                 throw new ApiError(HttpStatusCode.BadRequest, "You need to specify at least an AssetBundle or a State");
             }
@@ -398,10 +398,10 @@ namespace api.Business.Media
                 mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
             }
 
-            if (newMediaUnity.State != null)
+            if (newMediaUnity.State != 0)
             {
-                mediaUnityModel.State = newMediaUnity.State.State;
-                mediaUnityModel.StateMessage = newMediaUnity.State.Message;
+                mediaUnityModel.State = newMediaUnity.State;
+                mediaUnityModel.StateMessage = newMediaUnity.StateMessage;
             }
             else
             {

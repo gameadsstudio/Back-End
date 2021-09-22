@@ -2,7 +2,7 @@ namespace api.Enums.Media
 {
     public enum MediaStateEnum
     {
-        Pending = 0,
+        Pending = 1,
         Processing,
         Processed,
         Invalid
