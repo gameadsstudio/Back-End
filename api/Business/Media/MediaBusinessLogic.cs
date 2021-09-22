@@ -425,7 +425,8 @@ namespace api.Business.Media
         {
             var media = GetMediaModelById(mediaId);
 
-            if (newState.State != MediaStateEnum.Invalid && newState.State != MediaStateEnum.Processing) return;
+            if (newState.State != MediaStateEnum.Invalid && newState.State != MediaStateEnum.Processing &&
+                newState.State != MediaStateEnum.Processed) return;
 
             media.State = newState.State;
             media.StateMessage = $"|{engine}:{newState.Message}|";
