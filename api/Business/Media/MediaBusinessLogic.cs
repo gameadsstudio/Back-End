@@ -360,34 +360,47 @@ namespace api.Business.Media
         {
             var mediaUnityModel = new MediaUnityModel();
 
-            var media = _repository.GetMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
-                        throw new ApiError(HttpStatusCode.NotFound, $"Media with id ${mediaId} not found");
+            var media = GetMediaModelById(mediaId);
 
-            if (newMediaUnity.AssetBundle == null)
+            if (newMediaUnity.AssetBundle == null && newMediaUnity.State == null)
             {
-                throw new ApiError(HttpStatusCode.BadRequest, "Unity media not valid");
+                throw new ApiError(HttpStatusCode.BadRequest, "You need to specify at least an AssetBundle or a State");
             }
 
-            var assetsDir = $"/assets/{mediaId}";
-
-            // Create media dir if not exists
-            if (!Directory.Exists(assetsDir))
+            if (_repository.GetUnityMediaById(media.Id) != null)
             {
-                Directory.CreateDirectory(assetsDir);
+                throw new ApiError(HttpStatusCode.Conflict, $"Media with id ${media.Id} already have an unity media");
             }
 
             // Saving asset bundle
-            using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
-                    FileMode.Create))
+            if (newMediaUnity.AssetBundle != null)
             {
+                var assetsDir = $"/assets/{mediaId}";
+
+                // Create media dir if not exists
+                if (!Directory.Exists(assetsDir))
+                {
+                    Directory.CreateDirectory(assetsDir);
+                }
+
+                using var fileStream =
+                    new FileStream(
+                        $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
+                        FileMode.Create);
                 newMediaUnity.AssetBundle.CopyTo(fileStream);
                 mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
             }
 
-            mediaUnityModel.State = MediaStateEnum.Processed;
-            mediaUnityModel.StateMessage = "Unity media processed";
+            if (newMediaUnity.State != null)
+            {
+                mediaUnityModel.State = newMediaUnity.State.State;
+                mediaUnityModel.StateMessage = newMediaUnity.State.Message;
+            }
+            else
+            {
+                mediaUnityModel.State = MediaStateEnum.Processed;
+                mediaUnityModel.StateMessage = "Unity media processed";
+            }
             mediaUnityModel.Media = media;
             var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {media.Id}");
@@ -395,20 +408,52 @@ namespace api.Business.Media
             return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
         }
 
-        public MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string id, string mediaId)
+        public MediaUnityPublicDto UpdateMediaUnityState(MediaState newState, string mediaId)
         {
             var unityMedia = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
                 throw new ApiError(HttpStatusCode.NotFound,
                     $"Media with id ${mediaId} does not have an unity media");
-            if (unityMedia.Id.ToString() != id)
-            {
-                throw new ApiError(HttpStatusCode.BadRequest,
-                    $"Unity media with ID ${id} does not belong to media with id ${mediaId}");
-            }
 
             unityMedia.State = newState.State;
             unityMedia.StateMessage = newState.Message;
             return _mapper.Map(_repository.UpdateUnityMedia(unityMedia), new MediaUnityPublicDto());
+        }
+
+        public MediaUnityPublicDto UpdateMediaUnity(MediaUnityUpdateDto updatedUnityMedia, string mediaId)
+        {
+            var _ = GetMediaModelById(mediaId);
+
+            var mediaUnity = _repository.GetUnityMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
+                             throw new ApiError(HttpStatusCode.NotFound, $"Media with id ${mediaId} does not have a unity media");
+
+            // Saving asset bundle
+            if (updatedUnityMedia.AssetBundle != null)
+            {
+                var assetsDir = $"/assets/{mediaId}";
+
+                // Create media dir if not exists
+                if (!Directory.Exists(assetsDir))
+                {
+                    Directory.CreateDirectory(assetsDir);
+                }
+
+                using var fileStream =
+                    new FileStream(
+                        $"{assetsDir}/unity{Path.GetExtension(updatedUnityMedia.AssetBundle.FileName)}",
+                        FileMode.Create);
+                updatedUnityMedia.AssetBundle.CopyTo(fileStream);
+                mediaUnity.AssetBundleLink = UriBuilder(fileStream.Name);
+            }
+
+            if (updatedUnityMedia.State != null)
+            {
+                mediaUnity.State = updatedUnityMedia.State.State;
+                mediaUnity.StateMessage = updatedUnityMedia.State.Message;
+            }
+            var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new ApiError(HttpStatusCode.Conflict,
+                $"Cannot save Unity media for media with id {mediaUnity.Media.Id}");
+
+            return _mapper.Map(mediaUnitySaved, new MediaUnityPublicDto());
         }
 
         public MediaPublicDto UpdateMediaState(MediaState newState, string mediaId)

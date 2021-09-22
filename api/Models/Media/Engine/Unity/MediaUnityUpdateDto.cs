@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace api.Models.Media.Engine.Unity
 {
-    public class MediaUnityCreationDto
+    public class MediaUnityUpdateDto
     {
         public IFormFile AssetBundle { get; set; }
 
