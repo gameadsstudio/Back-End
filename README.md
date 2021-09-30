@@ -1,6 +1,5 @@
 # API : Documentation Technique
 
-## Introduction
 
 L'API REST du projet GameAdsStudio a été réalisée en C# avec le framework .NET 5.0, l'intéraction avec les données est réalisée grâce a l'Entity Framework.
 
