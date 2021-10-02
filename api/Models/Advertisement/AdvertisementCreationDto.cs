@@ -15,10 +15,10 @@ namespace api.Models.Advertisement
         
         public IList<string> TagNames { get; set; }
         
-        [Required, RangeAttribute(0, 120)]
+        [RangeAttribute(1, 120)]
         public int AgeMin { get; set; }
         
-        [Required, RangeAttribute(0, 120)]
+        [RangeAttribute(1, 120)]
         public int AgeMax { get; set; }
     }
 }
