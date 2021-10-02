@@ -28,7 +28,6 @@ namespace api.Repositories.Advertisement
             return _context.Advertisement
                 .Include(v => v.Campaign)
                 .ThenInclude(g => g.Organization)
-                .Include(a => a.Tags)
                 .Include(a => a.Media)
                 .SingleOrDefault(a => a.Id == id);
         }

@@ -20,9 +20,7 @@ namespace api.Models.Advertisement
         public CampaignModel Campaign { get; set; }
         
         public MediaModel Media { get; set; }
-        
-        public IList<TagModel> Tags { get; set; }
-        
+
         public int AgeMin { get; set; }
         
         public int AgeMax { get; set; }
