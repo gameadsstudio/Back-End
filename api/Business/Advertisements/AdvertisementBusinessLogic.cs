@@ -4,7 +4,6 @@ using System.Net;
 using api.Business.Campaign;
 using api.Business.Media;
 using api.Business.Organization;
-using api.Business.Tag;
 using api.Contexts;
 using api.Enums.User;
 using api.Errors;
@@ -22,20 +21,17 @@ namespace api.Business.Advertisements
 
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly ICampaignBusinessLogic _campaignBusinessLogic;
-        private readonly ITagBusinessLogic _tagBusinessLogic;
         private readonly IMediaBusinessLogic _mediaBusinessLogic;
 
         public AdvertisementBusinessLogic(ApiContext context,
             IMapper mapper,
             IOrganizationBusinessLogic organizationBusinessLogic,
             ICampaignBusinessLogic campaignBusinessLogic,
-            ITagBusinessLogic tagBusinessLogic,
             IMediaBusinessLogic mediaBusinessLogic)
         {
             _repository = new AdvertisementRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
             _campaignBusinessLogic = campaignBusinessLogic;
-            _tagBusinessLogic = tagBusinessLogic;
             _mediaBusinessLogic = mediaBusinessLogic;
             _mapper = mapper;
         }
@@ -98,7 +94,6 @@ namespace api.Business.Advertisements
             var advertisement = _mapper.Map(newAdvertisement, new AdvertisementModel());
 
             advertisement.Campaign = campaign;
-            advertisement.Tags = _tagBusinessLogic.ResolveTags(newAdvertisement.TagNames);
 
             if (advertisement.AgeMin == 0)
             {
@@ -137,11 +132,6 @@ namespace api.Business.Advertisements
             }
 
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
-
-            if (updatedAdvertisement.TagNames != null)
-            {
-                advertisement.Tags = _tagBusinessLogic.ResolveTags(updatedAdvertisement.TagNames);
-            }
 
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }

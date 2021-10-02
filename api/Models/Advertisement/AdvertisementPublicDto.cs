@@ -18,10 +18,6 @@ namespace api.Models.Advertisement
         public int AgeMax { get; set; }
         
         public MediaPublicDto Media { get; set; }
-        
-        // public CampaignPublicDto Campaign { get; set; }
-        
-        public IList<TagPublicDto> Tags { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
         

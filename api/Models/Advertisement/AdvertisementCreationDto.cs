@@ -12,9 +12,7 @@ namespace api.Models.Advertisement
         
         [Required]
         public string Name { get; set; }
-        
-        public IList<string> TagNames { get; set; }
-        
+
         [RangeAttribute(1, 120)]
         public int AgeMin { get; set; }
         
