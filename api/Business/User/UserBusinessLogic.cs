@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -29,7 +30,7 @@ namespace api.Business.User
         // Todo : Find a better return type
         public object GetUserById(string id, ConnectedUser currentUser)
         {
-            var user = GetUserModelById(id);
+            var user = GetUserModelById(new Guid(id));
 
             if (user == null)
             {
@@ -44,9 +45,9 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPublicDto());
         }
 
-        public UserModel GetUserModelById(string id)
+        public UserModel GetUserModelById(Guid id)
         {
-            var user = _repository.GetUserById(GuidHelper.StringToGuidConverter(id));
+            var user = _repository.GetUserById(id);
 
             if (user == null)
             {
@@ -58,7 +59,7 @@ namespace api.Business.User
 
         public UserPrivateDto GetSelf(ConnectedUser currentUser)
         {
-            var user = GetUserModelById(currentUser.Id.ToString());
+            var user = GetUserModelById(currentUser.Id);
 
             if (user == null)
             {
@@ -79,9 +80,17 @@ namespace api.Business.User
         }
 
         public (int page, int pageSize, int totalItemCount, IList<UserPublicDto> users) GetUsers(PagingDto paging,
-            UserFiltersDto filters)
+            UserFiltersDto filters, ConnectedUser user)
         {
             paging = PagingHelper.Check(paging);
+            var currentUser = GetUserModelById(user.Id);
+
+            if (filters.OrganizationId != Guid.Empty && currentUser.Organizations.All(p => p.Id != filters.OrganizationId))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get users from an organization which you are not a part of");
+            }
+            
             var (users, totalItemCount) =
                 _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
             return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
@@ -102,13 +111,14 @@ namespace api.Business.User
             }
 
             user.Password = HashHelper.HashPassword(user.Password);
+            user.Role = UserRole.User;
             var result = _repository.AddNewUser(user);
             return _mapper.Map(result, new UserPrivateDto());
         }
 
         public int DeleteUserById(string id, ConnectedUser currentUser)
         {
-            var user = GetUserModelById(id);
+            var user = GetUserModelById(new Guid(id));
 
             if (user == null)
             {
@@ -125,7 +135,7 @@ namespace api.Business.User
 
         public UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, ConnectedUser currentUser)
         {
-            var user = GetUserModelById(id);
+            var user = GetUserModelById(new Guid(id));
 
             if (user.Id != currentUser.Id)
             {

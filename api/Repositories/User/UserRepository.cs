@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
 using api.Models.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories.User
 {
@@ -17,7 +18,7 @@ namespace api.Repositories.User
 
         public UserModel GetUserById(Guid id)
         {
-            return _context.User.SingleOrDefault(a => a.Id == id);
+            return _context.User.Include(a => a.Organizations).SingleOrDefault(a => a.Id == id);
         }
 
         public UserModel GetUserByUsername(string username)
@@ -41,6 +42,11 @@ namespace api.Repositories.User
             if (!string.IsNullOrEmpty(filters.Email))
             {
                 query = query.Where(user => user.Email.ToLower().Equals(filters.Email.ToLower()));
+            }
+            if (filters.OrganizationId != Guid.Empty)
+            {
+                query = query.Where(user =>
+                    user.Organizations.Any(organization => organization.Id == filters.OrganizationId));
             }
 
             return (query

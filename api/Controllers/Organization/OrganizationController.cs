@@ -67,13 +67,11 @@ namespace api.Controllers.Organization
         }
 
         [HttpGet("{id}/users")]
-        public ActionResult<GetAllDto<UserPublicDto>> GetOrganizationUsers(string id)
+        public ActionResult<GetAllDto<UserPublicDto>> GetOrganizationUsers(string id, [FromQuery] PagingDto paging)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            var users = _business.GetOrganizationUsers(id, currentUser);
-
-            return Ok(new GetAllDto<UserPublicDto>((1, users.Count, 1, users)));
+            return Ok(new GetAllDto<UserPublicDto>(_business.GetOrganizationUsers(id, paging, currentUser)));
         }
 
         [HttpDelete("{id}/users/{userId}")]

@@ -44,18 +44,19 @@ namespace api.Business.Organization
                     $"Organization with email: {organization.Email} already exists");
             }
 
-            var user = _userBusinessLogic.GetUserModelById(currentUser.Id.ToString());
+            var user = _userBusinessLogic.GetUserModelById(currentUser.Id);
 
             organization.Users = new List<UserModel> {user};
 
             return _mapper.Map(_repository.AddNewOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public (int page, int pageSize, int totalItemCount, List<OrganizationPublicDto>) GetOrganizations(PagingDto paging,
-            OrganizationFiltersDto filters)
+        public (int page, int pageSize, int totalItemCount, List<OrganizationPublicDto>) GetOrganizations(
+            PagingDto paging, OrganizationFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var (organizations, totalItemCount) = _repository.GetOrganizations(filters, (paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var (organizations, totalItemCount) =
+                _repository.GetOrganizations(filters, (paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(organizations, new List<OrganizationPublicDto>()));
         }
@@ -148,24 +149,22 @@ namespace api.Business.Organization
                 throw new ApiError(HttpStatusCode.Conflict, "User already in organization");
             }
 
-            var user = _userBusinessLogic.GetUserModelById(userId);
+            var user = _userBusinessLogic.GetUserModelById(new Guid(userId));
 
             organization.Users.Add(user);
 
             return _mapper.Map(_repository.UpdateOrganization(organization), new OrganizationPrivateDto());
         }
 
-        public List<UserPublicDto> GetOrganizationUsers(string id, ConnectedUser currentUser)
+        public (int page, int pageSize, int totalItemCount, List<UserPublicDto> users) GetOrganizationUsers(string id,
+            PagingDto paging, ConnectedUser currentUser)
         {
             var organization = GetOrganizationModelById(GuidHelper.StringToGuidConverter(id));
 
-            if (organization.Users != null && organization.Users.All(x => x.Id != currentUser.Id))
-            {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get users from an organization which you are not a part of");
-            }
+            var (page, pageSize, totalItemCount, users) = _userBusinessLogic.GetUsers(paging,
+                new UserFiltersDto {OrganizationId = organization.Id}, currentUser);
 
-            return _mapper.Map(organization.Users, new List<UserPublicDto>());
+            return (page, pageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
         public OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser)
@@ -178,7 +177,7 @@ namespace api.Business.Organization
                     "Cannot remove a user from an organization which you are not a part of");
             }
 
-            var userToDelete = _userBusinessLogic.GetUserModelById(userId);
+            var userToDelete = _userBusinessLogic.GetUserModelById(new Guid(userId));
 
             if (organization.Users.All(x => x.Id != userToDelete.Id))
             {

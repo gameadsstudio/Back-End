@@ -1,3 +1,5 @@
+using System;
+
 namespace api.Models.User
 {
     public class UserFiltersDto
@@ -5,5 +7,7 @@ namespace api.Models.User
         public string Username { get; set; }
 
         public string Email { get; set; }
+        
+        public Guid OrganizationId { get; set; }
     }
 }
