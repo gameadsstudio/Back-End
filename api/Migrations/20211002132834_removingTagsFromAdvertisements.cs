@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mail;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace api.Migrations
@@ -10,25 +11,9 @@ namespace api.Migrations
             migrationBuilder.DropTable(
                 name: "advertisement_model_tag_model");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "age_min",
-                table: "campaign",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+            migrationBuilder.Sql("ALTER TABLE campaign ALTER COLUMN age_min TYPE INTEGER USING age_min::integer");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "age_max",
-                table: "campaign",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+            migrationBuilder.Sql("ALTER TABLE campaign ALTER COLUMN age_max TYPE INTEGER USING age_max::integer");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "tag_model_id",
