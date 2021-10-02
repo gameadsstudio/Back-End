@@ -39,6 +39,11 @@ namespace api.Business.Campaign
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot create a campaign for an organization you're not part of");
             }
+            
+            if (campaign.DateBegin >= campaign.DateEnd)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot set a starting date after the ending date");
+            }
 
             campaign.Organization = organization;
             campaign.Advertisements = new List<AdvertisementModel>();
@@ -56,6 +61,11 @@ namespace api.Business.Campaign
                     "Cannot update a campaign for an organization you're not part of");
             }
 
+            if (campaignMerge.DateBegin >= campaignMerge.DateEnd)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden, "Cannot set a starting date after the ending date");
+            }
+            
             return _mapper.Map(_repository.UpdateCampaign(campaignMerge), new CampaignPublicDto());
         }
 
