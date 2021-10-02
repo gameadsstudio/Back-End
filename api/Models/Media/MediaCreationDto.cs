@@ -17,7 +17,7 @@ namespace api.Models.Media
         public IList<string> TagName { get; set; }
 
         [Required]
-        public string OrgId { get; set; }
+        public string OrganizationId { get; set; }
 
         public AspectRatio AspectRatio { get; set; }
 

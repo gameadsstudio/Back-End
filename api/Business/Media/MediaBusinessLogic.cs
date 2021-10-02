@@ -261,7 +261,7 @@ namespace api.Business.Media
         {
             var media = _mapper.Map(newMedia, new MediaModel());
 
-            if (!_organizationBusiness.IsUserInOrganization(GuidHelper.StringToGuidConverter(newMedia.OrgId),
+            if (!_organizationBusiness.IsUserInOrganization(GuidHelper.StringToGuidConverter(newMedia.OrganizationId),
                 currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Unauthorized,
@@ -270,7 +270,7 @@ namespace api.Business.Media
 
             media.Tags = ResolveTags(newMedia.TagName);
             media.Organization =
-                _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrgId));
+                _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrganizationId));
             media.State = MediaStateEnum.Pending;
             media.StateMessage = "Awaiting processing";
             var savedMedia = _repository.AddNewMedia(media);
