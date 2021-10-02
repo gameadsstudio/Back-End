@@ -57,7 +57,7 @@ namespace api.Business.Version
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot delete a game version from an organization to which you don't belong.");
+                    "Cannot create a game version from an organization to which you don't belong.");
             }
 
             if (VersionExistForGame(newVersion.SemVer, game.Id))
