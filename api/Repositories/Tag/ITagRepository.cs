@@ -12,7 +12,7 @@ namespace api.Repositories.Tag
         int CountTags();
         List<TagModel> GetAllTags();
         (List<TagModel>, int) GetTags(int offset, int limit);
-        public (List<TagModel>, int) SearchTags(int offset, int limit, TagFiltersDto filters, bool strict = false);
+        public (List<TagModel>, int) SearchTags(int offset, int limit, TagFiltersDto filters);
         TagModel UpdateTag(TagModel updatedTag);
         int DeleteTag(TagModel tag);
     }

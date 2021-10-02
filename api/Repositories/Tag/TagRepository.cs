@@ -44,32 +44,26 @@ namespace api.Repositories.Tag
 
         public (List<TagModel>, int) GetTags(int offset, int limit)
         {
-            return (_context.Tag.OrderBy(p => p.Id)
-                    .Skip(offset)
-                    .Take(limit)
-                    .ToList(),
-                _context.Tag.Count());
+            return (_context.Tag.OrderBy(p => p.Id).Skip(offset).Take(limit).ToList(), _context.Tag.Count());
         }
 
-        public (List<TagModel>, int) SearchTags(int offset, int limit, TagFiltersDto filters,
-            bool strict = false)
+        public (List<TagModel>, int) SearchTags(int offset, int limit, TagFiltersDto filters)
         {
             IQueryable<TagModel> query = _context.Tag.OrderBy(p => p.Id);
 
-            if (strict)
+            if (!string.IsNullOrEmpty(filters.Name))
             {
-                query = query.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) &&
-                                         p.Description.ToLower().Contains(filters.Description.ToLower()));
+                query = query.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()));
             }
-            else
+            
+            if (!string.IsNullOrEmpty(filters.Description))
             {
-                query = query.Where(p => p.Name.ToLower().Contains(filters.Name.ToLower()) ||
-                                         p.Description.ToLower().Contains(filters.Description.ToLower()));
+                query = query.Where(p => p.Description.ToLower().Contains(filters.Description.ToLower()));
             }
 
-            return (query.Skip(offset)
-                .Take(limit).ToList(), query.Count());
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
+        
 
         public TagModel UpdateTag(TagModel updatedTag)
         {
