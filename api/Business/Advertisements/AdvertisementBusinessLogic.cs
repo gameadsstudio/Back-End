@@ -23,10 +23,8 @@ namespace api.Business.Advertisements
         private readonly ICampaignBusinessLogic _campaignBusinessLogic;
         private readonly IMediaBusinessLogic _mediaBusinessLogic;
 
-        public AdvertisementBusinessLogic(ApiContext context,
-            IMapper mapper,
-            IOrganizationBusinessLogic organizationBusinessLogic,
-            ICampaignBusinessLogic campaignBusinessLogic,
+        public AdvertisementBusinessLogic(ApiContext context, IMapper mapper,
+            IOrganizationBusinessLogic organizationBusinessLogic, ICampaignBusinessLogic campaignBusinessLogic,
             IMediaBusinessLogic mediaBusinessLogic)
         {
             _repository = new AdvertisementRepository(context);
@@ -62,8 +60,8 @@ namespace api.Business.Advertisements
             return advertisement;
         }
 
-        public (int page, int pageSize, int maxPage, List<AdvertisementPublicDto> advertisements) GetAdvertisements(
-            PagingDto paging, AdvertisementFiltersDto filters, ConnectedUser currentUser)
+        public (int page, int pageSize, int totalItemCount, List<AdvertisementPublicDto> advertisements)
+            GetAdvertisements(PagingDto paging, AdvertisementFiltersDto filters, ConnectedUser currentUser)
         {
             if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
@@ -73,9 +71,9 @@ namespace api.Business.Advertisements
             }
 
             paging = PagingHelper.Check(paging);
-            var (advertisements, maxPage) =
+            var (advertisements, totalItemCount) =
                 _repository.GetAdvertisements((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
-            return (paging.Page, paging.PageSize, maxPage / paging.PageSize + 1,
+            return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(advertisements, new List<AdvertisementPublicDto>()));
         }
 
@@ -99,6 +97,7 @@ namespace api.Business.Advertisements
             {
                 advertisement.AgeMin = campaign.AgeMin;
             }
+
             if (advertisement.AgeMax == 0)
             {
                 advertisement.AgeMax = campaign.AgeMax;

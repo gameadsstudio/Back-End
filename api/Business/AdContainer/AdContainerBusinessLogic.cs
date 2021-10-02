@@ -54,14 +54,14 @@ namespace api.Business.AdContainer
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
         }
 
-        public (int page, int pageSize, int maxPage, List<AdContainerPublicDto> adContainers) GetAdContainers(
+        public (int page, int pageSize, int totalItemCount, List<AdContainerPublicDto> adContainers) GetAdContainers(
             PagingDto paging, string orgId, ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var (adContainers, maxPage) = _repository.GetAdContainersByOrganizationId(
+            var (adContainers, totalItemCount) = _repository.GetAdContainersByOrganizationId(
                 (paging.Page - 1) * paging.PageSize, paging.PageSize, GuidHelper.StringToGuidConverter(orgId),
                 currentUser.Id);
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
+            return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(adContainers, new List<AdContainerPublicDto>()));
         }
 

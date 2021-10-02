@@ -6,7 +6,7 @@ namespace api.Models.Common
     {
         public DataAllDto<T> Data { get; set; }
 
-        public GetAllDto((int page, int pageSize, int maxPage, IList<T> items) data)
+        public GetAllDto((int page, int pageSize, int totalItemCount, IList<T> items) data)
         {
             Data = new DataAllDto<T>(data);
         }

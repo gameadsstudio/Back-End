@@ -226,7 +226,7 @@ namespace api.Business.Media
             return ConstructMediaDto(media);
         }
 
-        public (int page, int pageSize, int maxPage, IList<MediaPublicDto> medias) GetMedias(PagingDto paging,
+        public (int page, int pageSize, int totalItemCount, IList<MediaPublicDto> medias) GetMedias(PagingDto paging,
             IList<string> tagNames,
             string orgId,
             ConnectedUser currentUser)
@@ -243,16 +243,16 @@ namespace api.Business.Media
 
             if (tagNames.Count > 0)
             {
-                var (mediaModels, count) = _repository.GetMediasByTags((paging.Page - 1) * paging.PageSize,
+                var (mediaModels, totalItemCount) = _repository.GetMediasByTags((paging.Page - 1) * paging.PageSize,
                     paging.PageSize, org.Id, currentUser.Id, ResolveTags(tagNames));
-                return (paging.Page, paging.PageSize, count / paging.PageSize,
+                return (paging.Page, paging.PageSize, totalItemCount,
                     _mapper.Map(mediaModels, new List<MediaPublicDto>()));
             }
             else
             {
-                var (mediaModels, count) = _repository.GetMediasByOrganizationId((paging.Page - 1) * paging.PageSize,
+                var (mediaModels, totalItemCount) = _repository.GetMediasByOrganizationId((paging.Page - 1) * paging.PageSize,
                     paging.PageSize, org.Id, currentUser.Id);
-                return (paging.Page, paging.PageSize, count / paging.PageSize,
+                return (paging.Page, paging.PageSize, totalItemCount,
                     _mapper.Map(mediaModels, new List<MediaPublicDto>()));
             }
         }

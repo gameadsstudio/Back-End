@@ -50,7 +50,7 @@ namespace api.Repositories.Campaign
             return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
 
-        public (IList<CampaignModel> campaigns, int count) GetCampaigns(CampaignFiltersDto filters,
+        public (IList<CampaignModel> campaigns, int totalItemCount) GetCampaigns(CampaignFiltersDto filters,
             int offset, int limit)
         {
             IQueryable<CampaignModel> query = _context.Campaign.OrderBy(a => a.DateCreation);

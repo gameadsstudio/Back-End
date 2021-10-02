@@ -31,7 +31,7 @@ namespace api.Repositories.Version
                 .SingleOrDefault(a => a.Id == id);
         }
 
-        public (IList<VersionModel> versions, int count) GetVersions(int offset, int limit, VersionFiltersDto filters)
+        public (IList<VersionModel> versions, int totalItemCount) GetVersions(int offset, int limit, VersionFiltersDto filters)
         {
             IQueryable<VersionModel> query = _context.Version.OrderBy(a => a.SemVer);
 

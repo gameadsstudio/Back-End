@@ -68,23 +68,23 @@ namespace api.Business.User
             return _mapper.Map(user, new UserPrivateDto());
         }
 
-        public (int page, int pageSize, int maxPage, IList<UserPublicDto> items) SearchUser(string search,
-            PagingDto paging,
-            ConnectedUser currentUser)
+        public (int page, int pageSize, int totalItemCount, IList<UserPublicDto> items) SearchUser(string search,
+            PagingDto paging, ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var (users, maxPage) = _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search);
+            var (users, totalItemCount) =
+                _repository.SearchUser((paging.Page - 1) * paging.PageSize, paging.PageSize, search);
 
-            return (paging.Page, paging.PageSize, maxPage / paging.PageSize + 1,
-                _mapper.Map(users, new List<UserPublicDto>()));
+            return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
-        public (int page, int pageSize, int maxPage, IList<UserPublicDto> users) GetUsers(PagingDto paging,
+        public (int page, int pageSize, int totalItemCount, IList<UserPublicDto> users) GetUsers(PagingDto paging,
             UserFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var (users, maxPage) = _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
-            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(users, new List<UserPublicDto>()));
+            var (users, totalItemCount) =
+                _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
+            return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
         }
 
         public UserPrivateDto AddNewUser(UserCreationDto newUser)
@@ -183,17 +183,13 @@ namespace api.Business.User
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
-                    }
-                ),
+                    }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new UserLoginResponseDto
-            {
-                Token = tokenHandler.WriteToken(token)
-            };
+            return new UserLoginResponseDto {Token = tokenHandler.WriteToken(token)};
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -40,12 +41,12 @@ namespace api.Business.Tag
                    throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found");
         }
 
-        public (int page, int pageSize, int maxPage, List<TagPublicDto> tags) GetTags(PagingDto paging, TagFiltersDto filters)
+        public (int page, int pageSize, int totalItemCount, List<TagPublicDto> tags) GetTags(PagingDto paging, TagFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var (tags, maxPage) = _repository.SearchTags((paging.Page - 1) * paging.PageSize,
+            var (tags, totalItemCount) = _repository.SearchTags((paging.Page - 1) * paging.PageSize,
                 paging.PageSize, filters);
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1), _mapper.Map(tags, new List<TagPublicDto>()));
+            return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(tags, new List<TagPublicDto>()));
         }
 
         public TagPublicDto AddNewTag(TagCreationDto newTag, ConnectedUser currentUser)

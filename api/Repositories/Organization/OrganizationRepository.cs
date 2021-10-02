@@ -51,7 +51,7 @@ namespace api.Repositories.Organization
             return updatedOrganization;
         }
 
-        public List<OrganizationModel> GetOrganizations(OrganizationFiltersDto filters, int offset, int limit)
+        public (List<OrganizationModel>, int totalItemCount) GetOrganizations(OrganizationFiltersDto filters, int offset, int limit)
         {
             IQueryable<OrganizationModel> query = _context.Organization.OrderBy(a => a.Id);
 
@@ -65,19 +65,7 @@ namespace api.Repositories.Organization
                 query = query.Where(o => o.Name == filters.Name.Replace('+', ' '));
             }
 
-            return query.Skip(offset).Take(limit).ToList();
-        }
-
-        public int CountOrganizations(OrganizationFiltersDto filters = null)
-        {
-            IQueryable<OrganizationModel> query = _context.Organization;
-
-            if (filters?.UserId != null)
-            {
-                query = query.Where(o => o.Users.Any(u => u.Id == filters.UserId));
-            }
-
-            return query.Count();
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
     }
 }

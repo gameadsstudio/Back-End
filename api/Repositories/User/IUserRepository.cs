@@ -10,10 +10,10 @@ namespace api.Repositories.User
         UserModel GetUserById(Guid id);
         UserModel GetUserByUsername(string username);
         UserModel GetUserByEmail(string email);
-        (IList<UserModel> users, int count) GetUsers(int offset, int limit, UserFiltersDto filters);
+        (IList<UserModel> users, int totalItemCount) GetUsers(int offset, int limit, UserFiltersDto filters);
         UserModel UpdateUser(UserModel updatedUser);
         int DeleteUser(UserModel user);
         int CountUsers();
-        (IList<UserModel> users, int count) SearchUser(int offset, int limit, string search);
+        (IList<UserModel> users, int totalItemCount) SearchUser(int offset, int limit, string search);
     }
 }

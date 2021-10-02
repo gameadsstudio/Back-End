@@ -8,9 +8,8 @@ namespace api.Repositories.Advertisement
     {
         AdvertisementModel AddNewAdvertisement(AdvertisementModel user);
         AdvertisementModel GetAdvertisementById(Guid id);
-        (List<AdvertisementModel>, int) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters);
+        (List<AdvertisementModel>, int totalItemCount) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters);
         AdvertisementModel UpdateAdvertisement(AdvertisementModel updatedUser);
         int DeleteAdvertisement(AdvertisementModel user);
-        int CountAdvertisements();
     }
 }
