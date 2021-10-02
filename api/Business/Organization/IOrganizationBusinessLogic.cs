@@ -15,7 +15,7 @@ namespace api.Business.Organization
         OrganizationPrivateDto UpdateOrganizationById(string id, OrganizationUpdateDto updatedOrganization, ConnectedUser currentUser);
         void DeleteOrganizationById(string id, ConnectedUser currentUser);
         OrganizationPrivateDto AddUserToOrganization(string id, string userId, ConnectedUser currentUser);
-        List<UserPublicDto> GetOrganizationUsers(string id, ConnectedUser currentUser);
+        (int page, int pageSize, int totalItemCount, List<UserPublicDto> users) GetOrganizationUsers(string id, PagingDto paging, ConnectedUser currentUser);
         OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser);
         bool IsUserInOrganization(Guid orgId, Guid userId);
     }

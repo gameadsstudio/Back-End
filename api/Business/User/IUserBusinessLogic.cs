@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using api.Helpers;
 using api.Models.User;
 
@@ -7,8 +8,8 @@ namespace api.Business.User
     public interface IUserBusinessLogic
     {
         object GetUserById(string id, ConnectedUser currentUser);
-        UserModel GetUserModelById(string id);
-        (int page, int pageSize, int totalItemCount, IList<UserPublicDto> users) GetUsers(PagingDto paging, UserFiltersDto filters);
+        UserModel GetUserModelById(Guid id);
+        (int page, int pageSize, int totalItemCount, IList<UserPublicDto> users) GetUsers(PagingDto paging, UserFiltersDto filters, ConnectedUser user);
         UserPrivateDto AddNewUser(UserCreationDto newUser);
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, ConnectedUser currentUser);
         int DeleteUserById(string id, ConnectedUser currentUser);
