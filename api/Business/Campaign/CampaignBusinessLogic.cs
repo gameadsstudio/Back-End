@@ -95,7 +95,7 @@ namespace api.Business.Campaign
             }
 
             paging = PagingHelper.Check(paging);
-            var (campaigns, maxPage) = _repository.GetOrganizationCampaigns(filters.OrganizationId,
+            var (campaigns, maxPage) = _repository.GetCampaigns(filters,
                 (paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
                 _mapper.Map(campaigns, new List<CampaignPublicDto>()));
