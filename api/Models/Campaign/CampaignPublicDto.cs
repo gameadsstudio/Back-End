@@ -11,9 +11,9 @@ namespace api.Models.Campaign
 
         public string Name { get; set; }
 
-        public string AgeMin { get; set; }
+        public int AgeMin { get; set; }
 
-        public string AgeMax { get; set; }
+        public int AgeMax { get; set; }
         
         public DateTimeOffset DateBegin { get; set; }
         
