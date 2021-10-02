@@ -12,6 +12,6 @@ namespace api.Repositories.Campaign
 
         CampaignModel GetCampaignById(Guid id);
 
-        (IList<CampaignModel> campaigns, int count) GetCampaigns(CampaignFiltersDto filters, int offset, int limit);
+        (IList<CampaignModel> campaigns, int totalItemCount) GetCampaigns(CampaignFiltersDto filters, int offset, int limit);
     }
 }

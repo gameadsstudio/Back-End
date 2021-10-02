@@ -11,7 +11,6 @@ namespace api.Repositories.Game
         GameModel UpdateGame(GameModel updatedGame);
         void DeleteGame(GameModel game);
         GameModel GetGameByName(string name);
-        IList<GameModel> GetGames(int offset, int limit);
-        int CountGames();
+        (IList<GameModel>, int totalItemCount) GetGames(int offset, int limit);
     }
 }

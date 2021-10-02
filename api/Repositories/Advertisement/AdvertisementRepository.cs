@@ -32,7 +32,7 @@ namespace api.Repositories.Advertisement
                 .SingleOrDefault(a => a.Id == id);
         }
 
-        public (List<AdvertisementModel>, int) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters)
+        public (List<AdvertisementModel>, int totalItemCount) GetAdvertisements(int offset, int limit, AdvertisementFiltersDto filters)
         {
             IQueryable<AdvertisementModel> query = _context.Advertisement.OrderBy(a => a.DateCreation);
 

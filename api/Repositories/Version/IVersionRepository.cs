@@ -10,7 +10,7 @@ namespace api.Repositories.Version
 
         public VersionModel GetVersionById(Guid id);
 
-        public (IList<VersionModel> versions, int count) GetVersions(int offset, int limit, VersionFiltersDto filters);
+        public (IList<VersionModel> versions, int totalItemCount) GetVersions(int offset, int limit, VersionFiltersDto filters);
 
         public VersionModel UpdateVersion(VersionModel updatedVersion);
 

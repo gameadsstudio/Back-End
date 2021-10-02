@@ -41,13 +41,13 @@ namespace api.Business.Version
             return _mapper.Map(version, new VersionPublicDto());
         }
 
-        public (int page, int pageSize, int maxPage, IList<VersionPublicDto>) GetVersions(PagingDto paging,
+        public (int page, int pageSize, int totalItemCount, IList<VersionPublicDto>) GetVersions(PagingDto paging,
             VersionFiltersDto filters, ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var (versions, maxPage) =
+            var (versions, totalItemCount) =
                 _repository.GetVersions((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
-            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(versions, new List<VersionPublicDto>()));
+            return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(versions, new List<VersionPublicDto>()));
         }
 
         public VersionPublicDto AddNewVersion(VersionCreationDto newVersion, ConnectedUser currentUser)

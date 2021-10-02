@@ -68,12 +68,12 @@ namespace api.Business.Game
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find a game with Id: {id}");
         }
 
-        public (int, int, int, IList<GamePublicDto>) GetGames(PagingDto paging)
+        public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
-            var maxPage = _repository.CountGames() / paging.PageSize + 1;
-            var games = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, maxPage, _mapper.Map(games, new List<GamePublicDto>()));
+            var (games, totalItemCount) =
+                _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
         public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser)

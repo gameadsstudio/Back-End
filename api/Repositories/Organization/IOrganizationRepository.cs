@@ -12,7 +12,6 @@ namespace api.Repositories.Organization
         OrganizationModel GetOrganizationByEmail(string email);
         OrganizationModel UpdateOrganization(OrganizationModel updatedOrganization);
         void DeleteOrganization(OrganizationModel organization);
-        List<OrganizationModel> GetOrganizations(OrganizationFiltersDto filters, int offset, int limit);
-        int CountOrganizations(OrganizationFiltersDto filters);
+        (List<OrganizationModel>, int totalItemCount) GetOrganizations(OrganizationFiltersDto filters, int offset, int limit);
     }
 }

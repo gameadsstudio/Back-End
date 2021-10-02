@@ -9,8 +9,7 @@ namespace api.Repositories.AdContainer
         AdContainerModel AddNewAdContainer(AdContainerModel adContainer);
         AdContainerModel GetAdContainerById(Guid id);
         AdContainerModel GetAdContainerByName(string name);
-        int CountAdContainers();
-        (List<AdContainerModel>, int) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId, Guid userId);
+        (List<AdContainerModel>, int totalItemCount) GetAdContainersByOrganizationId(int offset, int limit, Guid orgId, Guid userId);
         AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer);
         int DeleteAdContainer(AdContainerModel adContainer);
     }

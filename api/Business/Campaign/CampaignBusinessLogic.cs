@@ -30,7 +30,7 @@ namespace api.Business.Campaign
 
         public CampaignPublicDto AddNewCampaign(CampaignCreationDto newCampaign, ConnectedUser currentUser)
         {
-            CampaignModel campaign = _mapper.Map(newCampaign, new CampaignModel());
+            var campaign = _mapper.Map(newCampaign, new CampaignModel());
             var organization =
                 _organizationBusinessLogic.GetOrganizationModelById(newCampaign.OrganizationId);
 
@@ -95,7 +95,7 @@ namespace api.Business.Campaign
             return _mapper.Map(campaign, new CampaignPublicDto());
         }
 
-        public (int page, int pageSize, int maxPage, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging,
+        public (int page, int pageSize, int totalItemCount, IList<CampaignPublicDto> campaigns) GetCampaigns(PagingDto paging,
             CampaignFiltersDto filters, ConnectedUser currentUser)
         {
             if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id))
@@ -105,9 +105,9 @@ namespace api.Business.Campaign
             }
 
             paging = PagingHelper.Check(paging);
-            var (campaigns, maxPage) = _repository.GetCampaigns(filters,
+            var (campaigns, totalItemCount) = _repository.GetCampaigns(filters,
                 (paging.Page - 1) * paging.PageSize, paging.PageSize);
-            return (paging.Page, paging.PageSize, (maxPage / paging.PageSize + 1),
+            return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(campaigns, new List<CampaignPublicDto>()));
         }
 

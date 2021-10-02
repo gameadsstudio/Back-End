@@ -9,7 +9,7 @@ namespace api.Business.Version
     {
         VersionPublicDto GetVersionById(string id, ConnectedUser currentUser);
 
-        (int page, int pageSize, int maxPage, IList<VersionPublicDto>) GetVersions(PagingDto paging,
+        (int page, int pageSize, int totalItemCount, IList<VersionPublicDto>) GetVersions(PagingDto paging,
             VersionFiltersDto filters, ConnectedUser currentUser);
 
         VersionPublicDto AddNewVersion(VersionCreationDto newVersion, ConnectedUser currentUser);

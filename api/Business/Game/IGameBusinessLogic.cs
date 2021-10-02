@@ -10,7 +10,7 @@ namespace api.Business.Game
         public GamePublicDto GetGameById(string id, ConnectedUser currentUser);
         public GamePublicDto UpdateGameById(string id, GameUpdateDto updatedGame, ConnectedUser currentUser);
         public void DeleteGameById(string id, ConnectedUser currentUser);
-        public (int page, int pageSize, int maxPage, IList<GamePublicDto> users) GetGames(PagingDto paging);
+        public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging);
         public GameModel GetGameModelById(string id);
     }
 }

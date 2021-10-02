@@ -11,16 +11,23 @@ namespace api.Models.Common
         public int TotalPages { get; set; }
 
         public int CurrentItemCount { get; set; }
+        
+        public int TotalItemCount { get; set; }
 
         public IList<T> Items { get; set; }
 
-        public DataAllDto((int page, int pageSize, int maxPage, IList<T> items) data)
+        public DataAllDto((int page, int pageSize, int totalItemCount, IList<T> items) data)
         {
             PageIndex = data.page;
             ItemsPerPage = data.pageSize;
-            TotalPages = data.maxPage;
+            TotalItemCount = data.totalItemCount;
+            TotalPages = data.totalItemCount / data.pageSize;
             CurrentItemCount = data.items.Count;
             Items = data.items;
+            if (ItemsPerPage > 1)
+            {
+                TotalPages += 1;
+            }
         }
     }
 }

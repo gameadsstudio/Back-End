@@ -46,7 +46,7 @@ namespace api.Repositories.AdContainer
             return _context.AdContainer.Count();
         }
 
-        public (List<AdContainerModel>, int) GetAdContainersByOrganizationId(int offset, int limit,
+        public (List<AdContainerModel>, int totalItemCount) GetAdContainersByOrganizationId(int offset, int limit,
             Guid orgId, Guid userId)
         {
             var query = _context.AdContainer.OrderByDescending(p => p.DateCreation)
