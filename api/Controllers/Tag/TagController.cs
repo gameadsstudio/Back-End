@@ -28,12 +28,10 @@ namespace api.Controllers.Tag
 
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult<GetAllDto<TagPublicDto>> GetAll(
-            [FromQuery] PagingDto paging,
-            [FromQuery] bool noPaging,
+        public ActionResult<GetAllDto<TagPublicDto>> GetAll([FromQuery] PagingDto paging,
             [FromQuery] TagFiltersDto filters)
         {
-            return Ok(new GetAllDto<TagPublicDto>(_business.GetTags(paging, filters, noPaging)));
+            return Ok(new GetAllDto<TagPublicDto>(_business.GetTags(paging, filters)));
         }
 
         [HttpPost]
