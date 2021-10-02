@@ -100,6 +100,15 @@ namespace api.Business.Advertisements
             advertisement.Campaign = campaign;
             advertisement.Tags = _tagBusinessLogic.ResolveTags(newAdvertisement.TagNames);
 
+            if (advertisement.AgeMin == 0)
+            {
+                advertisement.AgeMin = campaign.AgeMin;
+            }
+            if (advertisement.AgeMax == 0)
+            {
+                advertisement.AgeMax = campaign.AgeMax;
+            }
+
             return _mapper.Map(_repository.AddNewAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
