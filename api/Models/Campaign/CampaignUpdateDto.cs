@@ -14,7 +14,5 @@ namespace api.Models.Campaign
         public DateTimeOffset DateBegin { get; set; }
         
         public DateTimeOffset DateEnd { get; set; }
-
-        public CampaignStatus Status { get; set; }
     }
 }
