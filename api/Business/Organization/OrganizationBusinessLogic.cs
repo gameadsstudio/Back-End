@@ -114,6 +114,20 @@ namespace api.Business.Organization
                     "Cannot modify an organization which you are not a part of");
             }
 
+            if (_repository.GetOrganizationByName(updatedOrganization.Name) != null &&
+                updatedOrganization.Name != organization.Name)
+            {
+                throw new ApiError(HttpStatusCode.Conflict,
+                    $"Organization with name: {organization.Name} already exists");
+            }
+
+            if (_repository.GetOrganizationByEmail(updatedOrganization.Email) != null &&
+                updatedOrganization.Email != organization.Email)
+            {
+                throw new ApiError(HttpStatusCode.Conflict,
+                    $"Organization with email: {organization.Email} already exists");
+            }
+
             var organizationMapped = _mapper.Map(updatedOrganization, organization);
 
             var result = _repository.UpdateOrganization(organizationMapped);
