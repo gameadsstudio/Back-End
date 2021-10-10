@@ -15,7 +15,7 @@ namespace api.Business.Post
 
         PostPublicDto GetPostById(Guid id);
 
-        (int page, int pageSize, int maxPage, IList<PostPublicDto> posts) GetPosts(PagingDto paging, PostFiltersDto filters);
+        (int page, int pageSize, int totalItemCount, IList<PostPublicDto> posts) GetPosts(PagingDto paging, PostFiltersDto filters);
 
         PostModel GetPostModelById(Guid id);
     }

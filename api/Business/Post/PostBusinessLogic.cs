@@ -60,10 +60,11 @@ namespace api.Business.Post
             );
         }
 
-        public (int page, int pageSize, int maxPage, IList<PostPublicDto> posts) GetPosts(PagingDto paging, PostFiltersDto filters)
+        public (int page, int pageSize, int totalItemCount, IList<PostPublicDto> posts) GetPosts(PagingDto paging, PostFiltersDto filters)
         {
             paging = PagingHelper.Check(paging);
-            var (posts, maxPage) = _repository.GetPosts(
+            
+            var (posts, totalItemCount) = _repository.GetPosts(
                 (paging.Page - 1) * paging.PageSize,
                 paging.PageSize
             );
@@ -71,7 +72,7 @@ namespace api.Business.Post
             return (
                 paging.Page,
                 paging.PageSize,
-                (maxPage / paging.PageSize + 1),
+                totalItemCount,
                 _mapper.Map(posts, new List<PostPublicDto>())
             );
         }
