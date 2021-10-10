@@ -61,7 +61,7 @@ namespace api.Controllers.User
         {
             MailMessage mailMessage = null;
             UserPrivateDto user = _business.AddNewUser(newUser);
-            UserModel userData = _business.GetUserModelById(user.Id.ToString());
+            UserModel userData = _business.GetUserModelById(user.Id);
             string callbackUrl = Environment.GetEnvironmentVariable(
                 "GAS_MAIL_CALLBACK_URL"
             ) ?? "https://example.com/email";
