@@ -178,7 +178,8 @@ namespace api
                     Password = HashHelper.HashPassword(
                         Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password"),
                     FirstName = "",
-                    LastName = ""
+                    LastName = "",
+                    Type = UserType.Admin
                 });
             }
             context.SaveChanges();
