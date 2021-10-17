@@ -33,20 +33,6 @@ services:
             - POSTGRES_PASSWORD=${GAS_POSTGRES_PASSWORD}
         volumes:
             - gas-db-data:/var/lib/postgresql/data
-
-    gas-pgadmin:
-        image: dpage/pgadmin4:5
-        restart: unless-stopped
-        environment:
-            PGADMIN_DEFAULT_EMAIL: ${GAS_DB_ADMIN_MAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${GAS_DB_ADMIN_PASSWORD}
-            PGADMIN_LISTEN_PORT: 80
-        ports:
-            - "81:${GAS_DB_ADMIN_PORT}"
-        logging:
-            driver: none
-        volumes:
-            - gas-pgadmin-data:/var/lib/pgadmin
     
     gas-nginx:
         image: nginx
@@ -69,8 +55,6 @@ services:
 
 volumes:
     gas-db-data:
-        driver: local
-    gas-pgadmin-data:
         driver: local
     gas-assets-data:
         driver: local
