@@ -27,7 +27,6 @@ services:
             - "5000:${GAS_PORT}"
         restart: unless-stopped
         volumes:
-            - ./api:/app
             - gas-assets-data:/assets
 
     gas-db:
@@ -47,6 +46,18 @@ services:
         volumes:
             - gas-assets-data:/usr/share/nginx/wwwroot/assets
             - ./nginx.conf:/etc/nginx/nginx.conf
+
+    gas-rabbitmq:
+        image: rabbitmq:3-management-alpine
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+
+    gas-adminer:
+        image: adminer
+        ports:
+            - "8080:8080"
+
 volumes:
     gas-db-data:
         driver: local

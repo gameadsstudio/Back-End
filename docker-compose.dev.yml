@@ -64,14 +64,13 @@ services:
             - gas-assets-data:/usr/share/nginx/wwwroot/assets
             - ./nginx.conf:/etc/nginx/nginx.conf
 
-    rabbitmq:
+    gas-rabbitmq:
         image: rabbitmq:3-management-alpine
         ports:
             - "5672:5672"
             - "15672:15672"
 
-
-    adminer:
+    gas-adminer:
         image: adminer
         ports:
             - "8080:8080"
