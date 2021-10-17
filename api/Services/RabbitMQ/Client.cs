@@ -65,9 +65,9 @@ namespace api.Services.RabbitMQ
                 };
                 _connection = factory.CreateConnection();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new ApiError(HttpStatusCode.FailedDependency, "Cannot connect to message broker");
+                throw new ApiError(HttpStatusCode.FailedDependency, $"Cannot connect to message broker: {e.Message}");
             }
         }
 
