@@ -6,6 +6,6 @@ namespace api.Business.MediaQuery
 {
     public interface IMediaQueryBusinessLogic
     {
-        MediaPublicDto GetMedia(PagingDto paging, IList<string> tagNames, string adContainerId, ConnectedUser currentUser);
+        MediaPublicDto GetMedia(string adContainerId, ConnectedUser currentUser);
     }
 }

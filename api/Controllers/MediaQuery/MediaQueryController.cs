@@ -21,14 +21,11 @@ namespace api.Controllers.MediaQuery
         }
 
         [HttpGet]
-        public ActionResult<GetDto<MediaPublicDto>> Get(
-            [FromQuery] PagingDto paging,
-            [FromQuery] [Required] string adContainerId,
-            [FromQuery] [Required] IList<string> tagNames)
+        public ActionResult<GetDto<MediaPublicDto>> Get([FromQuery] [Required] string adContainerId)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(paging, tagNames, adContainerId, currentUser)));
+            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(adContainerId, currentUser)));
         }
     }
 }
