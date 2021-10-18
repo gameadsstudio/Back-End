@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using api.Enums.Media;
 using api.Helpers;
@@ -15,6 +14,7 @@ namespace api.Business.Media
         MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia,
             ConnectedUser currentUser);
         MediaPublicDto GetEngineMediaById(string id, ConnectedUser currentUser, Engine engine);
+        IList<MediaUnityPublicDto> GetEngineMedias(string id, ConnectedUser currentUser, MediaQueryFilters filter);
         void DeleteMediaById(string id, ConnectedUser currentUser);
         MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId);
         MediaPublicDto UpdateMediaState(MediaState newState, string mediaId);

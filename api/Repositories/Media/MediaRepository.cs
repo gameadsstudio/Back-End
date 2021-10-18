@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
+using api.Enums.Media;
 using api.Models.Media;
 using api.Models.Media._2D;
 using api.Models.Media._3D;
@@ -196,6 +197,24 @@ namespace api.Repositories.Media
         {
             _context.MediaUnity.Remove(media);
             return _context.SaveChanges();
+        }
+
+        #endregion
+
+        #region media-query
+
+        public IList<MediaUnityModel> GetUnityMediasByFilters(MediaQueryFilters filters)
+        {
+            return _context.MediaUnity
+                .OrderByDescending(p => p.DateCreation)
+                .Include(u => u.Media)
+                .ThenInclude(m => m.Organization)
+                .ThenInclude(o => o.Users)
+                .Include(u => u.Media)
+                .ThenInclude(m => m.Tags)
+                .Where(u => u.Media.Type == filters.Type)
+                .Where(u => u.Media.State == MediaStateEnum.Processed)
+                .ToList();
         }
 
         #endregion

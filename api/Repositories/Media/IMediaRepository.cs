@@ -39,5 +39,8 @@ namespace api.Repositories.Media
         MediaUnityModel GetUnityMediaByMediaId(Guid id);
         MediaUnityModel UpdateUnityMedia(MediaUnityModel updatedMedia);
         int DeleteMedia(MediaUnityModel mediaModel);
+
+        // Media Query
+        IList<MediaUnityModel> GetUnityMediasByFilters(MediaQueryFilters filters);
     }
 }
