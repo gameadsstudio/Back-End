@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Business.MediaQuery;
+using api.Enums.Media;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.Media;
@@ -21,11 +22,14 @@ namespace api.Controllers.MediaQuery
         }
 
         [HttpGet]
-        public ActionResult<GetDto<MediaPublicDto>> Get([FromQuery] [Required] string adContainerId)
+        public ActionResult<GetDto<MediaPublicDto>> Get(
+            [FromQuery] [Required] string adContainerId,
+            [FromQuery] [Required] Engine engine
+            )
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(adContainerId, currentUser)));
+            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(adContainerId, engine, currentUser)));
         }
     }
 }
