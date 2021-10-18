@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Business.MediaQuery;
-using api.Enums.Media;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.Media;
@@ -22,14 +21,14 @@ namespace api.Controllers.MediaQuery
         }
 
         [HttpGet]
-        public ActionResult<GetDto<object>> Get(
+        public ActionResult<GetDto<MediaPublicDto>> Get(
+            [FromQuery] PagingDto paging,
             [FromQuery] [Required] string adContainerId,
-            [FromQuery] [Required] Engine engine
-            )
+            [FromQuery] [Required] IList<string> tagNames)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<object>(_business.GetMedia(adContainerId, engine, currentUser)));
+            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(paging, tagNames, adContainerId, currentUser)));
         }
     }
 }
