@@ -107,6 +107,7 @@ namespace api.Business.Media
             {
                 return new Uri($"https://{_cdnUri}{filename}");
             }
+
             return new Uri(
                 $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host.Host}{filename}");
         }
@@ -250,7 +251,8 @@ namespace api.Business.Media
             }
             else
             {
-                var (mediaModels, totalItemCount) = _repository.GetMediasByOrganizationId((paging.Page - 1) * paging.PageSize,
+                var (mediaModels, totalItemCount) = _repository.GetMediasByOrganizationId(
+                    (paging.Page - 1) * paging.PageSize,
                     paging.PageSize, org.Id, currentUser.Id);
                 return (paging.Page, paging.PageSize, totalItemCount,
                     _mapper.Map(mediaModels, new List<MediaPublicDto>()));
@@ -270,7 +272,8 @@ namespace api.Business.Media
 
             media.Tags = ResolveTags(newMedia.TagName);
             media.Organization =
-                _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(newMedia.OrganizationId));
+                _organizationBusiness.GetOrganizationModelById(
+                    GuidHelper.StringToGuidConverter(newMedia.OrganizationId));
             media.State = MediaStateEnum.Pending;
             media.StateMessage = "Awaiting processing";
             var savedMedia = _repository.AddNewMedia(media);
@@ -286,6 +289,7 @@ namespace api.Business.Media
                 default:
                     throw new ApiError(HttpStatusCode.BadRequest, "Media type not valid");
             }
+
             var mediaDto = ConstructMediaDto(savedMedia);
 
             try
@@ -342,7 +346,7 @@ namespace api.Business.Media
             return dto;
         }
 
-        public IList<MediaUnityPublicDto> GetEngineMedias(string id, ConnectedUser currentUser, MediaQueryFilters filters)
+        public IList<MediaUnityPublicDto> GetEngineMedias(ConnectedUser currentUser, MediaQueryFilters filters)
         {
             var mediaModelList = filters.Engine switch
             {
@@ -361,11 +365,11 @@ namespace api.Business.Media
 
         private MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
         {
-                var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
-                                throw new ApiError(HttpStatusCode.PartialContent,
-                                    $"Media with id {mediaId} does not have an Unity media");
+            var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
+                             throw new ApiError(HttpStatusCode.PartialContent,
+                                 $"Media with id {mediaId} does not have an Unity media");
 
-                return _mapper.Map(mediaUnity, new MediaUnityPublicDto());
+            return _mapper.Map(mediaUnity, new MediaUnityPublicDto());
         }
 
         public void DeleteMediaById(string id, ConnectedUser currentUser)
@@ -432,7 +436,8 @@ namespace api.Business.Media
                 Message = mediaUnityModel.StateMessage
             }, mediaId, "unity");
             mediaUnityModel.Media = media;
-            var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(HttpStatusCode.Conflict,
+            var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(
+                HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {media.Id}");
 
             return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
@@ -455,7 +460,8 @@ namespace api.Business.Media
             var _ = GetMediaModelById(mediaId);
 
             var mediaUnity = _repository.GetUnityMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
-                             throw new ApiError(HttpStatusCode.NotFound, $"Media with id ${mediaId} does not have a unity media");
+                             throw new ApiError(HttpStatusCode.NotFound,
+                                 $"Media with id ${mediaId} does not have a unity media");
 
             // Saving asset bundle
             if (updatedUnityMedia.AssetBundle != null)
@@ -482,7 +488,9 @@ namespace api.Business.Media
                 mediaUnity.StateMessage = updatedUnityMedia.State.Message;
                 UpdateMediaStateFromEngine(updatedUnityMedia.State, mediaId, "unity");
             }
-            var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new ApiError(HttpStatusCode.Conflict,
+
+            var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new ApiError(
+                HttpStatusCode.Conflict,
                 $"Cannot save Unity media for media with id {mediaUnity.Media.Id}");
 
             return _mapper.Map(mediaUnitySaved, new MediaUnityPublicDto());
