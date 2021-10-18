@@ -1,6 +1,7 @@
 using System;
 using api.Business.AdContainer;
 using api.Business.Media;
+using api.Enums.Media;
 using api.Helpers;
 using api.Models.Media;
 
@@ -17,8 +18,10 @@ namespace api.Business.MediaQuery
             _adContainerBusinessLogic = adContainerBusinessLogic;
         }
 
-        public MediaPublicDto GetMedia(string adContainerId, ConnectedUser currentUser)
+        public MediaPublicDto GetMedia(string adContainerId, Engine engine, ConnectedUser currentUser)
         {
+            var adContainer = _adContainerBusinessLogic.GetAdContainerById(adContainerId, currentUser);
+
             throw new NotImplementedException();
         }
     }
