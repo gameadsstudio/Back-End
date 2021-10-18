@@ -129,6 +129,7 @@ namespace api
             services.AddScoped<IVersionBusinessLogic, VersionBusinessLogic>();
             services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddScoped<IMediaBusinessLogic, MediaBusinessLogic>();
+            services.AddScoped<IMediaQueryBusinessLogic, MediaQueryBusinessLogic>();
             services.AddScoped<IMailBusinessLogic, MailBusinessLogic>();
         }
 
