@@ -25,8 +25,8 @@ namespace api.Business.MediaQuery
         public MediaPublicDto GetMedia(string adContainerId, Engine engine, ConnectedUser currentUser)
         {
             var adContainer = _adContainerBusinessLogic.GetAdContainerById(adContainerId, currentUser);
-            var medias = _mediaBusinessLogic.GetEngineMedias(currentUser,
-                new MediaQueryFilters(adContainer.Tags, engine, adContainer.Type));
+            var medias =
+                _mediaBusinessLogic.GetEngineMedias(new MediaQueryFilters(adContainer.Tags, engine, adContainer.Type));
 
             var rnd = new Random();
             var r = rnd.Next(medias.Count);

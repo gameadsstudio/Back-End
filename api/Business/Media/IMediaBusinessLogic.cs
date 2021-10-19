@@ -14,7 +14,7 @@ namespace api.Business.Media
         MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia,
             ConnectedUser currentUser);
         MediaPublicDto GetEngineMediaById(string id, ConnectedUser currentUser, Engine engine);
-        IList<MediaUnityPublicDto> GetEngineMedias(ConnectedUser currentUser, MediaQueryFilters filter);
+        IList<MediaUnityPublicDto> GetEngineMedias(MediaQueryFilters filter);
         void DeleteMediaById(string id, ConnectedUser currentUser);
         MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId);
         MediaPublicDto UpdateMediaState(MediaState newState, string mediaId);
