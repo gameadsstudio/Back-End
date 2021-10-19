@@ -346,7 +346,7 @@ namespace api.Business.Media
             return dto;
         }
 
-        public IList<MediaUnityPublicDto> GetEngineMedias(ConnectedUser currentUser, MediaQueryFilters filters)
+        public IList<MediaUnityPublicDto> GetEngineMedias(MediaQueryFilters filters)
         {
             var mediaModelList = filters.Engine switch
             {
@@ -357,7 +357,6 @@ namespace api.Business.Media
             var tagNames = filters.Tags.Select(t => t.Name).ToList();
             var tags = ResolveTags(tagNames);
             var mediaUnityModels = mediaModelList
-                .Where(u => u.Media.Organization.Users.All(user => user.Id == currentUser.Id))
                 .Where(u => u.Media.Tags.Any(x => tags.Any(x.Equals)))
                 .ToList();
             return _mapper.Map(mediaUnityModels, new List<MediaUnityPublicDto>());
