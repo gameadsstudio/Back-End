@@ -1,7 +1,10 @@
-﻿using api.Business.User;
+﻿using System.Net;
+using api.Business.User;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
+using api.Enums.Auth;
+using api.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +16,12 @@ namespace api.Controllers.User
     {
         private readonly IUserBusinessLogic _business;
 
-        public UserController(IUserBusinessLogic userBusinessLogic)
+        private readonly IUserAuthServiceBusinessLogic _businessAuthService;
+
+        public UserController(IUserBusinessLogic userBusinessLogic, IUserAuthServiceBusinessLogic userAuthServiceBusinessLogic)
         {
             _business = userBusinessLogic;
+            _businessAuthService = userAuthServiceBusinessLogic;
         }
 
         [HttpGet("self")]
@@ -37,7 +43,7 @@ namespace api.Controllers.User
         public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] UserFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            
+
             return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging, filters, currentUser)));
         }
 
@@ -71,6 +77,13 @@ namespace api.Controllers.User
         public ActionResult<GetDto<UserLoginResponseDto>> Login([FromForm] UserLoginDto loginDto)
         {
             return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login-service")]
+        public ActionResult<GetDto<UserLoginResponseDto>> LoginFromService([FromForm] UserLoginServiceDto loginServiceDto)
+        {
+            return Ok(new GetDto<UserLoginResponseDto>(_businessAuthService.Login(loginServiceDto)));
         }
 
         [HttpGet("search/{search}")]
