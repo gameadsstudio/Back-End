@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
@@ -9,9 +10,10 @@ using api.Contexts;
 namespace api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211101152705_UserModel")]
+    partial class UserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -505,39 +507,6 @@ namespace api.Migrations
                     b.ToTable("organization");
                 });
 
-            modelBuilder.Entity("api.Models.Post.PostModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("text")
-                        .HasColumnName("category");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text")
-                        .HasColumnName("content");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_post");
-
-                    b.ToTable("post");
-                });
-
             modelBuilder.Entity("api.Models.Tag.TagModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -587,14 +556,6 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
-                    b.Property<bool>("EmailValidated")
-                        .HasColumnType("boolean")
-                        .HasColumnName("email_validated");
-
-                    b.Property<Guid>("EmailValidatedId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("email_validated_id");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("text")
                         .HasColumnName("first_name");
@@ -610,10 +571,6 @@ namespace api.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text")
                         .HasColumnName("password");
-
-                    b.Property<Guid>("PasswordResetId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("password_reset_id");
 
                     b.Property<string>("Role")
                         .IsRequired()
