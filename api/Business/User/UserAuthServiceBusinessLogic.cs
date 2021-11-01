@@ -44,15 +44,13 @@ namespace api.Business.User
 
         private void AddNewUser(UserModel user)
         {
-            if (_repository.GetUserByUsername(user.Username) != null)
-            {
+            if (_repository.GetUserByUsername(user.Username) != null) {
                 throw new ApiError(HttpStatusCode.Conflict, $"User with username: {user.Username} already exists");
             }
-
-            if (_repository.GetUserByEmail(user.Email) != null)
-            {
+            if (_repository.GetUserByEmail(user.Email) != null) {
                 throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
             }
+            _repository.AddNewUser(user);
         }
 
         private UserLoginResponseDto Microsoft(string token)
@@ -61,7 +59,7 @@ namespace api.Business.User
             JsonElement json;
             UserModel user = null;
 
-            using (var httpClient = HttpHelper.getHttpInstance())
+            using (var httpClient = new HttpClient())
             {
                 using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, "https://graph.microsoft.com/v1.0/users/me"))
                 {
