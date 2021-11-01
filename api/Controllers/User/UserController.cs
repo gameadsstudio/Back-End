@@ -6,6 +6,8 @@ using api.Business.Mail;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
+using api.Enums.Auth;
+using api.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,14 +19,18 @@ namespace api.Controllers.User
     {
         private readonly IUserBusinessLogic _business;
 
+        private readonly IUserAuthServiceBusinessLogic _businessAuthService;
+
         private readonly IMailBusinessLogic _businessMail;
 
         public UserController(
             IUserBusinessLogic userBusinessLogic,
+            IUserAuthServiceBusinessLogic userAuthServiceBusinessLogic,
             IMailBusinessLogic mailBusinessLogic
         )
         {
             _business = userBusinessLogic;
+            _businessAuthService = userAuthServiceBusinessLogic
             _businessMail = mailBusinessLogic;
         }
 
@@ -94,6 +100,13 @@ namespace api.Controllers.User
         public ActionResult<GetDto<UserLoginResponseDto>> Login([FromForm] UserLoginDto loginDto)
         {
             return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login-service")]
+        public ActionResult<GetDto<UserLoginResponseDto>> LoginFromService([FromForm] UserLoginServiceDto loginServiceDto)
+        {
+            return Ok(new GetDto<UserLoginResponseDto>(_businessAuthService.Login(loginServiceDto)));
         }
 
         [AllowAnonymous]
