@@ -21,6 +21,11 @@ namespace api.Repositories.User
             return _context.User.Include(a => a.Organizations).SingleOrDefault(a => a.Id == id);
         }
 
+        public UserModel GetUserByMSId(string id)
+        {
+            return _context.User.Include(a => a.Organizations).SingleOrDefault(a => a.MicrosoftId == id);
+        }
+
         public UserModel GetUserByUsername(string username)
         {
             return _context.User.SingleOrDefault(a => a.Username == username);

@@ -8,6 +8,7 @@ namespace api.Repositories.User
     {
         UserModel AddNewUser(UserModel user);
         UserModel GetUserById(Guid id);
+        UserModel GetUserByMSId(string id);
         UserModel GetUserByUsername(string username);
         UserModel GetUserByEmail(string email);
         (IList<UserModel> users, int totalItemCount) GetUsers(int offset, int limit, UserFiltersDto filters);
