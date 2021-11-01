@@ -14,6 +14,8 @@ namespace api.Models.User
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
+        public string MicrosoftId { get; set; }
+
         public UserRole Role { get; set; }
 
         public string Username { get; set; } // TODO: check id needed
