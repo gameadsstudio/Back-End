@@ -121,6 +121,7 @@ namespace api
 
             // Business Logic
             services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
+			services.AddScoped<IUserAuthServiceBusinessLogic, UserAuthServiceBusinessLogic>();
             services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
             services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
