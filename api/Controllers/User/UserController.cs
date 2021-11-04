@@ -55,24 +55,19 @@ namespace api.Controllers.User
         [HttpPost]
         public ActionResult<GetDto<UserPrivateDto>> Post([FromForm] UserCreationDto newUser)
         {
-            MailMessage mailMessage = null;
             UserPrivateDto user = _business.AddNewUser(newUser);
             UserModel userData = _business.GetUserModelById(user.Id);
             string callbackUrl = Environment.GetEnvironmentVariable(
                 "GAS_MAIL_CALLBACK_URL"
-            ) ?? "https://example.com/email";
+            );
 
             callbackUrl.TrimEnd('/');
-            mailMessage = new MailMessage(
-                Environment.GetEnvironmentVariable(
-                    "GAS_MAIL_ADR_NO_REPLY"
-                ) ?? "no-reply@gameadsstudio.com",
+            _businessMail.send(
                 userData.Email,
                 "Confirm your email address",
                 "You can confirm your email address with this URL: "
                 + $"{callbackUrl}/{userData.EmailValidatedId}"
             );
-            _businessMail.send(mailMessage);
             return Created("User", new GetDto<UserPrivateDto>(user));
         }
 
