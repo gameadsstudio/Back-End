@@ -36,7 +36,7 @@ namespace api.Middlewares
             user = new ConnectedUser(context.User.Claims);
             if (!user.EmailValidated) {
                 throw new ApiError(
-                    HttpStatusCode.BadRequest,
+                    HttpStatusCode.Unauthorized,
                     "Email address not validated"
                 );
             }

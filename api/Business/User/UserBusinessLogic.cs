@@ -243,7 +243,7 @@ namespace api.Business.User
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
                         new Claim(
-                            "emailvalidated",
+                            "email_validated",
                             user.EmailValidated.ToString()
                         )
                     }),
@@ -261,7 +261,7 @@ namespace api.Business.User
 
             if (user.EmailValidatedId != id) {
                 throw new ApiError(
-                    HttpStatusCode.Forbidden,
+                    HttpStatusCode.BadRequest,
                     "Invalid confirmation code"
                 );
             }
