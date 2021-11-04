@@ -36,7 +36,7 @@ namespace api.Helpers
             );
             EmailValidated = Boolean.Parse(
                 claims.FirstOrDefault(
-                    p => p.Type == "emailvalidated"
+                    p => p.Type == "email_validated"
                 )?.Value ?? "false"
             );
         }
