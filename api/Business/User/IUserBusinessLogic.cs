@@ -9,6 +9,7 @@ namespace api.Business.User
     {
         object GetUserById(string id, ConnectedUser currentUser);
         UserModel GetUserModelById(Guid id);
+        UserModel GetUserModelByEmail(string email);
         (int page, int pageSize, int totalItemCount, IList<UserPublicDto> users) GetUsers(PagingDto paging, UserFiltersDto filters, ConnectedUser user);
         UserPrivateDto AddNewUser(UserCreationDto newUser);
         UserPrivateDto UpdateUserById(string id, UserUpdateDto updatedUser, ConnectedUser currentUser);
@@ -17,5 +18,6 @@ namespace api.Business.User
         UserPrivateDto GetSelf(ConnectedUser currentUser);
         void ConfirmEmail(ConnectedUser currentUser, Guid id);
         (int page, int pageSize, int totalItemCount, IList<UserPublicDto> items) SearchUser(string search, PagingDto paging, ConnectedUser currentUser);
+        UserModel CreatePasswordResetId(UserModel user);
     }
 }
