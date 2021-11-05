@@ -22,6 +22,7 @@ services:
             - GAS_MAIL_SSL=${GAS_MAIL_SSL}
             - GAS_MAIL_ADR_NO_REPLY=${GAS_MAIL_ADR_NO_REPLY}
             - GAS_MAIL_CALLBACK_URL=${GAS_MAIL_CALLBACK_URL}
+            - GAS_MAIL_CALLBACK_FORGOT_PASSWORD=${GAS_MAIL_CALLBACK_FORGOT_PASSWORD}
             - ASPNETCORE_ENVIRONMENT=${GAS_ENVIRONMENT}
             - GAS_SECRET=${GAS_SECRET}
         ports:
@@ -62,7 +63,7 @@ services:
         volumes:
             - gas-assets-data:/usr/share/nginx/wwwroot/assets
             - ./nginx.conf:/etc/nginx/nginx.conf
-              
+
     rabbitmq:
         image: rabbitmq:3-management-alpine
         ports:
