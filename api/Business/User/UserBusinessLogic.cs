@@ -57,6 +57,11 @@ namespace api.Business.User
             return user;
         }
 
+        public UserModel GetUserModelByEmail(string email)
+        {
+            return _repository.GetUserByEmail(email);
+        }
+
         public UserPrivateDto GetSelf(ConnectedUser currentUser)
         {
             var user = GetUserModelById(currentUser.Id);
@@ -90,7 +95,7 @@ namespace api.Business.User
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot get users from an organization which you are not a part of");
             }
-            
+
             var (users, totalItemCount) =
                 _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
             return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
@@ -220,6 +225,12 @@ namespace api.Business.User
             }
             user.EmailValidated = true;
             _repository.UpdateUser(user);
+        }
+
+        public UserModel CreatePasswordResetId(UserModel user)
+        {
+            user.PasswordResetId = Guid.NewGuid();
+            return _repository.UpdateUser(user);
         }
     }
 }
