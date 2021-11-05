@@ -22,14 +22,14 @@ namespace api.Controllers.MediaQuery
         }
 
         [HttpGet]
-        public ActionResult<GetDto<MediaPublicDto>> Get(
+        public ActionResult<GetDto<object>> Get(
             [FromQuery] [Required] string adContainerId,
             [FromQuery] [Required] Engine engine
             )
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetDto<MediaPublicDto>(_business.GetMedia(adContainerId, engine, currentUser)));
+            return Ok(new GetDto<object>(_business.GetMedia(adContainerId, engine, currentUser)));
         }
     }
 }
