@@ -47,7 +47,7 @@ namespace api.Controllers.User
         public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] UserFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
-            
+
             return Ok(new GetAllDto<UserPublicDto>(_business.GetUsers(paging, filters, currentUser)));
         }
 
@@ -94,6 +94,33 @@ namespace api.Controllers.User
         public ActionResult<GetDto<UserLoginResponseDto>> Login([FromForm] UserLoginDto loginDto)
         {
             return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot")]
+        public IActionResult Forgot([FromForm] UserForgotDto forgotDto)
+        {
+            UserModel user = null;
+            string callbackUrl = Environment.GetEnvironmentVariable(
+                "GAS_MAIL_CALLBACK_FORGOT_PASSWORD"
+            );
+
+            callbackUrl.TrimEnd('/');
+            try {
+                user = _business.CreatePasswordResetId(
+                    _business.GetUserModelByEmail(forgotDto.Email)
+                );
+                _businessMail.send(
+                    user.Email,
+                    "Reset your password",
+                    "You can reset your password here: "
+                    + $"{callbackUrl}/{user.PasswordResetId}"
+                );
+            }
+            catch {
+                Console.WriteLine("Error");
+            }
+            return Ok();
         }
 
         [HttpGet("search/{search}")]
