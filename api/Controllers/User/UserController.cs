@@ -107,6 +107,33 @@ namespace api.Controllers.User
             return Ok(new GetDto<UserLoginResponseDto>(_businessAuthService.Login(loginServiceDto)));
         }
 
+        [AllowAnonymous]
+        [HttpPost("forgot")]
+        public IActionResult Forgot([FromForm] UserForgotDto forgotDto)
+        {
+            UserModel user = null;
+            string callbackUrl = Environment.GetEnvironmentVariable(
+                "GAS_MAIL_CALLBACK_FORGOT_PASSWORD"
+            );
+
+            callbackUrl.TrimEnd('/');
+            try {
+                user = _business.CreatePasswordResetId(
+                    _business.GetUserModelByEmail(forgotDto.Email)
+                );
+                _businessMail.send(
+                    user.Email,
+                    "Reset your password",
+                    "You can reset your password here: "
+                    + $"{callbackUrl}/{user.PasswordResetId}"
+                );
+            }
+            catch {
+                Console.WriteLine("Error");
+            }
+            return Ok();
+        }
+
         [HttpGet("search/{search}")]
         public ActionResult<GetAllDto<UserPublicDto>> SearchUser(string search, [FromQuery] PagingDto paging)
         {
