@@ -26,6 +26,8 @@ namespace api.Models.User
 
         public string Password { get; set; }
 
+        public Guid PasswordResetId { get; set; }
+
         public string Email { get; set; }
 
         public Boolean EmailValidated { get; set; }
