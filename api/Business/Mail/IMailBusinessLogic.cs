@@ -4,6 +4,6 @@ namespace api.Business.Mail
 {
     public interface IMailBusinessLogic
     {
-        void send(MailMessage mailMessage);
+        void send(string to, string subject, string content);
     }
 }
