@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
@@ -9,9 +10,10 @@ using api.Contexts;
 namespace api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211105151314_PasswordResetAndUpdateUserModel")]
+    partial class PasswordResetAndUpdateUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,10 +265,6 @@ namespace api.Migrations
                     b.Property<Guid>("MediaId")
                         .HasColumnType("uuid")
                         .HasColumnName("media_id");
-
-                    b.Property<string>("MiniatureUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("miniature_url");
 
                     b.Property<string>("Name")
                         .HasColumnType("text")
@@ -607,17 +605,9 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
-                    b.Property<string>("MicrosoftId")
-                        .HasColumnType("text")
-                        .HasColumnName("microsoft_id");
-
                     b.Property<string>("Password")
                         .HasColumnType("text")
                         .HasColumnName("password");
-
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("profile_picture_url");
 
                     b.Property<Guid>("PasswordResetId")
                         .HasColumnType("uuid")
@@ -649,14 +639,6 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("DateCreation")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_creation");
-
-                    b.Property<DateTimeOffset>("DateUpdate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_update");
 
                     b.Property<Guid?>("GameId")
                         .HasColumnType("uuid")
@@ -755,7 +737,7 @@ namespace api.Migrations
                         .HasConstraintName("fk_advertisement_campaign_campaign_id");
 
                     b.HasOne("api.Models.Media.MediaModel", "Media")
-                        .WithMany("Advertisements")
+                        .WithMany()
                         .HasForeignKey("MediaId")
                         .HasConstraintName("fk_advertisement_media_media_id");
 
@@ -853,11 +835,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Game.GameModel", b =>
                 {
                     b.Navigation("Versions");
-                });
-
-            modelBuilder.Entity("api.Models.Media.MediaModel", b =>
-                {
-                    b.Navigation("Advertisements");
                 });
 
             modelBuilder.Entity("api.Models.Organization.OrganizationModel", b =>
