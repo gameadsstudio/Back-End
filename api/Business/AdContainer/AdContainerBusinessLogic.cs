@@ -55,11 +55,11 @@ namespace api.Business.AdContainer
         }
 
         public (int page, int pageSize, int totalItemCount, List<AdContainerPublicDto> adContainers) GetAdContainers(
-            PagingDto paging, string orgId, ConnectedUser currentUser)
+            PagingDto paging, AdContainerFiltersDto filters, ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var (adContainers, totalItemCount) = _repository.GetAdContainersByOrganizationId(
-                (paging.Page - 1) * paging.PageSize, paging.PageSize, GuidHelper.StringToGuidConverter(orgId),
+            var (adContainers, totalItemCount) = _repository.GetAdContainers(
+                (paging.Page - 1) * paging.PageSize, paging.PageSize, filters,
                 currentUser.Id);
             return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(adContainers, new List<AdContainerPublicDto>()));

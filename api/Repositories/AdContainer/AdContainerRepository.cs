@@ -40,21 +40,27 @@ namespace api.Repositories.AdContainer
                 .Include(a => a.Version)
                 .SingleOrDefault(a => a.Name == name);
         }
-
-        public int CountAdContainers()
+        
+        public (List<AdContainerModel>, int totalItemCount) GetAdContainers(int offset, int limit, AdContainerFiltersDto filters, Guid userId)
         {
-            return _context.AdContainer.Count();
-        }
+            IQueryable<AdContainerModel> query = _context.AdContainer.OrderBy(a => a.DateCreation);
 
-        public (List<AdContainerModel>, int totalItemCount) GetAdContainersByOrganizationId(int offset, int limit,
-            Guid orgId, Guid userId)
-        {
-            var query = _context.AdContainer.OrderByDescending(p => p.DateCreation)
-                .Include(a => a.Tags)
+            query = query.Include(a => a.Tags)
                 .Include(a => a.Version)
                 .Include(a => a.Organization)
-                .ThenInclude(o => o.Users)
-                .Where(p => p.Organization.Id == orgId && p.Organization.Users.Any(u => u.Id == userId));
+                .ThenInclude(o => o.Users);
+
+            if (filters.OrganizationId != Guid.Empty)
+            {
+                query = query.Where(a => a.Organization.Id == filters.OrganizationId);
+            }
+
+            if (filters.VersionId != Guid.Empty)
+            {
+                query = query.Where(a => a.Version.Id == filters.VersionId);
+            }
+
+            query = query.Where(a => a.Organization.Users.Any(u => u.Id == userId));
 
             return (query.Skip(offset)
                         .Take(limit)
