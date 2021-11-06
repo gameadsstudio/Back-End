@@ -4,6 +4,7 @@ services:
     gas-api:
         depends_on:
             - gas-db
+            - gas-rabbitmq
         build:
             context: ./api
         environment:
