@@ -29,11 +29,11 @@ namespace api.Controllers.AdContainer
 
         [HttpGet]
         public ActionResult<GetAllDto<AdContainerPublicDto>> GetAll([FromQuery] PagingDto paging,
-            [FromQuery] [Required] string orgId)
+            [FromQuery] AdContainerFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
-            return Ok(new GetAllDto<AdContainerPublicDto>(_business.GetAdContainers(paging, orgId, currentUser)));
+            return Ok(new GetAllDto<AdContainerPublicDto>(_business.GetAdContainers(paging, filters, currentUser)));
         }
 
         [HttpPost]
