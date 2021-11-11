@@ -41,8 +41,8 @@ namespace api
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
             services.AddControllers();
 
-            services.AddDbContext<ApiContext>(
-                p => p.UseNpgsql(
+            services.AddDbContext<ApiContext>(p =>
+                p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
                     .UseSnakeCaseNamingConvention());
 
@@ -90,29 +90,27 @@ namespace api
                 });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdmin",
-                    policy => policy.RequireRole(UserRole.Admin.ToString()));
+                options.AddPolicy("RequireAdmin", policy => policy.RequireRole(UserRole.Admin.ToString()));
             });
             services.AddMvc(o =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                o.Filters.Add(new AuthorizeFilter(policy));
-            }).AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+                {
+                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                    o.Filters.Add(new AuthorizeFilter(policy));
+                })
+                .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             // Configure max request size. Default is 30 MB
             services.Configure<KestrelServerOptions>(options =>
             {
                 options.Limits.MaxRequestBodySize =
-                    long.Parse(Environment.GetEnvironmentVariable("GAS_FILE_MAX_SIZE") ??
-                                   int.MaxValue.ToString()); });
+                    long.Parse(Environment.GetEnvironmentVariable("GAS_FILE_MAX_SIZE") ?? int.MaxValue.ToString());
+            });
 
             services.AddHttpContextAccessor();
 
             // Business Logic
             services.AddScoped<IUserBusinessLogic, UserBusinessLogic>();
-			services.AddScoped<IUserAuthServiceBusinessLogic, UserAuthServiceBusinessLogic>();
+            services.AddScoped<IUserAuthServiceBusinessLogic, UserAuthServiceBusinessLogic>();
             services.AddScoped<ITagBusinessLogic, TagBusinessLogic>();
             services.AddScoped<IAdvertisementBusinessLogic, AdvertisementBusinessLogic>();
             services.AddScoped<IOrganizationBusinessLogic, OrganizationBusinessLogic>();
@@ -162,15 +160,15 @@ namespace api
                 {
                     Id = Guid.NewGuid(),
                     Username = Environment.GetEnvironmentVariable("GAS_ADMIN_NAME") ?? "admin",
-                    Email =
-                        Environment.GetEnvironmentVariable("GAS_ADMIN_EMAIL") ?? "contact@gameadsstudio.com",
+                    Email = Environment.GetEnvironmentVariable("GAS_ADMIN_EMAIL") ?? "contact@gameadsstudio.com",
                     Role = UserRole.Admin,
-                    Password = HashHelper.HashPassword(
-                        Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ?? "password"),
+                    Password = HashHelper.HashPassword(Environment.GetEnvironmentVariable("GAS_ADMIN_PASSWORD") ??
+                                                       "password"),
                     FirstName = "",
                     LastName = ""
                 });
             }
+
             context.SaveChanges();
         }
     }
