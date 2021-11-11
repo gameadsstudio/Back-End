@@ -280,5 +280,22 @@ namespace api.Business.User
             user.PasswordResetId = Guid.NewGuid();
             return _repository.UpdateUser(user);
         }
+
+        public void ResetPassword(UserResetDto resetDto)
+        {
+            UserModel user = null;
+
+            if (resetDto.PasswordResetId == Guid.Empty) {
+                throw new ApiError(
+                    HttpStatusCode.BadRequest,
+                    "Guid cannot be null"
+                );
+            }
+            user = _repository.GetUserByPasswordResetId(
+                resetDto.PasswordResetId
+            );
+            user.Password = resetDto.Password;
+            user.PasswordResetId = Guid.Empty;
+        }
     }
 }
