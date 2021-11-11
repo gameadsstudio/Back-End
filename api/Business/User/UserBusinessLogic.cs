@@ -251,7 +251,8 @@ namespace api.Business.User
                             "email_validated",
                             user.EmailValidated.ToString()
                         )
-                    }),
+                    }
+                ),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
