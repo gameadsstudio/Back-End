@@ -134,6 +134,14 @@ namespace api.Controllers.User
             return Ok();
         }
 
+        [AllowAnonymous]
+        [HttpPost("reset")]
+        public IActionResult Reset([FromForm] UserResetDto resetDto)
+        {
+            _business.ResetPassword(resetDto);
+            return Ok();
+        }
+
         [HttpGet("search/{search}")]
         public ActionResult<GetAllDto<UserPublicDto>> SearchUser(string search, [FromQuery] PagingDto paging)
         {
