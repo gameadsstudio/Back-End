@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Models.User
 {
-    public class UserRetrieveDto
+    public class UserResetDto
     {
         public Guid PasswordResetId { get; set; }
 
