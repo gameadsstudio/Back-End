@@ -31,6 +31,13 @@ namespace api.Repositories.User
             return _context.User.SingleOrDefault(a => a.Email == email);
         }
 
+        public UserModel GetUserByPasswordResetId(Guid passwordResetId)
+        {
+            return _context.User.SingleOrDefault(
+                a => a.PasswordResetId == passwordResetId
+            );
+        }
+
         public (IList<UserModel> users, int totalItemCount) GetUsers(int offset, int limit, UserFiltersDto filters)
         {
             IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
