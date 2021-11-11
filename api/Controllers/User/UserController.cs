@@ -30,7 +30,7 @@ namespace api.Controllers.User
         )
         {
             _business = userBusinessLogic;
-            _businessAuthService = userAuthServiceBusinessLogic
+            _businessAuthService = userAuthServiceBusinessLogic;
             _businessMail = mailBusinessLogic;
         }
 
