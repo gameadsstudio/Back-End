@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace api.Models.Game
@@ -20,5 +21,7 @@ namespace api.Models.Game
 
         [Required]
         public DateTimeOffset DateLaunch { get; set; }
+        
+        public IFormFile Miniature { get; set; }
     }
 }

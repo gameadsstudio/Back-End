@@ -27,6 +27,8 @@ namespace api.Models.Game
 
         public DateTimeOffset DateUpdate { get; set; }
         
+        public Uri MiniatureUrl { get; set; }
+        
         [ForeignKey("OrgId")]
         public OrganizationModel Organization { get; set; }
         

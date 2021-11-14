@@ -16,6 +16,8 @@ namespace api.Models.Game
         public OrganizationPublicDto Organization { get; set; }
 
         public DateTimeOffset DateLaunch { get; set; }
+        
+        public Uri MiniatureUrl { get; set; }
 
         public DateTimeOffset DateCreation { get; set; }
 
