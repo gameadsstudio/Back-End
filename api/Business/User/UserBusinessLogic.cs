@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -12,6 +13,7 @@ using api.Helpers;
 using api.Models.User;
 using api.Repositories.User;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Business.User
@@ -20,11 +22,13 @@ namespace api.Business.User
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _repository;
+        private readonly UriHelper _uriHelper;
 
-        public UserBusinessLogic(ApiContext context, IMapper mapper)
+        public UserBusinessLogic(ApiContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _repository = new UserRepository(context);
             _mapper = mapper;
+            _uriHelper = new UriHelper(httpContextAccessor);
         }
 
         // Todo : Find a better return type
@@ -85,12 +89,13 @@ namespace api.Business.User
             paging = PagingHelper.Check(paging);
             var currentUser = GetUserModelById(user.Id);
 
-            if (filters.OrganizationId != Guid.Empty && currentUser.Organizations.All(p => p.Id != filters.OrganizationId))
+            if (filters.OrganizationId != Guid.Empty &&
+                currentUser.Organizations.All(p => p.Id != filters.OrganizationId))
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot get users from an organization which you are not a part of");
             }
-            
+
             var (users, totalItemCount) =
                 _repository.GetUsers((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
             return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(users, new List<UserPublicDto>()));
@@ -112,8 +117,39 @@ namespace api.Business.User
 
             user.Password = HashHelper.HashPassword(user.Password);
             user.Role = UserRole.User;
+            user.ProfilePictureUrl = new Uri("about:blank");
             var result = _repository.AddNewUser(user);
+
+            result = AddOrReplaceProfilePicture(result, newUser.ProfilePicture);
+
             return _mapper.Map(result, new UserPrivateDto());
+        }
+
+        private UserModel AddOrReplaceProfilePicture(UserModel user, IFormFile picture)
+        {
+            if (picture == null)
+            {
+                return user;
+            }
+
+            var assetsDir = $"/assets/users/{user.Id.ToString()}";
+
+            // Create user dir if not exists
+            if (!Directory.Exists(assetsDir))
+            {
+                Directory.CreateDirectory(assetsDir);
+            }
+
+            // TODO check for file format before saving
+            // Saving texture
+            using (var fileStream = new FileStream($"{assetsDir}/profilePicture{Path.GetExtension(picture.FileName)}",
+                FileMode.Create))
+            {
+                picture.CopyTo(fileStream);
+                user.ProfilePictureUrl = _uriHelper.UriBuilder(fileStream.Name);
+            }
+
+            return _repository.UpdateUser(user);
         }
 
         public int DeleteUserById(string id, ConnectedUser currentUser)
@@ -128,6 +164,14 @@ namespace api.Business.User
             if (user.Id != currentUser.Id && currentUser.Role != UserRole.Admin)
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
+            }
+            
+            var assetsDir = $"/assets/users/{user.Id.ToString()}";
+            
+            // Delete assets dir if exists
+            if (!Directory.Exists(assetsDir))
+            {
+                Directory.Delete(assetsDir, true);
             }
 
             return _repository.DeleteUser(user);
@@ -165,6 +209,9 @@ namespace api.Business.User
 
             user = _mapper.Map(updatedUser, user);
             var result = _repository.UpdateUser(user);
+            
+            result = AddOrReplaceProfilePicture(result, updatedUser.ProfilePicture);
+            
             return _mapper.Map(result, new UserPrivateDto());
         }
 

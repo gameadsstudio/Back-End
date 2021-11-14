@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.DataAnnotations;
 using api.Enums.User;
+using Microsoft.AspNetCore.Http;
 
 namespace api.Models.User
 {
@@ -29,5 +30,7 @@ namespace api.Models.User
 
         [RequiredEnumAttribute]
         public UserType Type { get; set; }
+        
+        public IFormFile ProfilePicture { get; set; }
     }
 }

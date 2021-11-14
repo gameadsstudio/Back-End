@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.Enums.User;
+using Microsoft.AspNetCore.Http;
 
 namespace api.Models.User
 {
@@ -20,5 +21,7 @@ namespace api.Models.User
         [MinLength(8)]
         [MaxLength(128)]
         public string Password { get; set; }
+        
+        public IFormFile ProfilePicture { get; set; }
     }
 }
