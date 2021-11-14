@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace api.Models.Game
 {
@@ -11,5 +12,7 @@ namespace api.Models.Game
         public string MediaId { get; set; }
         
         public DateTimeOffset DateLaunch { get; set; }
+        
+        public IFormFile Miniature { get; set; }
     }
 }

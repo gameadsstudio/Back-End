@@ -7,6 +7,8 @@ using AutoMapper;
 using System.Net;
 using api.Helpers;
 using System.Collections.Generic;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace api.Business.Game
 {
@@ -15,13 +17,15 @@ namespace api.Business.Game
         private readonly IMapper _mapper;
         private readonly IGameRepository _repository;
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
+        private readonly UriHelper _uriHelper;
 
         public GameBusinessLogic(ApiContext context, IMapper mapper,
-            IOrganizationBusinessLogic organizationBusinessLogic)
+            IOrganizationBusinessLogic organizationBusinessLogic, IHttpContextAccessor httpContextAccessor)
         {
             _repository = new GameRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
             _mapper = mapper;
+            _uriHelper = new UriHelper(httpContextAccessor);
         }
 
         public GamePublicDto AddNewGame(GameCreationDto newGame, ConnectedUser currentUser)
@@ -41,7 +45,38 @@ namespace api.Business.Game
 
             game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId);
 
-            return _mapper.Map(_repository.AddNewGame(game), new GamePublicDto());
+            var result = _repository.AddNewGame(game);
+            
+            result = AddOrReplaceGameMiniature(result, newGame.Miniature);
+            
+            return _mapper.Map(result, new GamePublicDto());
+        }
+
+        private GameModel AddOrReplaceGameMiniature(GameModel game, IFormFile miniature)
+        {
+            if (miniature == null)
+            {
+                return game;
+            }
+
+            var assetsDir = $"/assets/games/{game.Id.ToString()}";
+
+            // Create user dir if not exists
+            if (!Directory.Exists(assetsDir))
+            {
+                Directory.CreateDirectory(assetsDir);
+            }
+
+            // TODO check for file format before saving
+            // Saving texture
+            using (var fileStream = new FileStream($"{assetsDir}/miniature{Path.GetExtension(miniature.FileName)}",
+                FileMode.Create))
+            {
+                miniature.CopyTo(fileStream);
+                game.MiniatureUrl = _uriHelper.UriBuilder(fileStream.Name);
+            }
+
+            return _repository.UpdateGame(game);
         }
 
         public GamePublicDto GetGameById(string id, ConnectedUser currentUser)
@@ -71,8 +106,7 @@ namespace api.Business.Game
         public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging)
         {
             paging = PagingHelper.Check(paging);
-            var (games, totalItemCount) =
-                _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
+            var (games, totalItemCount) = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
             return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
@@ -88,7 +122,11 @@ namespace api.Business.Game
 
             var gameMapped = _mapper.Map(updatedGame, game);
 
-            return _mapper.Map(_repository.UpdateGame(gameMapped), new GamePublicDto());
+            var result = _repository.UpdateGame(gameMapped);
+            
+            result = AddOrReplaceGameMiniature(result, updatedGame.Miniature);
+            
+            return _mapper.Map(result, new GamePublicDto());
         }
 
         public void DeleteGameById(string id, ConnectedUser currentUser)
@@ -99,6 +137,14 @@ namespace api.Business.Game
             {
                 throw new ApiError(HttpStatusCode.Forbidden,
                     "Cannot update a game from an organization which you are not a part of");
+            }
+            
+            var assetsDir = $"/assets/games/{game.Id.ToString()}";
+            
+            // Delete assets dir if exists
+            if (!Directory.Exists(assetsDir))
+            {
+                Directory.Delete(assetsDir, true);
             }
 
             _repository.DeleteGame(game);
