@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,9 +28,8 @@ namespace api.Business.Media
         private readonly IMediaRepository _repository;
         private readonly IOrganizationBusinessLogic _organizationBusiness;
         private readonly ITagBusinessLogic _tagBusiness;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string _cdnUri;
         private readonly IClient _unityRmqClient;
+        private readonly UriHelper _uriHelper;
 
         public MediaBusinessLogic(ApiContext context, IMapper mapper, IOrganizationBusinessLogic organizationBusiness,
             ITagBusinessLogic tagBusiness, IHttpContextAccessor httpContextAccessor)
@@ -40,9 +38,8 @@ namespace api.Business.Media
             _mapper = mapper;
             _organizationBusiness = organizationBusiness;
             _tagBusiness = tagBusiness;
-            _httpContextAccessor = httpContextAccessor;
-            _cdnUri = Environment.GetEnvironmentVariable("GAS_CDN_URI");
             _unityRmqClient = new Client("unity");
+            _uriHelper = new UriHelper(httpContextAccessor);
         }
 
         public MediaModel GetMediaModelById(string id)
@@ -101,17 +98,6 @@ namespace api.Business.Media
                 select _tagBusiness.GetTagModelByName(tagName)).ToList();
         }
 
-        private Uri UriBuilder(string filename)
-        {
-            if (!string.IsNullOrEmpty(_cdnUri))
-            {
-                return new Uri($"https://{_cdnUri}{filename}");
-            }
-
-            return new Uri(
-                $"{_httpContextAccessor.HttpContext?.Request.Scheme}://{_httpContextAccessor.HttpContext?.Request.Host.Host}{filename}");
-        }
-
         private void SaveMedia2D(MediaCreationDto mediaCDto, MediaModel media)
         {
             var media2DCreationDto = _mapper.Map(mediaCDto, new Media2DCreationDto());
@@ -139,7 +125,7 @@ namespace api.Business.Media
                     FileMode.Create))
             {
                 media2DCreationDto.Texture.CopyTo(fileStream);
-                media2DModel.TextureLink = UriBuilder(fileStream.Name);
+                media2DModel.TextureLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             // Saving normal map
@@ -149,7 +135,7 @@ namespace api.Business.Media
                     FileMode.Create))
             {
                 media2DCreationDto.NormalMap.CopyTo(fileStream);
-                media2DModel.NormalMapLink = UriBuilder(fileStream.Name);
+                media2DModel.NormalMapLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             media2DModel.Media = media;
@@ -187,7 +173,7 @@ namespace api.Business.Media
                     FileMode.Create))
             {
                 media3DCreationDto.Texture.CopyTo(fileStream);
-                media3DModel.TextureLink = UriBuilder(fileStream.Name);
+                media3DModel.TextureLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             // Saving model
@@ -197,7 +183,7 @@ namespace api.Business.Media
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyTo(fileStream);
-                media3DModel.ModelLink = UriBuilder(fileStream.Name);
+                media3DModel.ModelLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             // Saving normal map
@@ -207,7 +193,7 @@ namespace api.Business.Media
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyTo(fileStream);
-                media3DModel.NormalMapLink = UriBuilder(fileStream.Name);
+                media3DModel.NormalMapLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             media3DModel.Media = media;
@@ -415,7 +401,7 @@ namespace api.Business.Media
                         $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
                         FileMode.Create);
                 newMediaUnity.AssetBundle.CopyTo(fileStream);
-                mediaUnityModel.AssetBundleLink = UriBuilder(fileStream.Name);
+                mediaUnityModel.AssetBundleLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             if (newMediaUnity.State != 0)
@@ -478,7 +464,7 @@ namespace api.Business.Media
                         $"{assetsDir}/unity{Path.GetExtension(updatedUnityMedia.AssetBundle.FileName)}",
                         FileMode.Create);
                 updatedUnityMedia.AssetBundle.CopyTo(fileStream);
-                mediaUnity.AssetBundleLink = UriBuilder(fileStream.Name);
+                mediaUnity.AssetBundleLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
             if (updatedUnityMedia.State != null)

@@ -168,6 +168,7 @@ namespace api
                                                        "password"),
                     FirstName = "",
                     LastName = "",
+                    ProfilePictureUrl = new Uri("about:blank"),
                     Type = UserType.Admin
                 });
             }

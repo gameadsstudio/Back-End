@@ -16,6 +16,8 @@ namespace api.Models.User
         public string LastName { get; set; }
 
         public string Email { get; set; }
+        
+        public Uri ProfilePictureUrl { get; set; }
 
         public UserType Type { get; set; }
 
