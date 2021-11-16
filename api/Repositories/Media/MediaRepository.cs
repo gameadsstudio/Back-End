@@ -209,7 +209,7 @@ namespace api.Repositories.Media
             
             query = query.Include(m => m.Media).ThenInclude(m => m.Tags);
             query = query.Include(m => m.Media.Advertisements);
-            query = query.Where(m => m.Media.Tags.Any(x => filters.AdContainer.Tags.Any(x.Equals)));
+            query = query.Where(m => filters.AdContainer.Tags.All(m.Media.Tags.Contains));
             query = query.Where(m => m.Media.State == MediaStateEnum.Processed);
             query = query.Where(m => m.Media.Type == filters.AdContainer.Type);
             query = query.Where(m => m.Media.Advertisements.Any());
