@@ -16,5 +16,9 @@ namespace api.Models.Version
         public string Name { get; set; }
         
         public string SemVer { get; set; }
+        
+        public DateTimeOffset DateCreation { get; set; }
+
+        public DateTimeOffset DateUpdate { get; set; }
     }
 }
