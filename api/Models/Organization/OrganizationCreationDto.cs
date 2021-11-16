@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.DataAnnotations;
-using api.Enums;
 using api.Enums.Organization;
 
 namespace api.Models.Organization

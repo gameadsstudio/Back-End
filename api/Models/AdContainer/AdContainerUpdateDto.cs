@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using api.Enums;
 using api.Enums.Media;
 
 namespace api.Models.AdContainer

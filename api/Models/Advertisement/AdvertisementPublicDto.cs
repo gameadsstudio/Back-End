@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using api.Models.Campaign;
 using api.Models.Media;
-using api.Models.Tag;
 
 namespace api.Models.Advertisement
 {

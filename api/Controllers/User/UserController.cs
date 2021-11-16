@@ -1,10 +1,7 @@
-﻿using System.Net;
-using api.Business.User;
+﻿using api.Business.User;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
-using api.Enums.Auth;
-using api.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

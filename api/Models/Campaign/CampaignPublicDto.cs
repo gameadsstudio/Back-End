@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using api.Enums.Campaign;
 using api.Models.Advertisement;
 
 namespace api.Models.Campaign

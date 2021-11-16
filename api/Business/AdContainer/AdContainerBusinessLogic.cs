@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using api.Business.Organization;
 using api.Business.Tag;
@@ -9,7 +8,6 @@ using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.AdContainer;
-using api.Models.Tag;
 using api.Repositories.AdContainer;
 using AutoMapper;
 

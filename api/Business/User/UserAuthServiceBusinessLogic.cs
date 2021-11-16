@@ -11,7 +11,6 @@ using AutoMapper;
 using api.Contexts;
 using api.Enums.Auth;
 using api.Errors;
-using api.Helpers;
 using api.Models.User;
 using api.Repositories.User;
 

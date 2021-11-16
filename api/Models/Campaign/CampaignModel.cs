@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using api.Enums.Campaign;
 using api.Models.Advertisement;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using api.Models.Organization;
-using api.Models.Tag;
 
 namespace api.Models.Campaign
 {

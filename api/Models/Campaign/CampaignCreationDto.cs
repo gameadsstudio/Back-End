@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using api.Enums.Campaign;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace api.Models.Campaign
