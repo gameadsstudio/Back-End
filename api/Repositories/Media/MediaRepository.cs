@@ -206,11 +206,13 @@ namespace api.Repositories.Media
         public MediaUnityModel GetUnityMediaByFilters(MediaQueryFilters filters)
         {
             IQueryable<MediaUnityModel> query = _context.MediaUnity.OrderBy(a => a.DateCreation);
-
+            
             query = query.Include(m => m.Media).ThenInclude(m => m.Tags);
+            query = query.Include(m => m.Media.Advertisements);
             query = query.Where(m => m.Media.Tags.Any(x => filters.AdContainer.Tags.Any(x.Equals)));
             query = query.Where(m => m.Media.State == MediaStateEnum.Processed);
             query = query.Where(m => m.Media.Type == filters.AdContainer.Type);
+            query = query.Where(m => m.Media.Advertisements.Any());
 
             // randomize
             var rand = new Random();

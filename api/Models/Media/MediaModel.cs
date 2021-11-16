@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using api.Enums.Media;
+using api.Models.Advertisement;
 using api.Models.Organization;
 using api.Models.Tag;
 using Type = api.Enums.Media.Type;
@@ -21,6 +22,8 @@ namespace api.Models.Media
         public string Name { get; set; }
 
         public ICollection<TagModel> Tags { get; set; }
+        
+        public ICollection<AdvertisementModel> Advertisements { get; set; }
 
         public Type Type { get; set; }
 
