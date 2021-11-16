@@ -1,5 +1,4 @@
 ﻿using System;
-using api.Enums.Campaign;
 
 namespace api.Models.Campaign
 {

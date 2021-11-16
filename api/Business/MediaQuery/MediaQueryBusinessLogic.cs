@@ -1,10 +1,8 @@
-using System;
 using System.Net;
 using api.Business.AdContainer;
 using api.Business.Media;
 using api.Business.Organization;
 using api.Enums.Media;
-using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.Media;
@@ -17,7 +15,6 @@ namespace api.Business.MediaQuery
     {
         private readonly IMediaBusinessLogic _mediaBusinessLogic;
         private readonly IAdContainerBusinessLogic _adContainerBusinessLogic;
-        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly IMapper _mapper;
 
         public MediaQueryBusinessLogic(IMediaBusinessLogic mediaBusinessLogic,

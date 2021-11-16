@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
 namespace api.Enums.Media
 {
     public enum AspectRatio

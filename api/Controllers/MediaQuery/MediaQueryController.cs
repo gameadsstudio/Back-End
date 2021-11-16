@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using api.Business.MediaQuery;
 using api.Enums.Media;
 using api.Helpers;
 using api.Models.Common;
-using api.Models.Media;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.MediaQuery
