@@ -205,21 +205,30 @@ namespace api.Repositories.Media
 
         public MediaUnityModel GetUnityMediaByFilters(MediaQueryFilters filters)
         {
-            IQueryable<MediaUnityModel> query = _context.MediaUnity.OrderBy(a => a.DateCreation);
+            IQueryable<MediaUnityModel> query = _context.MediaUnity;
             
             query = query.Include(m => m.Media).ThenInclude(m => m.Tags);
             query = query.Include(m => m.Media.Advertisements);
-            query = query.Where(m => filters.AdContainer.Tags.All(m.Media.Tags.Contains));
+            
+            // Does not work, supposed to check if tags match (or if all the tags in the adcontainer are also in the media)
+            // query = query.Where(m => filters.AdContainer.Tags.All(m.Media.Tags.Contains));
+            // query = query.Where(m => filters.AdContainer.Tags.All(x => m.Media.Tags.Any(y => x.Id == y.Id)));
+            // query = query.Where(m => Equals(m.Media.Tags, filters.AdContainer.Tags));
+            
+            query = query.Where(m => m.Media.Tags.Any(x => filters.AdContainer.Tags.Any(x.Equals)));
+            
+            
             query = query.Where(m => m.Media.State == MediaStateEnum.Processed);
             query = query.Where(m => m.Media.Type == filters.AdContainer.Type);
             query = query.Where(m => m.Media.Advertisements.Any());
 
-            // randomize
+            // pick a random one
             var rand = new Random();
+            var g = Guid.NewGuid();
             var skip = rand.Next(0, query.Count());
-            query = query.OrderBy(m => Guid.NewGuid()).Skip(skip);
-            
-            return query.FirstOrDefault();
+            query = query.OrderBy(m => g).Skip(skip).Take(1);
+
+            return query.SingleOrDefault();
         }
 
         #endregion
