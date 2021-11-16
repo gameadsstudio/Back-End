@@ -332,20 +332,15 @@ namespace api.Business.Media
             return dto;
         }
 
-        public IList<MediaUnityPublicDto> GetEngineMedias(MediaQueryFilters filters)
+        public MediaUnityPublicDto GetEngineMedia(MediaQueryFilters filters)
         {
-            var mediaModelList = filters.Engine switch
+            var mediaModel = filters.Engine switch
             {
-                Engine.Unity => _repository.GetUnityMediasByFilters(filters) ??
+                Engine.Unity => _repository.GetUnityMediaByFilters(filters) ??
                                 throw new ApiError(HttpStatusCode.NotFound, "No Media Found"),
                 _ => throw new ApiError(HttpStatusCode.Unused, "Not implemented")
             };
-            var tagNames = filters.Tags.Select(t => t.Name).ToList();
-            var tags = ResolveTags(tagNames);
-            var mediaUnityModels = mediaModelList
-                .Where(u => u.Media.Tags.Any(x => tags.Any(x.Equals)))
-                .ToList();
-            return _mapper.Map(mediaUnityModels, new List<MediaUnityPublicDto>());
+            return _mapper.Map(mediaModel, new MediaUnityPublicDto());
         }
 
         private MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)

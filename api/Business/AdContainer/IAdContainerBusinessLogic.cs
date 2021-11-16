@@ -12,5 +12,6 @@ namespace api.Business.AdContainer
         AdContainerPublicDto UpdateAdContainerById(string id, AdContainerUpdateDto updatedAdContainer,
             ConnectedUser currentUser);
         void DeleteAdContainerById(string id, ConnectedUser currentUser);
+        public AdContainerModel GetAdContainerModelById(string id, ConnectedUser currentUser = null);
     }
 }

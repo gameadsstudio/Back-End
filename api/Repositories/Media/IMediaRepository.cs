@@ -41,6 +41,6 @@ namespace api.Repositories.Media
         int DeleteMedia(MediaUnityModel mediaModel);
 
         // Media Query
-        IList<MediaUnityModel> GetUnityMediasByFilters(MediaQueryFilters filters);
+        MediaUnityModel GetUnityMediaByFilters(MediaQueryFilters filters);
     }
 }
