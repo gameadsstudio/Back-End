@@ -48,19 +48,33 @@ namespace api.Business.AdContainer
             return _mapper.Map(adContainer, new AdContainerPublicDto());
         }
 
-        private AdContainerModel GetAdContainerModelById(string id)
+        public AdContainerModel GetAdContainerModelById(string id, ConnectedUser currentUser = null)
         {
-            return _repository.GetAdContainerById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
+            var result = _repository.GetAdContainerById(GuidHelper.StringToGuidConverter(id));
+
+            if (result == null)
+            {
+                throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
+            }
+
+            if (currentUser == null) return result;
+            
+            if (!_organizationBusinessLogic.IsUserInOrganization(result.Organization.Id, currentUser.Id) &&
+                currentUser.Role != UserRole.User)
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get the ad container of an organization you're not part of");
+            }
+
+            return result;
         }
 
         public (int page, int pageSize, int totalItemCount, List<AdContainerPublicDto> adContainers) GetAdContainers(
             PagingDto paging, AdContainerFiltersDto filters, ConnectedUser currentUser)
         {
             paging = PagingHelper.Check(paging);
-            var (adContainers, totalItemCount) = _repository.GetAdContainers(
-                (paging.Page - 1) * paging.PageSize, paging.PageSize, filters,
-                currentUser.Id);
+            var (adContainers, totalItemCount) = _repository.GetAdContainers((paging.Page - 1) * paging.PageSize,
+                paging.PageSize, filters, currentUser.Id);
             return (paging.Page, paging.PageSize, totalItemCount,
                 _mapper.Map(adContainers, new List<AdContainerPublicDto>()));
         }

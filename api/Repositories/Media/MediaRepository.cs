@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using api.Contexts;
 using api.Enums.Media;
@@ -203,18 +204,21 @@ namespace api.Repositories.Media
 
         #region media-query
 
-        public IList<MediaUnityModel> GetUnityMediasByFilters(MediaQueryFilters filters)
+        public MediaUnityModel GetUnityMediaByFilters(MediaQueryFilters filters)
         {
-            return _context.MediaUnity
-                .OrderByDescending(p => p.DateCreation)
-                .Include(u => u.Media)
-                .ThenInclude(m => m.Organization)
-                .ThenInclude(o => o.Users)
-                .Include(u => u.Media)
-                .ThenInclude(m => m.Tags)
-                .Where(u => u.Media.Type == filters.Type)
-                .Where(u => u.Media.State == MediaStateEnum.Processed)
-                .ToList();
+            IQueryable<MediaUnityModel> query = _context.MediaUnity.OrderBy(a => a.DateCreation);
+
+            query = query.Include(m => m.Media).ThenInclude(m => m.Tags);
+            query = query.Where(m => m.Media.Tags.Any(x => filters.AdContainer.Tags.Any(x.Equals)));
+            query = query.Where(m => m.Media.State == MediaStateEnum.Processed);
+            query = query.Where(m => m.Media.Type == filters.AdContainer.Type);
+
+            // randomize
+            var rand = new Random();
+            var skip = rand.Next(0, query.Count());
+            query = query.OrderBy(m => Guid.NewGuid()).Skip(skip);
+            
+            return query.FirstOrDefault();
         }
 
         #endregion

@@ -2,7 +2,9 @@ using System;
 using System.Net;
 using api.Business.AdContainer;
 using api.Business.Media;
+using api.Business.Organization;
 using api.Enums.Media;
+using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.Media;
@@ -15,10 +17,12 @@ namespace api.Business.MediaQuery
     {
         private readonly IMediaBusinessLogic _mediaBusinessLogic;
         private readonly IAdContainerBusinessLogic _adContainerBusinessLogic;
+        private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly IMapper _mapper;
 
         public MediaQueryBusinessLogic(IMediaBusinessLogic mediaBusinessLogic,
-            IAdContainerBusinessLogic adContainerBusinessLogic, IMapper mapper)
+            IAdContainerBusinessLogic adContainerBusinessLogic, IOrganizationBusinessLogic organizationBusinessLogic,
+            IMapper mapper)
         {
             _mediaBusinessLogic = mediaBusinessLogic;
             _adContainerBusinessLogic = adContainerBusinessLogic;
@@ -27,20 +31,17 @@ namespace api.Business.MediaQuery
 
         public object GetMedia(string adContainerId, Engine engine, ConnectedUser currentUser)
         {
-            var adContainer = _adContainerBusinessLogic.GetAdContainerById(adContainerId, currentUser);
-            var medias =
-                _mediaBusinessLogic.GetEngineMedias(new MediaQueryFilters(adContainer.Tags, engine, adContainer.Type));
+            var adContainer = _adContainerBusinessLogic.GetAdContainerModelById(adContainerId);
+            var media = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, adContainer));
 
-            if (medias.Count == 0)
+            if (media == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"No media found for ad container ${adContainerId}");
             }
-            var rnd = new Random();
-            var r = rnd.Next(medias.Count);
-
+            
             return engine switch
             {
-                Engine.Unity => _mapper.Map(medias[r], new MediaUnityPublicDto()),
+                Engine.Unity => _mapper.Map(media, new MediaUnityPublicDto()),
                 _ => throw new ApiError(HttpStatusCode.NotImplemented, "Specified engine not implemented")
             };
         }
