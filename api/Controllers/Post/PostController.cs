@@ -8,7 +8,7 @@ using api.Models.Common;
 
 namespace api.Controllers.Post
 {
-    [Route("/v1/post")]
+    [Route("/v1/posts")]
     [ApiController]
     public class PostController : ControllerBase
     {
