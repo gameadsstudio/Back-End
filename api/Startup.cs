@@ -14,6 +14,7 @@ using api.Business.Media;
 using api.Business.Version;
 using api.Business.Campaign;
 using api.Business.MediaQuery;
+using api.Business.Post;
 using api.Contexts;
 using api.Enums.User;
 using api.Helpers;
@@ -121,6 +122,7 @@ namespace api
             services.AddScoped<ICampaignBusinessLogic, CampaignBusinessLogic>();
             services.AddScoped<IMediaBusinessLogic, MediaBusinessLogic>();
             services.AddScoped<IMediaQueryBusinessLogic, MediaQueryBusinessLogic>();
+            services.AddScoped<IPostBusinessLogic, PostBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
