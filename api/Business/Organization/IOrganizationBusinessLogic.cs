@@ -18,5 +18,6 @@ namespace api.Business.Organization
         (int page, int pageSize, int totalItemCount, List<UserPublicDto> users) GetOrganizationUsers(string id, PagingDto paging, ConnectedUser currentUser);
         OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser);
         bool IsUserInOrganization(Guid orgId, Guid userId);
+        void AddStripeAccount(Guid id, string stripeAccount);
     }
 }

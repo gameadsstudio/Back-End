@@ -196,5 +196,13 @@ namespace api.Business.Organization
             var org = GetOrganizationModelById(orgId);
             return org.Users?.Any(user => userId == user.Id) ?? false;
         }
+
+        public void AddStripeAccount(Guid id, string stripeAccount)
+        {
+            var organization = GetOrganizationModelById(id);
+
+            organization.StripeAccount = stripeAccount;
+            _repository.UpdateOrganization(organization);
+        }
     }
 }
