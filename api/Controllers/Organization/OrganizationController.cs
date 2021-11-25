@@ -1,9 +1,12 @@
-﻿using api.Business.Organization;
+﻿using System;
+using api.Business.Organization;
+using api.Business.Stripe;
 using api.Models.Organization;
 using Microsoft.AspNetCore.Mvc;
 using api.Helpers;
 using api.Models.Common;
 using api.Models.User;
+using api.Models.Stripe;
 
 namespace api.Controllers.Organization
 {
@@ -13,9 +16,12 @@ namespace api.Controllers.Organization
     {
         private readonly IOrganizationBusinessLogic _business;
 
-        public OrganizationController(IOrganizationBusinessLogic organizationBusinessLogic)
+        private readonly IStripeBusinessLogic _businessStripe;
+
+        public OrganizationController(IOrganizationBusinessLogic organizationBusinessLogic, IStripeBusinessLogic stripeBusinessLogic)
         {
             _business = organizationBusinessLogic;
+            _businessStripe = stripeBusinessLogic;
         }
 
         [HttpGet("{id}")]
@@ -36,8 +42,21 @@ namespace api.Controllers.Organization
         public ActionResult<GetDto<OrganizationPrivateDto>> Post([FromForm] OrganizationCreationDto newOrganization)
         {
             var currentUser = new ConnectedUser(User.Claims);
+            var organizationResponse = _business.AddNewOrganization(
+                newOrganization,
+                currentUser
+            );
+            var customer = _businessStripe.CreateAccount(
+                organizationResponse.Name,
+                organizationResponse.Email,
+                "Organization"
+            );
+            var organization = _business.GetOrganizationModelById(
+                organizationResponse.Id
+            );
 
-            return Created("Organization", new GetDto<OrganizationPrivateDto>(_business.AddNewOrganization(newOrganization, currentUser)));
+            organization.StripeAccount = customer.Id;
+            return Created("Organization", new GetDto<OrganizationPrivateDto>(organizationResponse));
         }
 
         [HttpPatch("{id}")]
