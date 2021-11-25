@@ -16,6 +16,8 @@ namespace api.Models.Organization
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
+        public string StripeAccount { get; set; }
+
         public string Name { get; set; }
 
         public string Email { get; set; }
