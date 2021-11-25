@@ -16,6 +16,7 @@ using api.Business.Campaign;
 using api.Business.MediaQuery;
 using api.Business.Post;
 using api.Business.Mail;
+using api.Business.Stripe;
 using api.Contexts;
 using api.Enums.User;
 using api.Helpers;
@@ -34,6 +35,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
 
 namespace api
 {
@@ -42,8 +44,8 @@ namespace api
         public void ConfigureServices(IServiceCollection services)
         {
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET") ?? "secret");
-            services.AddControllers();
 
+            services.AddControllers();
             services.AddDbContext<ApiContext>(p =>
                 p.UseNpgsql(
                         $"Host={Environment.GetEnvironmentVariable("GAS_DATABASE_SERVER")};Port=5432;Database={Environment.GetEnvironmentVariable("GAS_POSTGRES_DB")};Username={Environment.GetEnvironmentVariable("GAS_POSTGRES_USER")};Password={Environment.GetEnvironmentVariable("GAS_POSTGRES_PASSWORD")};")
@@ -124,6 +126,7 @@ namespace api
             services.AddScoped<IMailBusinessLogic, MailBusinessLogic>();
             services.AddScoped<IMediaQueryBusinessLogic, MediaQueryBusinessLogic>();
             services.AddScoped<IPostBusinessLogic, PostBusinessLogic>();
+            services.AddScoped<IStripeBusinessLogic, StripeBusinessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApiContext context)
@@ -139,6 +142,9 @@ namespace api
             context.Database.Migrate();
             CreateAdmin(context);
 
+            StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable(
+                "STRIPE_SECRET_KEY"
+            ) ?? "";
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
