@@ -100,5 +100,37 @@ namespace api.Controllers.Organization
 
             return Ok(new GetDto<OrganizationPrivateDto>(_business.DeleteUserFromOrganization(id, userId, currentUser)));
         }
+
+        [HttpPost("{id}/create-session")]
+        public IActionResult CreateSession(Guid id, [FromForm] SessionDto session)
+        {
+            var currentUser = new ConnectedUser(User.Claims);
+            var organization = _business.GetOrganizationById(
+                id.ToString(),
+                currentUser
+            );
+
+            session.Customer = _business.GetOrganizationModelById(
+                id
+            ).StripeAccount;
+            return Ok(_businessStripe.CreateSession(session));
+        }
+
+        [HttpPost("{id}/add-money")]
+        public IActionResult AddMoney(Guid id, [FromForm] PaymentDto payment)
+        {
+            var currentUser = new ConnectedUser(User.Claims);
+            var organization = _business.GetOrganizationById(
+                id.ToString(),
+                currentUser
+            );
+            var charge = _businessStripe.CheckChargeComplete(payment.Id);
+
+            if (!charge.Item1) {
+                return BadRequest();
+            }
+            _business.AddMoney(id, charge.Item2);
+            return Ok();
+        }
     }
 }
