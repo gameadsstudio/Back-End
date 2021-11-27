@@ -28,6 +28,8 @@ namespace api.Models.Organization
 
         public OrganizationType Type { get; set; }
 
+        public long Money { get; set; }
+
         public ICollection<CampaignModel> Campaigns { get; set; }
 
         public ICollection<UserModel> Users { get; set; }

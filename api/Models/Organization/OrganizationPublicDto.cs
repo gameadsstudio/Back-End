@@ -6,6 +6,8 @@ namespace api.Models.Organization
     {
         public Guid Id { get; set; }
 
+        public string StripeAccount { get; set; }
+
         public string Name { get; set; }
 
         public string Email { get; set; }
@@ -13,5 +15,7 @@ namespace api.Models.Organization
         public string LogoUrl { get; set; }
 
         public string WebsiteUrl { get; set; }
+
+        public long Money { get; set; }
     }
 }
