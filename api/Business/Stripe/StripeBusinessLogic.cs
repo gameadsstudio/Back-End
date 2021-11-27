@@ -87,5 +87,16 @@ namespace api.Business.Stripe
 
             return service.Create(options);
         }
+
+        public (Boolean, long) CheckChargeComplete(string id)
+        {
+            Session session = new SessionService().Get(id);
+            PaymentIntentService service = new PaymentIntentService();
+
+            if (session.PaymentStatus != "paid") {
+                return (false, 0);
+            }
+            return (true, service.Get(session.PaymentIntentId).Amount);
+        }
     }
 }

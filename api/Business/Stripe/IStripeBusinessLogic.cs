@@ -1,3 +1,4 @@
+using System;
 using Stripe;
 using Stripe.Checkout;
 using api.Models.Stripe;
@@ -8,5 +9,6 @@ namespace api.Business.Stripe
     {
         Customer CreateAccount(string name, string email, string description);
         Session CreateSession(SessionDto session);
+        (Boolean, long) CheckChargeComplete(string id);
     }
 }
