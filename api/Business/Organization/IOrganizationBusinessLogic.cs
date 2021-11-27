@@ -19,5 +19,6 @@ namespace api.Business.Organization
         OrganizationPrivateDto DeleteUserFromOrganization(string id, string userId, ConnectedUser currentUser);
         bool IsUserInOrganization(Guid orgId, Guid userId);
         void AddStripeAccount(Guid id, string stripeAccount);
+        void AddMoney(Guid id, long money);
     }
 }
