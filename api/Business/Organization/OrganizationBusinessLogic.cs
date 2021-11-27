@@ -204,5 +204,13 @@ namespace api.Business.Organization
             organization.StripeAccount = stripeAccount;
             _repository.UpdateOrganization(organization);
         }
+
+        public void AddMoney(Guid id, long money)
+        {
+            var organization = GetOrganizationModelById(id);
+
+            organization.Money += money;
+            _repository.UpdateOrganization(organization);
+        }
     }
 }
