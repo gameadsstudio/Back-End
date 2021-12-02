@@ -132,6 +132,11 @@ namespace api.Business.Advertisements
 
             advertisement = _mapper.Map(updatedAdvertisement, advertisement);
 
+            if (updatedAdvertisement.MediaId == null)
+            {
+                advertisement.Media = advertisement.Media;
+            }
+
             return _mapper.Map(_repository.UpdateAdvertisement(advertisement), new AdvertisementPublicDto());
         }
 
