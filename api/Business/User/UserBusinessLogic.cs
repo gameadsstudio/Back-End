@@ -169,7 +169,7 @@ namespace api.Business.User
             var assetsDir = $"/assets/users/{user.Id.ToString()}";
             
             // Delete assets dir if exists
-            if (!Directory.Exists(assetsDir))
+            if (Directory.Exists(assetsDir))
             {
                 Directory.Delete(assetsDir, true);
             }

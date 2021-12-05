@@ -142,7 +142,7 @@ namespace api.Business.Game
             var assetsDir = $"/assets/games/{game.Id.ToString()}";
             
             // Delete assets dir if exists
-            if (!Directory.Exists(assetsDir))
+            if (Directory.Exists(assetsDir))
             {
                 Directory.Delete(assetsDir, true);
             }
