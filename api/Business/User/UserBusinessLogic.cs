@@ -172,9 +172,9 @@ namespace api.Business.User
             {
                 throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
             }
-            
+
             var assetsDir = $"/assets/users/{user.Id.ToString()}";
-            
+
             // Delete assets dir if exists
             if (Directory.Exists(assetsDir))
             {
@@ -216,9 +216,9 @@ namespace api.Business.User
 
             user = _mapper.Map(updatedUser, user);
             var result = _repository.UpdateUser(user);
-            
+
             result = AddOrReplaceProfilePicture(result, updatedUser.ProfilePicture);
-            
+
             return _mapper.Map(result, new UserPrivateDto());
         }
 
@@ -265,13 +265,20 @@ namespace api.Business.User
         {
             var user = _repository.GetUserById(currentUser.Id);
 
-            if (user.EmailValidatedId != id) {
+            if (user.EmailValidatedId == Guid.Empty) {
+                throw new ApiError(
+                    HttpStatusCode.BadRequest,
+                    "Email already validated"
+                );
+            }
+            else if (user.EmailValidatedId != id) {
                 throw new ApiError(
                     HttpStatusCode.BadRequest,
                     "Invalid confirmation code"
                 );
             }
             user.EmailValidated = true;
+            user.EmailValidatedId = Guid.Empty;
             _repository.UpdateUser(user);
         }
 
@@ -294,8 +301,9 @@ namespace api.Business.User
             user = _repository.GetUserByPasswordResetId(
                 resetDto.PasswordResetId
             );
-            user.Password = resetDto.Password;
+            user.Password = HashHelper.HashPassword(resetDto.Password);
             user.PasswordResetId = Guid.Empty;
+            _repository.UpdateUser(user);
         }
     }
 }
