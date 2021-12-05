@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using api.Business.User;
 using api.Business.Mail;
 using api.Helpers;
@@ -104,17 +105,14 @@ namespace api.Controllers.User
             string callbackUrl = Environment.GetEnvironmentVariable("GAS_MAIL_CALLBACK_FORGOT_PASSWORD");
 
             callbackUrl.TrimEnd('/');
-            try
-            {
+            try {
                 user = _business.CreatePasswordResetId(_business.GetUserModelByEmail(forgotDto.Email));
                 _businessMail.send(user.Email, "Reset your password",
                     "You can reset your password here: " + $"{callbackUrl}/{user.PasswordResetId}");
             }
-            catch
-            {
-                Console.WriteLine("Error");
+            catch (DataException) {
+                return Ok();
             }
-
             return Ok();
         }
 
