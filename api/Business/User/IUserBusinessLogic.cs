@@ -20,5 +20,6 @@ namespace api.Business.User
         (int page, int pageSize, int totalItemCount, IList<UserPublicDto> items) SearchUser(string search, PagingDto paging, ConnectedUser currentUser);
         UserModel CreatePasswordResetId(UserModel user);
         void ResetPassword(UserResetDto resetDto);
+        void ForgotPassword(UserForgotDto forgotDto);
     }
 }
