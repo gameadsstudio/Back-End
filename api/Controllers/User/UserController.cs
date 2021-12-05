@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net.Mail;
-using System.Net;
 using api.Business.User;
 using api.Business.Mail;
 using api.Helpers;
@@ -18,17 +16,12 @@ namespace api.Controllers.User
         private readonly IUserBusinessLogic _business;
         private readonly IUserAuthServiceBusinessLogic _businessAuthService;
         private readonly IMailBusinessLogic _businessMail;
-        
-        public UserController(IUserBusinessLogic userBusinessLogic, IUserAuthServiceBusinessLogic userAuthServiceBusinessLogic, IMailBusinessLogic mailBusinessLogic)
-        private readonly IMailBusinessLogic _businessMail;
 
-        public UserController(
-            IUserBusinessLogic userBusinessLogic,
-            IMailBusinessLogic mailBusinessLogic
-        )
+        public UserController(IUserBusinessLogic userBusinessLogic,
+            IUserAuthServiceBusinessLogic authServiceBusinessLogic, IMailBusinessLogic mailBusinessLogic)
         {
             _business = userBusinessLogic;
-            _businessAuthService = userAuthServiceBusinessLogic;
+            _businessAuthService = authServiceBusinessLogic;
             _businessMail = mailBusinessLogic;
         }
 
@@ -48,7 +41,8 @@ namespace api.Controllers.User
         }
 
         [HttpGet]
-        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] UserFiltersDto filters)
+        public ActionResult<GetAllDto<UserPublicDto>> GetAll([FromQuery] PagingDto paging,
+            [FromQuery] UserFiltersDto filters)
         {
             var currentUser = new ConnectedUser(User.Claims);
 
@@ -61,17 +55,11 @@ namespace api.Controllers.User
         {
             UserPrivateDto user = _business.AddNewUser(newUser);
             UserModel userData = _business.GetUserModelById(user.Id);
-            string callbackUrl = Environment.GetEnvironmentVariable(
-                "GAS_MAIL_CALLBACK_URL"
-            );
+            string callbackUrl = Environment.GetEnvironmentVariable("GAS_MAIL_CALLBACK_URL");
 
             callbackUrl.TrimEnd('/');
-            _businessMail.send(
-                userData.Email,
-                "Confirm your email address",
-                "You can confirm your email address with this URL: "
-                + $"{callbackUrl}/{userData.EmailValidatedId}"
-            );
+            _businessMail.send(userData.Email, "Confirm your email address",
+                "You can confirm your email address with this URL: " + $"{callbackUrl}/{userData.EmailValidatedId}");
             return Created("User", new GetDto<UserPrivateDto>(user));
         }
 
@@ -102,7 +90,8 @@ namespace api.Controllers.User
 
         [AllowAnonymous]
         [HttpPost("login-service")]
-        public ActionResult<GetDto<UserLoginResponseDto>> LoginFromService([FromForm] UserLoginServiceDto loginServiceDto)
+        public ActionResult<GetDto<UserLoginResponseDto>> LoginFromService(
+            [FromForm] UserLoginServiceDto loginServiceDto)
         {
             return Ok(new GetDto<UserLoginResponseDto>(_businessAuthService.Login(loginServiceDto)));
         }
@@ -112,25 +101,20 @@ namespace api.Controllers.User
         public IActionResult Forgot([FromForm] UserForgotDto forgotDto)
         {
             UserModel user = null;
-            string callbackUrl = Environment.GetEnvironmentVariable(
-                "GAS_MAIL_CALLBACK_FORGOT_PASSWORD"
-            );
+            string callbackUrl = Environment.GetEnvironmentVariable("GAS_MAIL_CALLBACK_FORGOT_PASSWORD");
 
             callbackUrl.TrimEnd('/');
-            try {
-                user = _business.CreatePasswordResetId(
-                    _business.GetUserModelByEmail(forgotDto.Email)
-                );
-                _businessMail.send(
-                    user.Email,
-                    "Reset your password",
-                    "You can reset your password here: "
-                    + $"{callbackUrl}/{user.PasswordResetId}"
-                );
+            try
+            {
+                user = _business.CreatePasswordResetId(_business.GetUserModelByEmail(forgotDto.Email));
+                _businessMail.send(user.Email, "Reset your password",
+                    "You can reset your password here: " + $"{callbackUrl}/{user.PasswordResetId}");
             }
-            catch {
+            catch
+            {
                 Console.WriteLine("Error");
             }
+
             return Ok();
         }
 

@@ -615,13 +615,13 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("profile_picture_url");
-
                     b.Property<Guid>("PasswordResetId")
                         .HasColumnType("uuid")
                         .HasColumnName("password_reset_id");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("profile_picture_url");
 
                     b.Property<string>("Role")
                         .IsRequired()
