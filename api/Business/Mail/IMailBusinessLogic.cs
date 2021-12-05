@@ -1,5 +1,3 @@
-using System.Net.Mail;
-
 namespace api.Business.Mail
 {
     public interface IMailBusinessLogic
