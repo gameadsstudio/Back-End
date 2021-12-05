@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
@@ -11,6 +12,7 @@ using api.Enums.User;
 using api.Errors;
 using api.Helpers;
 using api.Models.User;
+using api.Business.Mail;
 using api.Repositories.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -23,12 +25,14 @@ namespace api.Business.User
         private readonly IMapper _mapper;
         private readonly IUserRepository _repository;
         private readonly UriHelper _uriHelper;
+        private readonly IMailBusinessLogic _businessMail;
 
-        public UserBusinessLogic(ApiContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserBusinessLogic(ApiContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, IMailBusinessLogic mailBusinessLogic)
         {
             _repository = new UserRepository(context);
             _mapper = mapper;
             _uriHelper = new UriHelper(httpContextAccessor);
+            _businessMail = mailBusinessLogic;
         }
 
         // Todo : Find a better return type
@@ -109,26 +113,30 @@ namespace api.Business.User
         public UserPrivateDto AddNewUser(UserCreationDto newUser)
         {
             var user = _mapper.Map(newUser, new UserModel());
+            var callbackUrl = Environment.GetEnvironmentVariable(
+                "GAS_MAIL_CALLBACK_URL"
+            );
 
-            if (_repository.GetUserByUsername(user.Username) != null)
-            {
+            if (_repository.GetUserByUsername(user.Username) != null) {
                 throw new ApiError(HttpStatusCode.Conflict, $"User with username: {user.Username} already exists");
             }
-
-            if (_repository.GetUserByEmail(user.Email) != null)
-            {
+            if (_repository.GetUserByEmail(user.Email) != null) {
                 throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
             }
-
+            callbackUrl.TrimEnd('/');
             user.EmailValidated = false;
             user.EmailValidatedId = Guid.NewGuid();
             user.Password = HashHelper.HashPassword(user.Password);
             user.Role = UserRole.User;
             user.ProfilePictureUrl = new Uri("about:blank");
             var result = _repository.AddNewUser(user);
-
             result = AddOrReplaceProfilePicture(result, newUser.ProfilePicture);
-
+            _businessMail.send(
+                result.Email,
+                "Confirm your email address",
+                "You can confirm your email address with this URL: "
+                + $"{callbackUrl}/{result.EmailValidatedId}"
+            );
             return _mapper.Map(result, new UserPrivateDto());
         }
 
@@ -304,6 +312,27 @@ namespace api.Business.User
             user.Password = HashHelper.HashPassword(resetDto.Password);
             user.PasswordResetId = Guid.Empty;
             _repository.UpdateUser(user);
+        }
+
+        public void ForgotPassword(UserForgotDto forgotDto)
+        {
+            UserModel user = null;
+            string callbackUrl = Environment.GetEnvironmentVariable("GAS_MAIL_CALLBACK_FORGOT_PASSWORD");
+
+            callbackUrl.TrimEnd('/');
+            try {
+                user = this.CreatePasswordResetId(
+                    this.GetUserModelByEmail(forgotDto.Email)
+                );
+                _businessMail.send(
+                    user.Email, "Reset your password",
+                    "You can reset your password here: "
+                    + $"{callbackUrl}/{user.PasswordResetId}"
+                );
+            }
+            catch (DataException) {
+                // NTD
+            }
         }
     }
 }
