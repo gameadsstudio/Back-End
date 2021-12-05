@@ -34,9 +34,11 @@ namespace api.Controllers.Game
         }
 
         [HttpGet]
-        public ActionResult<GetAllDto<GamePublicDto>> GetAll([FromQuery] PagingDto paging)
+        public ActionResult<GetAllDto<GamePublicDto>> GetAll([FromQuery] PagingDto paging, [FromQuery] GameFiltersDto filters)
         {
-            return Ok(new GetAllDto<GamePublicDto>(_business.GetGames(paging)));
+            var currentUser = new ConnectedUser(User.Claims);
+            
+            return Ok(new GetAllDto<GamePublicDto>(_business.GetGames(paging, filters, currentUser)));
         }
 
         [HttpPatch("{id}")]
