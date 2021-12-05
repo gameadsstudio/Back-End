@@ -93,6 +93,13 @@ namespace api.Business.Advertisements
 
             advertisement.Campaign = campaign;
 
+            if (newAdvertisement.MediaId != Guid.Empty)
+            {
+                var mediaDto = _mediaBusinessLogic.GetMediaById(newAdvertisement.MediaId.ToString(), currentUser);
+                var media = _mediaBusinessLogic.GetMediaModelById(mediaDto.Id.ToString());
+                advertisement.Media = media;
+            }
+            
             if (advertisement.AgeMin == 0)
             {
                 advertisement.AgeMin = campaign.AgeMin;
@@ -118,9 +125,9 @@ namespace api.Business.Advertisements
                     "Cannot modify an advertisement in an organization you're not a part of");
             }
 
-            if (updatedAdvertisement.MediaId != null)
+            if (updatedAdvertisement.MediaId != Guid.Empty)
             {
-                var media = _mediaBusinessLogic.GetMediaModelById(updatedAdvertisement.MediaId);
+                var media = _mediaBusinessLogic.GetMediaModelById(updatedAdvertisement.MediaId.ToString());
                 if (media.Organization.Id != advertisement.Campaign.Organization.Id)
                 {
                     throw new ApiError(HttpStatusCode.Forbidden,

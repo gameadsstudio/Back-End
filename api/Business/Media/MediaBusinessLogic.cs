@@ -332,7 +332,7 @@ namespace api.Business.Media
             return dto;
         }
 
-        public MediaUnityPublicDto GetEngineMedia(MediaQueryFilters filters)
+        public MediaUnityModel GetEngineMedia(MediaQueryFilters filters)
         {
             var mediaModel = filters.Engine switch
             {
@@ -340,10 +340,11 @@ namespace api.Business.Media
                                 throw new ApiError(HttpStatusCode.NotFound, "No Media Found"),
                 _ => throw new ApiError(HttpStatusCode.Unused, "Not implemented")
             };
-            return _mapper.Map(mediaModel, new MediaUnityPublicDto());
+
+            return mediaModel;
         }
 
-        private MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
+        public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
         {
             var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
                              throw new ApiError(HttpStatusCode.PartialContent,
