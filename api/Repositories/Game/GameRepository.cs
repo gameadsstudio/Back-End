@@ -46,9 +46,14 @@ namespace api.Repositories.Game
             return updatedGame;
         }
 
-        public (IList<GameModel>, int totalItemCount) GetGames(int offset, int limit)
+        public (IList<GameModel>, int totalItemCount) GetGames(int offset, int limit, GameFiltersDto filters)
         {
             IQueryable<GameModel> query = _context.Game.OrderBy(p => p.DateCreation);
+            
+            if (filters.OrganizationId != Guid.Empty)
+            {
+                query = query.Where(game => game.Organization.Id == filters.OrganizationId);
+            }
             
             return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }

@@ -103,10 +103,18 @@ namespace api.Business.Game
                    throw new ApiError(HttpStatusCode.NotFound, $"Could not find a game with Id: {id}");
         }
 
-        public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging)
+        public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging, GameFiltersDto filters, ConnectedUser user)
         {
             paging = PagingHelper.Check(paging);
-            var (games, totalItemCount) = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize);
+
+            if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, user.Id))
+            {
+                throw new ApiError(HttpStatusCode.Forbidden,
+                    "Cannot get games from organization which you are not a part of");
+            }
+            
+            var (games, totalItemCount) = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
+            
             return (paging.Page, paging.PageSize, totalItemCount, _mapper.Map(games, new List<GamePublicDto>()));
         }
 
