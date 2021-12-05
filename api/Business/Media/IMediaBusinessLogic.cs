@@ -14,12 +14,14 @@ namespace api.Business.Media
         MediaPublicDto UpdateMediaById(string id, MediaUpdateDto updatedMedia,
             ConnectedUser currentUser);
         MediaPublicDto GetEngineMediaById(string id, ConnectedUser currentUser, Engine engine);
-        MediaUnityPublicDto GetEngineMedia(MediaQueryFilters filter);
+        MediaUnityModel GetEngineMedia(MediaQueryFilters filter);
         void DeleteMediaById(string id, ConnectedUser currentUser);
         MediaUnityPublicDto AddNewMediaUnity(MediaUnityCreationDto newMediaUnity, string mediaId);
         MediaPublicDto UpdateMediaState(MediaState newState, string mediaId);
         MediaModel GetMediaModelById(string mediaId);
         MediaPublicDto RetryBuild(string id, ConnectedUser currentUser);
         MediaUnityPublicDto UpdateMediaUnity(MediaUnityUpdateDto updatedUnityMedia, string mediaId);
+
+        public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId);
     }
 }

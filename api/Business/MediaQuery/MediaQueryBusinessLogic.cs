@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using api.Business.AdContainer;
 using api.Business.Media;
@@ -29,18 +30,30 @@ namespace api.Business.MediaQuery
         public object GetMedia(string adContainerId, Engine engine, ConnectedUser currentUser)
         {
             var adContainer = _adContainerBusinessLogic.GetAdContainerModelById(adContainerId);
-            var media = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, adContainer));
+            var engineMedia = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, adContainer));
 
-            if (media == null)
+            if (engineMedia == null)
             {
                 throw new ApiError(HttpStatusCode.NotFound, $"No media found for ad container ${adContainerId}");
             }
-            
-            return engine switch
+
+            var media = _mediaBusinessLogic.GetMediaModelById(engineMedia.Media.Id.ToString());
+
+            var result = engine switch
             {
-                Engine.Unity => _mapper.Map(media, new MediaUnityPublicDto()),
+                Engine.Unity => _mapper.Map(media, new MediaPublicDto()),
                 _ => throw new ApiError(HttpStatusCode.NotImplemented, "Specified engine not implemented")
             };
+            
+            result.Media = engine switch
+            {
+                Engine.Unity => _mediaBusinessLogic.GetMediaUnityPublicDtoByMediaId(media.Id.ToString()),
+                _ => throw new ApiError(HttpStatusCode.PartialContent,
+                    $"Media with id {media.Id} does not have specified media")
+            };
+
+            return result;
+            
         }
     }
 }
