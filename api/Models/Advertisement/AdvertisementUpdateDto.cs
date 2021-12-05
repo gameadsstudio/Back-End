@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace api.Models.Advertisement
@@ -12,6 +13,6 @@ namespace api.Models.Advertisement
         [RangeAttribute(0, 120)]
         public int AgeMax { get; set; }
         
-        public string MediaId { get; set; }
+        public Guid MediaId { get; set; }
     }
 }

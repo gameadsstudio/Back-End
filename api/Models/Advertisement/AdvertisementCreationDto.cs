@@ -9,6 +9,8 @@ namespace api.Models.Advertisement
         [BindRequired]
         public Guid CampaignId { get; set; }
         
+        public Guid MediaId { get; set; }
+        
         [Required]
         public string Name { get; set; }
 
