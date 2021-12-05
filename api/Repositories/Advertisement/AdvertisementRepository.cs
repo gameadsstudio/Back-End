@@ -36,6 +36,8 @@ namespace api.Repositories.Advertisement
         {
             IQueryable<AdvertisementModel> query = _context.Advertisement.OrderBy(a => a.DateCreation);
 
+            query = query.Include(advertisement => advertisement.Media);
+
             if (filters.OrganizationId != Guid.Empty)
             {
                 query = query.Where(o => o.Campaign.Organization.Id == filters.OrganizationId);
