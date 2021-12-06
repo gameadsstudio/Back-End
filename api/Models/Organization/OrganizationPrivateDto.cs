@@ -19,6 +19,8 @@ namespace api.Models.Organization
 
         public string WebsiteUrl { get; set; }
 
+        public long Money { get; set; }
+
         public OrganizationType Type { get; set; }
 
         public List<CampaignModel> Campaigns { get; set; }
