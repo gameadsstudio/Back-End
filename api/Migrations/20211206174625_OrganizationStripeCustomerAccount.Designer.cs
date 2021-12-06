@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.Contexts;
@@ -9,9 +10,10 @@ using api.Contexts;
 namespace api.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20211206174625_OrganizationStripeCustomerAccount")]
+    partial class OrganizationStripeCustomerAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,14 +601,6 @@ namespace api.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
-                    b.Property<bool>("EmailValidated")
-                        .HasColumnType("boolean")
-                        .HasColumnName("email_validated");
-
-                    b.Property<Guid>("EmailValidatedId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("email_validated_id");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("text")
                         .HasColumnName("first_name");
@@ -622,10 +616,6 @@ namespace api.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text")
                         .HasColumnName("password");
-
-                    b.Property<Guid>("PasswordResetId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("password_reset_id");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("text")
