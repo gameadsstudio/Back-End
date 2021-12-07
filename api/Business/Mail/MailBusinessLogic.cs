@@ -19,6 +19,8 @@ namespace api.Business.Mail
                 )
             )
             {
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(
                     Environment.GetEnvironmentVariable("GAS_MAIL_USERNAME"),
                     Environment.GetEnvironmentVariable("GAS_MAIL_PASSWORD")
