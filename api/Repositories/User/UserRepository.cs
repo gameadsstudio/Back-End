@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using api.Contexts;
+using api.Enums.User;
 using api.Models.User;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,33 +39,32 @@ namespace api.Repositories.User
 
         public UserModel GetUserByPasswordResetId(Guid passwordResetId)
         {
-            return _context.User.SingleOrDefault(
-                a => a.PasswordResetId == passwordResetId
-            );
+            return _context.User.SingleOrDefault(a => a.PasswordResetId == passwordResetId);
         }
 
         public (IList<UserModel> users, int totalItemCount) GetUsers(int offset, int limit, UserFiltersDto filters)
         {
             IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
 
+            query = query.Where(user => user.Role != UserRole.Admin);
+            
             if (!string.IsNullOrEmpty(filters.Username))
             {
                 query = query.Where(user => user.Username.ToLower().Equals(filters.Username.ToLower()));
             }
+
             if (!string.IsNullOrEmpty(filters.Email))
             {
                 query = query.Where(user => user.Email.ToLower().Equals(filters.Email.ToLower()));
             }
+
             if (filters.OrganizationId != Guid.Empty)
             {
                 query = query.Where(user =>
                     user.Organizations.Any(organization => organization.Id == filters.OrganizationId));
             }
 
-            return (query
-                .Skip(offset)
-                .Take(limit)
-                .ToList(), query.Count());
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
 
         public UserModel AddNewUser(UserModel user)
@@ -94,15 +94,13 @@ namespace api.Repositories.User
 
         public (IList<UserModel> users, int totalItemCount) SearchUser(int offset, int limit, string search)
         {
-                var query = _context.User.Where(user =>
-                    user.Username.ToLower().Contains(search.ToLower()) ||
-                    user.Email.ToLower().Contains(search.ToLower()));
+            IQueryable<UserModel> query = _context.User.OrderBy(p => p.Username);
 
-                return (query
-                    .OrderBy(user => user.Username)
-                    .Skip(offset)
-                    .Take(limit)
-                    .ToList(), query.Count());
+            query = query.Where(user => user.Role != UserRole.Admin);
+            query = query.Where(user =>
+                user.Username.ToLower().Contains(search.ToLower()) || user.Email.ToLower().Contains(search.ToLower()));
+
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
     }
 }
