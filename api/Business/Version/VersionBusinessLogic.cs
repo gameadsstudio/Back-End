@@ -6,7 +6,9 @@ using api.Business.Organization;
 using api.Contexts;
 using api.Errors;
 using api.Helpers;
+using api.Models.AdContainer;
 using api.Models.Version;
+using api.Repositories.AdContainer;
 using api.Repositories.Version;
 using AutoMapper;
 
@@ -18,11 +20,13 @@ namespace api.Business.Version
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly IGameBusinessLogic _gameBusinessLogic;
         private readonly IVersionRepository _repository;
+        private readonly IAdContainerRepository _adContainerRepository;
 
         public VersionBusinessLogic(ApiContext context, IMapper mapper,
             IOrganizationBusinessLogic organizationBusinessLogic, IGameBusinessLogic gameBusinessLogic)
         {
             _repository = new VersionRepository(context);
+            _adContainerRepository = new AdContainerRepository(context);
             _organizationBusinessLogic = organizationBusinessLogic;
             _gameBusinessLogic = gameBusinessLogic;
             _mapper = mapper;
@@ -103,6 +107,7 @@ namespace api.Business.Version
                     "Cannot delete a game version from an organization to which you don't belong.");
             }
 
+            _adContainerRepository.DeleteAdContainersForVersion(version.Id);
             _repository.DeleteVersion(version);
         }
 

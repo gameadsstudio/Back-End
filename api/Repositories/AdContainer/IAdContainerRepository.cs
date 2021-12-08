@@ -12,5 +12,6 @@ namespace api.Repositories.AdContainer
         (List<AdContainerModel>, int totalItemCount) GetAdContainers(int offset, int limit, AdContainerFiltersDto filters, Guid userId);
         AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer);
         int DeleteAdContainer(AdContainerModel adContainer);
+        int DeleteAdContainersForVersion(Guid versionId);
     }
 }

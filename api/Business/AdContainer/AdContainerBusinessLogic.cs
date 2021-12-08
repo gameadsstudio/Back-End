@@ -18,7 +18,6 @@ namespace api.Business.AdContainer
     {
         private readonly IMapper _mapper;
         private readonly IAdContainerRepository _repository;
-
         private readonly ITagBusinessLogic _tagBusinessLogic;
         private readonly IOrganizationBusinessLogic _organizationBusinessLogic;
         private readonly IVersionBusinessLogic _versionBusinessLogic;
@@ -56,7 +55,7 @@ namespace api.Business.AdContainer
             }
 
             if (currentUser == null) return result;
-            
+
             if (!_organizationBusinessLogic.IsUserInOrganization(result.Organization.Id, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
             {

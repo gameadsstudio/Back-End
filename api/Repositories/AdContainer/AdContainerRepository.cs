@@ -25,8 +25,7 @@ namespace api.Repositories.AdContainer
 
         public AdContainerModel GetAdContainerById(Guid id)
         {
-            return _context.AdContainer
-                .Include(a => a.Version)
+            return _context.AdContainer.Include(a => a.Version)
                 .Include(a => a.Tags)
                 .Include(a => a.Organization)
                 .SingleOrDefault(a => a.Id == id);
@@ -34,14 +33,14 @@ namespace api.Repositories.AdContainer
 
         public AdContainerModel GetAdContainerByName(string name)
         {
-            return _context.AdContainer
-                .Include(a => a.Tags)
+            return _context.AdContainer.Include(a => a.Tags)
                 .Include(a => a.Organization)
                 .Include(a => a.Version)
                 .SingleOrDefault(a => a.Name == name);
         }
-        
-        public (List<AdContainerModel>, int totalItemCount) GetAdContainers(int offset, int limit, AdContainerFiltersDto filters, Guid userId)
+
+        public (List<AdContainerModel>, int totalItemCount) GetAdContainers(int offset, int limit,
+            AdContainerFiltersDto filters, Guid userId)
         {
             IQueryable<AdContainerModel> query = _context.AdContainer.OrderBy(a => a.DateCreation);
 
@@ -62,10 +61,7 @@ namespace api.Repositories.AdContainer
 
             query = query.Where(a => a.Organization.Users.Any(u => u.Id == userId));
 
-            return (query.Skip(offset)
-                        .Take(limit)
-                        .ToList(),
-                    query.Count());
+            return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
 
         public AdContainerModel UpdateAdContainer(AdContainerModel updatedAdContainer)
@@ -78,6 +74,13 @@ namespace api.Repositories.AdContainer
         public int DeleteAdContainer(AdContainerModel adContainer)
         {
             _context.AdContainer.Remove(adContainer);
+            return _context.SaveChanges();
+        }
+
+        public int DeleteAdContainersForVersion(Guid versionId)
+        {
+            _context.AdContainer.RemoveRange(_context.AdContainer.Include(a => a.Version)
+                .Where(a => a.Version.Id == versionId));
             return _context.SaveChanges();
         }
     }
