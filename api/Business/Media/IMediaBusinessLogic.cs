@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using api.Enums.Media;
 using api.Helpers;
 using api.Models.Media;
+using api.Models.Media._2D;
+using api.Models.Media._3D;
 using api.Models.Media.Engine.Unity;
 
 namespace api.Business.Media
@@ -21,6 +24,8 @@ namespace api.Business.Media
         MediaModel GetMediaModelById(string mediaId);
         MediaPublicDto RetryBuild(string id, ConnectedUser currentUser);
         MediaUnityPublicDto UpdateMediaUnity(MediaUnityUpdateDto updatedUnityMedia, string mediaId);
+        IEnumerable<Guid> GetMedia2DIds(AspectRatio aspectRatio);
+        IEnumerable<Guid> GetMedia3DIds(int width, int height, int depth);
 
         public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId);
     }

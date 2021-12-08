@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -344,6 +345,14 @@ namespace api.Business.Media
             return mediaModel;
         }
 
+        public IEnumerable<Guid> GetMedia3DIds(int width, int height, int depth)
+        {
+            var media3D = _repository.Get3DMediasBySize(width, height, depth) ??
+                throw new ApiError(HttpStatusCode.NotFound,
+                $"no 3D media found with width, height, depth with values ${width}, ${height}, ${depth} found");
+            return media3D.Select(m => m.Id);
+        }
+
         public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
         {
             var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
@@ -475,6 +484,13 @@ namespace api.Business.Media
                 $"Cannot save Unity media for media with id {mediaUnity.Media.Id}");
 
             return _mapper.Map(mediaUnitySaved, new MediaUnityPublicDto());
+        }
+
+        public IEnumerable<Guid> GetMedia2DIds(AspectRatio aspectRatio)
+        {
+            var media2D = _repository.Get2DMediasByAspectRatio(aspectRatio) ??
+                        throw new ApiError(HttpStatusCode.NotFound, $"no 2D media with aspect ratio ${aspectRatio} found");
+            return media2D.Select(m => m.Id);
         }
 
         public MediaPublicDto UpdateMediaState(MediaState newState, string mediaId)
