@@ -160,9 +160,9 @@ namespace api.Repositories.Media
         {
             return _context.Media3D.Include(m => m.Media)
                 .Where(m =>
-                m.Height == height &&
-                m.Width == width &&
-                m.Depth == depth)
+                (m.Height > height * 0.8 && m.Height < height * 1.2) &&
+                (m.Width > width * 0.8 && m.Width < width * 1.2) &&
+                (m.Depth > depth * 0.8 && m.Depth < depth * 1.2))
                 .ToList();
         }
 
