@@ -350,7 +350,7 @@ namespace api.Business.Media
             var media3D = _repository.Get3DMediasBySize(width, height, depth) ??
                 throw new ApiError(HttpStatusCode.NotFound,
                 $"no 3D media found with width, height, depth with values ${width}, ${height}, ${depth} found");
-            return media3D.Select(m => m.Id);
+            return media3D.Select(m => m.Media.Id);
         }
 
         public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
@@ -490,7 +490,7 @@ namespace api.Business.Media
         {
             var media2D = _repository.Get2DMediasByAspectRatio(aspectRatio) ??
                         throw new ApiError(HttpStatusCode.NotFound, $"no 2D media with aspect ratio ${aspectRatio} found");
-            return media2D.Select(m => m.Id);
+            return media2D.Select(m => m.Media.Id);
         }
 
         public MediaPublicDto UpdateMediaState(MediaState newState, string mediaId)
