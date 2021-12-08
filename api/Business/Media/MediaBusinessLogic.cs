@@ -179,10 +179,10 @@ namespace api.Business.Media
             // Saving model
             using (var fileStream =
                 new FileStream(
-                    $"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                    $"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Model.FileName)}",
                     FileMode.Create))
             {
-                media3DCreationDto.NormalMap.CopyTo(fileStream);
+                media3DCreationDto.Model.CopyTo(fileStream);
                 media3DModel.ModelLink = _uriHelper.UriBuilder(fileStream.Name);
             }
 
