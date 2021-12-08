@@ -1,14 +1,12 @@
-using System;
 using System.Net;
 using api.Business.AdContainer;
 using api.Business.Media;
-using api.Business.Organization;
 using api.Enums.Media;
 using api.Errors;
 using api.Helpers;
 using api.Models.Media;
-using api.Models.Media.Engine.Unity;
 using AutoMapper;
+using Type = api.Enums.Media.Type;
 
 namespace api.Business.MediaQuery
 {
@@ -19,7 +17,7 @@ namespace api.Business.MediaQuery
         private readonly IMapper _mapper;
 
         public MediaQueryBusinessLogic(IMediaBusinessLogic mediaBusinessLogic,
-            IAdContainerBusinessLogic adContainerBusinessLogic, IOrganizationBusinessLogic organizationBusinessLogic,
+            IAdContainerBusinessLogic adContainerBusinessLogic,
             IMapper mapper)
         {
             _mediaBusinessLogic = mediaBusinessLogic;
@@ -30,7 +28,16 @@ namespace api.Business.MediaQuery
         public object GetMedia(string adContainerId, Engine engine, ConnectedUser currentUser)
         {
             var adContainer = _adContainerBusinessLogic.GetAdContainerModelById(adContainerId);
-            var engineMedia = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, adContainer));
+
+            var mediaIDs = adContainer.Type switch
+            {
+                Type.Type2D => _mediaBusinessLogic.GetMedia2DIds(adContainer.AspectRatio),
+                Type.Type3D => _mediaBusinessLogic.GetMedia3DIds(adContainer.Width, adContainer.Height,
+                    adContainer.Depth),
+                _ => throw new ApiError(HttpStatusCode.NotImplemented, "Type not supported"),
+            };
+            
+            var engineMedia = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, mediaIDs, adContainer.Tags));
 
             if (engineMedia == null)
             {

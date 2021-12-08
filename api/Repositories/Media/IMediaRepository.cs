@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using api.Enums.Media;
 using api.Models.Media;
 using api.Models.Media._2D;
 using api.Models.Media._3D;
@@ -25,6 +26,7 @@ namespace api.Repositories.Media
         Media2DModel Get2DMediaByMediaId(Guid id);
         Media2DModel Update2DMedia(Media2DModel updatedMedia);
         int DeleteMedia(Media2DModel mediaModel);
+        IList<Media2DModel> Get2DMediasByAspectRatio(AspectRatio aspectRatio);
 
         // 3D Medias
         Media3DModel AddNew3DMedia(Media3DModel media);
@@ -32,6 +34,7 @@ namespace api.Repositories.Media
         Media3DModel Get3DMediaByMediaId(Guid id);
         Media3DModel Update3DMedia(Media3DModel updatedMedia);
         int DeleteMedia(Media3DModel mediaModel);
+        IList<Media3DModel> Get3DMediasBySize(int width, int height, int depth);
 
         // Unity Medias
         MediaUnityModel AddNewUnityMedia(MediaUnityModel media);

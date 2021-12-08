@@ -114,6 +114,14 @@ namespace api.Repositories.Media
             return _context.SaveChanges();
         }
 
+        public IList<Media2DModel> Get2DMediasByAspectRatio(AspectRatio aspectRatio)
+        {
+            return _context.Media2D
+                .Include(m => m.Media)
+                .Where(m => m.AspectRatio == aspectRatio)
+                .ToList();
+        }
+
         #endregion
 
         #region 3DMedia
@@ -146,6 +154,16 @@ namespace api.Repositories.Media
         {
             _context.Media3D.Remove(media);
             return _context.SaveChanges();
+        }
+
+        public IList<Media3DModel> Get3DMediasBySize(int width, int height, int depth)
+        {
+            return _context.Media3D.Include(m => m.Media)
+                .Where(m =>
+                m.Height == height &&
+                m.Width == width &&
+                m.Depth == depth)
+                .ToList();
         }
 
         #endregion
@@ -193,11 +211,11 @@ namespace api.Repositories.Media
             query = query.Include(m => m.Media).ThenInclude(m => m.Tags);
             query = query.Include(m => m.Media.Advertisements);
             query = query.Where(m => m.Media.State == MediaStateEnum.Processed);
-            query = query.Where(m => m.Media.Type == filters.AdContainer.Type);
+            query = query.Where(m => filters.MediaIds.Any(id => id == m.Media.Id));
             query = query.Where(m => m.Media.Advertisements.Any());
 
             var mediasUnfiltered = query.ToList();
-            var medias = mediasUnfiltered.Where(m => m.Media.Tags.Any(x => filters.AdContainer.Tags.Any(x.Equals)))
+            var medias = mediasUnfiltered.Where(m => m.Media.Tags.Any(x => filters.Tags.Any(x.Equals)))
                 .ToList();
 
             if (!medias.Any()) return null;
