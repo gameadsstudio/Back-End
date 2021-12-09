@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using api.Contexts;
@@ -34,13 +35,13 @@ namespace api.Business.Organization
 
             if (_repository.GetOrganizationByName(organization.Name) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
+                throw new OrganizationNameAlreadyExistError(
                     $"Organization with name: {organization.Name} already exists");
             }
 
             if (_repository.GetOrganizationByEmail(organization.Email) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
+                throw new OrganizationEmailAlreadyExistError(
                     $"Organization with email: {organization.Email} already exists");
             }
 
@@ -71,7 +72,7 @@ namespace api.Business.Organization
             }
             else
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
+                throw new OrganizationInsufficientRightsError(
                     "Cannot delete an organization which you are not a part of");
             }
         }
@@ -96,7 +97,7 @@ namespace api.Business.Organization
 
             if (organization == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find organization with Id: {id}");
+                throw new OrganizationNotFoundError();
             }
 
             return organization;
@@ -109,22 +110,19 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(user => user.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized,
-                    "Cannot modify an organization which you are not a part of");
+                throw new OrganizationInsufficientRightsError();
             }
 
             if (_repository.GetOrganizationByName(updatedOrganization.Name) != null &&
                 updatedOrganization.Name != organization.Name)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"Organization with name: {organization.Name} already exists");
+                throw new OrganizationNameAlreadyExistError();
             }
 
             if (_repository.GetOrganizationByEmail(updatedOrganization.Email) != null &&
                 updatedOrganization.Email != organization.Email)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"Organization with email: {organization.Email} already exists");
+                throw new OrganizationEmailAlreadyExistError();
             }
 
             var organizationMapped = _mapper.Map(updatedOrganization, organization);
@@ -140,13 +138,12 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized,
-                    "Cannot add user to an organization which you are not a part of");
+                throw new OrganizationInsufficientRightsError();
             }
 
             if (organization.Users.Any(x => x.Id.ToString() == userId))
             {
-                throw new ApiError(HttpStatusCode.Conflict, "User already in organization");
+                throw new OrganizationUserAlreadyPresentError();
             }
 
             var user = _userBusinessLogic.GetUserModelById(new Guid(userId));
@@ -173,16 +170,14 @@ namespace api.Business.Organization
 
             if (organization.Users == null || organization.Users.All(x => x.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot remove a user from an organization which you are not a part of");
+                throw new OrganizationInsufficientRightsError();
             }
 
             var userToDelete = _userBusinessLogic.GetUserModelById(new Guid(userId));
 
             if (organization.Users.All(x => x.Id != userToDelete.Id))
             {
-                throw new ApiError(HttpStatusCode.NotFound,
-                    $"No user with Id: {userToDelete.Id} found in organization");
+                throw new OrganizationUserNotFoundError();
             }
 
             organization.Users.Remove(userToDelete);
