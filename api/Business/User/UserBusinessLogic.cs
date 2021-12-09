@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using api.Contexts;
 using api.Enums.User;
@@ -246,6 +247,23 @@ namespace api.Business.User
                 throw new InvalidCredentialsError("Invalid password");
             }
 
+            return GenerateLoginResponseDto(user);
+        }
+
+        public UserLoginResponseDto Refresh(UserRefreshDto refreshDto)
+        {
+            var user = _repository.GetUserByRefreshToken(refreshDto);
+
+            if (user == null)
+            {
+                throw new UserBadRequestError();
+            }
+            
+            return GenerateLoginResponseDto(user);
+        }
+
+        private UserLoginResponseDto GenerateLoginResponseDto(UserModel user)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("GAS_SECRET")!);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -266,7 +284,28 @@ namespace api.Business.User
                     SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new UserLoginResponseDto {Token = tokenHandler.WriteToken(token)};
+            
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            var lenght = 64;
+            var res = new StringBuilder();
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+
+                while (lenght -- > 0)
+                {
+                    rng.GetBytes(uintBuffer);
+                    uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                    res.Append(valid[(int)(num % (uint)valid.Length)]);
+                }
+            }
+
+            var refreshToken = res.ToString();
+
+            user.RefreshToken = refreshToken;
+            _repository.UpdateUser(user);
+
+            return new UserLoginResponseDto {Token = tokenHandler.WriteToken(token), RefreshToken = refreshToken};
         }
 
         public void ConfirmEmail(ConnectedUser currentUser, Guid id)

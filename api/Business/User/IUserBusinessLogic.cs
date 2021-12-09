@@ -21,5 +21,6 @@ namespace api.Business.User
         UserModel CreatePasswordResetId(UserModel user);
         void ResetPassword(UserResetDto resetDto);
         void ForgotPassword(UserForgotDto forgotDto);
+        public UserLoginResponseDto Refresh(UserRefreshDto refreshDto);
     }
 }
