@@ -17,5 +17,6 @@ namespace api.Repositories.User
         int DeleteUser(UserModel user);
         int CountUsers();
         (IList<UserModel> users, int totalItemCount) SearchUser(int offset, int limit, string search);
+        public UserModel GetUserByRefreshToken(UserRefreshDto refreshDto);
     }
 }

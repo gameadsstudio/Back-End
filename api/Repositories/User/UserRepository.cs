@@ -102,5 +102,10 @@ namespace api.Repositories.User
 
             return (query.Skip(offset).Take(limit).ToList(), query.Count());
         }
+
+        public UserModel GetUserByRefreshToken(UserRefreshDto refreshDto)
+        {
+            return _context.User.SingleOrDefault(a => a.RefreshToken == refreshDto.RefreshToken);
+        }
     }
 }

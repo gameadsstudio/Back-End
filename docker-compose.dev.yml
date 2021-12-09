@@ -32,7 +32,7 @@ services:
       - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
       - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
     ports:
-      - "5001:${GAS_PORT}"
+      - "5000:${GAS_PORT}"
     volumes:
       - gas-assets-data:/assets
       - ./api:/app

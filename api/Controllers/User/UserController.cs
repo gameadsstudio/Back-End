@@ -79,6 +79,13 @@ namespace api.Controllers.User
         {
             return Ok(new GetDto<UserLoginResponseDto>(_business.Login(loginDto)));
         }
+        
+        [AllowAnonymous]
+        [HttpGet("refresh")]
+        public ActionResult<GetDto<UserLoginResponseDto>> Login([FromQuery] UserRefreshDto refreshDto)
+        {
+            return Ok(new GetDto<UserLoginResponseDto>(_business.Refresh(refreshDto)));
+        }
 
         [AllowAnonymous]
         [HttpPost("login-service")]
