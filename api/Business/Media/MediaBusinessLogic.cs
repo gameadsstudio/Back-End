@@ -327,7 +327,7 @@ namespace api.Business.Media
         {
             var mediaModel = filters.Engine switch
             {
-                Engine.Unity => _repository.GetUnityMediaByFilters(filters) ?? throw new MediaNotFoundError(),
+                Engine.Unity => _repository.GetUnityMediaByFilters(filters) ?? throw new MediaNotFoundError("Media not found while selecting engine"),
                 _ => throw new MediaEngineNotImplementedError()
             };
 
@@ -467,7 +467,7 @@ namespace api.Business.Media
         public IEnumerable<Guid> GetMedia2DIds(AspectRatio aspectRatio)
         {
             var media2D = _repository.Get2DMediasByAspectRatio(aspectRatio) ??
-                          throw new MediaNotFoundError();
+                          throw new MediaNotFoundError("Media not found while getting media2D");
             return media2D.Select(m => m.Media.Id);
         }
 
