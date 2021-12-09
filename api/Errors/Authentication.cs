@@ -18,14 +18,14 @@ namespace api.Errors
         }
     }
     
-    public class BadToken : ApiError
+    public class BadTokenError : ApiError
     {
         public HttpStatusCode StatusCode { get; set; }
         public string Error { get; set; }
         public string ErrorMessage { get; set; }
         public string Detail { get; set; }
 
-        public BadToken(string detail = "")
+        public BadTokenError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
             Error = "auth-0002";
@@ -34,18 +34,34 @@ namespace api.Errors
         }
     }
     
-    public class InvalidCredentials : ApiError
+    public class InvalidCredentialsError : ApiError
     {
         public HttpStatusCode StatusCode { get; set; }
         public string Error { get; set; }
         public string ErrorMessage { get; set; }
         public string Detail { get; set; }
 
-        public InvalidCredentials(string detail = "")
+        public InvalidCredentialsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
             Error = "auth-0003";
             ErrorMessage = "Invalid credentials";
+            Detail = detail;
+        }
+    }
+    
+    public class AccountNotValidatedError : ApiError
+    {
+        public HttpStatusCode StatusCode { get; set; }
+        public string Error { get; set; }
+        public string ErrorMessage { get; set; }
+        public string Detail { get; set; }
+
+        public AccountNotValidatedError(string detail = "")
+        {
+            StatusCode = HttpStatusCode.Unauthorized;
+            Error = "auth-0004";
+            ErrorMessage = "Account Validation Error";
             Detail = detail;
         }
     }

@@ -34,11 +34,9 @@ namespace api.Middlewares
                 return;
             }
             user = new ConnectedUser(context.User.Claims);
-            if (!user.EmailValidated) {
-                throw new ApiError(
-                    HttpStatusCode.Unauthorized,
-                    "Email address not validated"
-                );
+            if (!user.EmailValidated)
+            {
+                throw new AccountNotValidatedError("Email address not validated");
             }
             await this._next(context);
         }
