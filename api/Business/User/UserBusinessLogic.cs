@@ -42,7 +42,7 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
+                throw new UserNotFoundError($"Couldn't find user with Id: {id}");
             }
 
             if (user.Id == currentUser.Id)
@@ -59,7 +59,7 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
+                throw new UserNotFoundError($"Couldn't find user with Id: {id}");
             }
 
             return user;
@@ -76,7 +76,7 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {currentUser.Id}");
+                throw new UserNotFoundError($"Couldn't find user with Id: {currentUser.Id}");
             }
 
             return _mapper.Map(user, new UserPrivateDto());
@@ -101,8 +101,7 @@ namespace api.Business.User
             if (filters.OrganizationId != Guid.Empty &&
                 currentUser.Organizations.All(p => p.Id != filters.OrganizationId))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get users from an organization which you are not a part of");
+                throw new UserInvalidRightsError("Cannot get users from an organization which you are not a part of");
             }
 
             var (users, totalItemCount) =
@@ -117,11 +116,13 @@ namespace api.Business.User
                 "GAS_MAIL_CALLBACK_URL"
             );
 
-            if (_repository.GetUserByUsername(user.Username) != null) {
-                throw new ApiError(HttpStatusCode.Conflict, $"User with username: {user.Username} already exists");
+            if (_repository.GetUserByUsername(user.Username) != null)
+            {
+                throw new UsernameAlreadyExistError($"User with username: {user.Username} already exists");
             }
-            if (_repository.GetUserByEmail(user.Email) != null) {
-                throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
+            if (_repository.GetUserByEmail(user.Email) != null)
+            {
+                throw new UserEmailAlreadyExistError($"User with email: {user.Email} already exists");
             }
             callbackUrl.TrimEnd('/');
             user.EmailValidated = false;
@@ -173,12 +174,12 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find user with Id: {id}");
+                throw new UserNotFoundError($"Couldn't find user with Id: {id}");
             }
 
             if (user.Id != currentUser.Id && currentUser.Role != UserRole.Admin)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot delete another user's account");
+                throw new UserInvalidRightsError("Cannot delete another user's account");
             }
 
             var assetsDir = $"/assets/users/{user.Id.ToString()}";
@@ -198,18 +199,17 @@ namespace api.Business.User
 
             if (user.Id != currentUser.Id)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot modify another user's account");
+                throw new UserInvalidRightsError("Cannot modify another user's account");
             }
 
             if (updatedUser.Username != null && _repository.GetUserByUsername(updatedUser.Username) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"User with username: {updatedUser.Username} already exists");
+                throw new UsernameAlreadyExistError($"User with username: {updatedUser.Username} already exists");
             }
 
             if (updatedUser.Email != null && _repository.GetUserByEmail(updatedUser.Email) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict, $"User with email: {updatedUser.Email} already exists");
+                throw new UserEmailAlreadyExistError("User with email: {updatedUser.Email} already exists");
             }
 
             if (updatedUser.Password != null)
@@ -238,12 +238,12 @@ namespace api.Business.User
 
             if (user == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, "Couldn't find user with given identifier");
+                throw new UserNotFoundError("Couldn't find user with given identifier");
             }
 
             if (!HashHelper.ValidatePassword(loginDto.Password, user.Password))
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Invalid password");
+                throw new InvalidCredentials("Invalid password");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -273,17 +273,13 @@ namespace api.Business.User
         {
             var user = _repository.GetUserById(currentUser.Id);
 
-            if (user.EmailValidatedId == Guid.Empty) {
-                throw new ApiError(
-                    HttpStatusCode.BadRequest,
-                    "Email already validated"
-                );
+            if (user.EmailValidatedId == Guid.Empty)
+            {
+                throw new AccountValidationError("Email already validated");
             }
-            else if (user.EmailValidatedId != id) {
-                throw new ApiError(
-                    HttpStatusCode.BadRequest,
-                    "Invalid confirmation code"
-                );
+            else if (user.EmailValidatedId != id)
+            {
+                throw new AccountValidationError("Invalid confirmation code");
             }
             user.EmailValidated = true;
             user.EmailValidatedId = Guid.Empty;
@@ -300,11 +296,9 @@ namespace api.Business.User
         {
             UserModel user = null;
 
-            if (resetDto.PasswordResetId == Guid.Empty) {
-                throw new ApiError(
-                    HttpStatusCode.BadRequest,
-                    "Guid cannot be null"
-                );
+            if (resetDto.PasswordResetId == Guid.Empty)
+            {
+                throw new ResetPasswordError("Guid cannot be null");
             }
             user = _repository.GetUserByPasswordResetId(
                 resetDto.PasswordResetId
