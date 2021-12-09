@@ -1,17 +1,15 @@
 using System;
 using System.Net;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace api.Errors
 {
     public class ApiError : Exception
     {
-        public new readonly string Message;
-        public readonly HttpStatusCode StatusCode;
-
-        public ApiError(HttpStatusCode statusCode, string message)
-        {
-            StatusCode = statusCode;
-            Message = message;
-        }
+        public HttpStatusCode StatusCode { get; set; }
+        public string Error { get; set; }
+        public string ErrorMessage { get; set; }
+        public string Detail { get; set; }
     }
+
 }
