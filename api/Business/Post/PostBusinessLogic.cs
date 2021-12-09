@@ -81,11 +81,9 @@ namespace api.Business.Post
         {
             PostModel post = _repository.GetPostById(id);
 
-            if (post == null) {
-                throw new ApiError(
-                    HttpStatusCode.NotFound,
-                    $"Couldn't find post with Id: {id}"
-                );
+            if (post == null)
+            {
+                throw new PostNotFoundError($"Couldn't find post with Id: {id}");
             }
             return post;
         }
