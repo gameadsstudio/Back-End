@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class UsernameAlreadyExistError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public UsernameAlreadyExistError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class UserEmailAlreadyExistError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public UserEmailAlreadyExistError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -36,11 +26,6 @@ namespace api.Errors
     
     public class UserNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public UserNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -52,11 +37,6 @@ namespace api.Errors
     
     public class UserInvalidRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public UserInvalidRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -68,11 +48,6 @@ namespace api.Errors
     
     public class AccountValidationError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public AccountValidationError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;
@@ -84,11 +59,6 @@ namespace api.Errors
     
     public class ResetPasswordError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public ResetPasswordError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;
@@ -100,11 +70,6 @@ namespace api.Errors
     
     public class UserBadRequestError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public UserBadRequestError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;

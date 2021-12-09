@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class MediaTypeNotSupportedError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaTypeNotSupportedError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotImplemented;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class MediaNotFoundForAdContainerError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaNotFoundForAdContainerError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -36,11 +26,6 @@ namespace api.Errors
     
     public class MediaEngineNotImplementedError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaEngineNotImplementedError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotImplemented;
@@ -52,11 +37,6 @@ namespace api.Errors
     
     public class MediaNotSpecifiedError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaNotSpecifiedError(string detail = "")
         {
             StatusCode = HttpStatusCode.PartialContent;
@@ -68,11 +48,6 @@ namespace api.Errors
     
     public class MediaNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -84,11 +59,6 @@ namespace api.Errors
     
     public class MediaInsufficientRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaInsufficientRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -100,11 +70,6 @@ namespace api.Errors
     
     public class MediaMissing2DError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaMissing2DError(string detail = "")
         {
             StatusCode = HttpStatusCode.PartialContent;
@@ -116,11 +81,6 @@ namespace api.Errors
     
     public class MediaMissing3DError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaMissing3DError(string detail = "")
         {
             StatusCode = HttpStatusCode.PartialContent;
@@ -132,11 +92,6 @@ namespace api.Errors
     
     public class MediaNotValidError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaNotValidError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;
@@ -148,11 +103,6 @@ namespace api.Errors
     
     public class MediaTypeNotValidError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaTypeNotValidError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;
@@ -164,11 +114,6 @@ namespace api.Errors
     
     public class MediaSaveError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaSaveError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -180,11 +125,6 @@ namespace api.Errors
     
     public class MediaMissingUnityMediaError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaMissingUnityMediaError(string detail = "")
         {
             StatusCode = HttpStatusCode.PartialContent;
@@ -196,11 +136,6 @@ namespace api.Errors
     
     public class MediaAlreadyExistUnityMediaError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaAlreadyExistUnityMediaError(string detail = "")
         {
             StatusCode = HttpStatusCode.PartialContent;
@@ -212,11 +147,6 @@ namespace api.Errors
     
     public class MediaMissingAssetBundleOrStateError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public MediaMissingAssetBundleOrStateError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;

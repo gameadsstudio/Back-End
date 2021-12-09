@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class OrganizationNameAlreadyExistError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationNameAlreadyExistError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class OrganizationEmailAlreadyExistError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationEmailAlreadyExistError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -36,11 +26,6 @@ namespace api.Errors
     
     public class OrganizationInsufficientRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationInsufficientRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -52,11 +37,6 @@ namespace api.Errors
     
     public class OrganizationNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -68,11 +48,6 @@ namespace api.Errors
     
     public class OrganizationUserAlreadyPresentError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationUserAlreadyPresentError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
@@ -84,11 +59,6 @@ namespace api.Errors
     
     public class OrganizationUserNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public OrganizationUserNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;

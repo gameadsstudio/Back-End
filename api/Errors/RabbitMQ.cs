@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class RabbitMQConnectionError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public RabbitMQConnectionError(string detail = "")
         {
             StatusCode = HttpStatusCode.FailedDependency;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class RabbitSendPayloadError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public RabbitSendPayloadError(string detail = "")
         {
             StatusCode = HttpStatusCode.FailedDependency;

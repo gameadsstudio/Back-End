@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class CampaignInsufficientRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public CampaignInsufficientRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class CampaignNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public CampaignNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -36,11 +26,6 @@ namespace api.Errors
     
     public class CampaignStartAfterEndError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public CampaignStartAfterEndError(string detail = "")
         {
             StatusCode = HttpStatusCode.BadRequest;
