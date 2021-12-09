@@ -6,11 +6,6 @@ namespace api.Errors
     {
         public class VersionInvalidRightsError : ApiError
         {
-            public HttpStatusCode StatusCode { get; set; }
-            public string Error { get; set; }
-            public string ErrorMessage { get; set; }
-            public string Detail { get; set; }
-
             public VersionInvalidRightsError(string detail = "")
             {
                 StatusCode = HttpStatusCode.Forbidden;
@@ -22,11 +17,6 @@ namespace api.Errors
         
         public class VersionSemVerAlreadyExistError : ApiError
         {
-            public HttpStatusCode StatusCode { get; set; }
-            public string Error { get; set; }
-            public string ErrorMessage { get; set; }
-            public string Detail { get; set; }
-
             public VersionSemVerAlreadyExistError(string detail = "")
             {
                 StatusCode = HttpStatusCode.Conflict;
@@ -38,11 +28,6 @@ namespace api.Errors
         
         public class VersionNotFoundError : ApiError
         {
-            public HttpStatusCode StatusCode { get; set; }
-            public string Error { get; set; }
-            public string ErrorMessage { get; set; }
-            public string Detail { get; set; }
-
             public VersionNotFoundError(string detail = "")
             {
                 StatusCode = HttpStatusCode.NotFound;

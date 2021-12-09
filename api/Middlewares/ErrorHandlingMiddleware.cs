@@ -33,6 +33,9 @@ namespace api.Middlewares
 
         private static Task ApiErrorHandler(HttpContext context, ApiError exception)
         {
+            
+            Console.WriteLine("Caught apierror");
+            
             var result = JsonSerializer.Serialize(new
             {
                 status = (int) exception.StatusCode,

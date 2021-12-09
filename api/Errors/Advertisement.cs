@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class AdvertisementInsufficientRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public AdvertisementInsufficientRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class AdvertisementNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public AdvertisementNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;

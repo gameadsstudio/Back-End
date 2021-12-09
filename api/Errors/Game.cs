@@ -4,11 +4,6 @@ namespace api.Errors
 {
     public class GameNotFoundError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public GameNotFoundError(string detail = "")
         {
             StatusCode = HttpStatusCode.NotFound;
@@ -20,11 +15,6 @@ namespace api.Errors
     
     public class GameInsufficientRightsError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public GameInsufficientRightsError(string detail = "")
         {
             StatusCode = HttpStatusCode.Forbidden;
@@ -36,11 +26,6 @@ namespace api.Errors
     
     public class GameNameAlreadyExistError : ApiError
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public string Error { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Detail { get; set; }
-
         public GameNameAlreadyExistError(string detail = "")
         {
             StatusCode = HttpStatusCode.Conflict;
