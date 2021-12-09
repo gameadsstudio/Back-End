@@ -11,5 +11,9 @@ namespace api.Models.Post
         public string Category { get; set; }
 
         public string Content { get; set; }
+
+        public DateTimeOffset DateCreation { get; set; }
+
+        public DateTimeOffset DateUpdate { get; set; }
     }
 }
