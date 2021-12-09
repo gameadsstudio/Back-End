@@ -30,10 +30,7 @@ namespace api.Business.User
         public UserLoginResponseDto Login(UserLoginServiceDto loginServiceDto)
         {
             if (!Enum.IsDefined<Providers>(loginServiceDto.Provider)) {
-                throw new ApiError(
-                    HttpStatusCode.NotFound,
-                    "Authentication service not found"
-                );
+                throw new AuthenticationServiceNotFound();
             }
             else if (loginServiceDto.Provider == Providers.Microsoft) {
                 return this.Microsoft(loginServiceDto.Token);
@@ -43,11 +40,13 @@ namespace api.Business.User
 
         private void AddNewUser(UserModel user)
         {
-            if (_repository.GetUserByUsername(user.Username) != null) {
-                throw new ApiError(HttpStatusCode.Conflict, $"User with username: {user.Username} already exists");
+            if (_repository.GetUserByUsername(user.Username) != null)
+            {
+                throw new UsernameAlreadyExistError($"User with username: {user.Username} already exists");
             }
-            if (_repository.GetUserByEmail(user.Email) != null) {
-                throw new ApiError(HttpStatusCode.Conflict, $"User with email: {user.Email} already exists");
+            if (_repository.GetUserByEmail(user.Email) != null)
+            {
+                throw new UserEmailAlreadyExistError($"User with email: {user.Email} already exists");
             }
             _repository.AddNewUser(user);
         }
@@ -72,10 +71,7 @@ namespace api.Business.User
                 }
             }
             if (!httpResponseMessage.IsSuccessStatusCode) {
-                throw new ApiError(
-                    HttpStatusCode.Forbidden,
-                    "Bad authentication token"
-                );
+                throw new BadToken();
             }
             json = JsonDocument.Parse(
                 httpResponseMessage.Content.ReadAsStringAsync().Result

@@ -35,16 +35,15 @@ namespace api.Middlewares
         {
             var result = JsonSerializer.Serialize(new
             {
-                status = (int)exception.StatusCode,
-                error = exception.Message
+                status = (int) exception.StatusCode,
+                error = exception.Error,
+                message = exception.ErrorMessage,
+                detail = exception.Detail
             });
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)exception.StatusCode;
+            context.Response.StatusCode = (int) exception.StatusCode;
 
-            if (exception.Message != null)
-                return context.Response.WriteAsync(result);
-            else
-                return context.Response.CompleteAsync();
+            return context.Response.WriteAsync(result);
         }
 
         private static Task ExceptionHandler(HttpContext context, Exception exception)
@@ -53,7 +52,9 @@ namespace api.Middlewares
             var result = JsonSerializer.Serialize(new
             {
                 status = 500,
-                error = exception.Message
+                error = "internal-server-error",
+                message = "An internal server error has occured",
+                detail = exception.Message
             });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = 500;
