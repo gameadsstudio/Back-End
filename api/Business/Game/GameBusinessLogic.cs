@@ -34,13 +34,11 @@ namespace api.Business.Game
 
             if (_repository.GetGameByName(game.Name) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict, $"Game with name: {game.Name} already exists");
+                throw new GameNameAlreadyExistError();
             }
-
             if (!_organizationBusinessLogic.IsUserInOrganization(newGame.OrgId, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot create a game for an organization you're not part of");
+                throw new GameInsufficientRightsError();
             }
 
             game.Organization = _organizationBusinessLogic.GetOrganizationModelById(newGame.OrgId);
@@ -85,13 +83,12 @@ namespace api.Business.Game
 
             if (game == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find game with Id: {id}");
+                throw new GameNotFoundError();
             }
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot fetch a game from an organization which you are not a part of");
+                throw new GameInsufficientRightsError();
             }
 
             return _mapper.Map(game, new GamePublicDto());
@@ -100,7 +97,7 @@ namespace api.Business.Game
         public GameModel GetGameModelById(string id)
         {
             return _repository.GetGameById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Could not find a game with Id: {id}");
+                   throw new GameNotFoundError();
         }
 
         public (int page, int pageSize, int totalItemCount, IList<GamePublicDto> games) GetGames(PagingDto paging, GameFiltersDto filters, ConnectedUser user)
@@ -109,8 +106,7 @@ namespace api.Business.Game
 
             if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, user.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get games from organization which you are not a part of");
+                throw new GameInsufficientRightsError();
             }
             
             var (games, totalItemCount) = _repository.GetGames((paging.Page - 1) * paging.PageSize, paging.PageSize, filters);
@@ -124,8 +120,7 @@ namespace api.Business.Game
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot update a game from an organization which you are not a part of");
+                throw new GameInsufficientRightsError();
             }
 
             var gameMapped = _mapper.Map(updatedGame, game);
@@ -143,8 +138,7 @@ namespace api.Business.Game
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot update a game from an organization which you are not a part of");
+                throw new GameInsufficientRightsError();
             }
             
             var assetsDir = $"/assets/games/{game.Id.ToString()}";

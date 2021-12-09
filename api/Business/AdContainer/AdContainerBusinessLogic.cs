@@ -38,8 +38,7 @@ namespace api.Business.AdContainer
             if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the ad container of an organization you're not part of");
+                throw new AdContainerInsufficientRightsError();
             }
 
             return _mapper.Map(adContainer, new AdContainerPublicDto());
@@ -51,7 +50,7 @@ namespace api.Business.AdContainer
 
             if (result == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Could not find ad container with Id: {id}");
+                throw new AdContainerNotFoundError();
             }
 
             if (currentUser == null) return result;
@@ -59,8 +58,7 @@ namespace api.Business.AdContainer
             if (!_organizationBusinessLogic.IsUserInOrganization(result.Organization.Id, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the ad container of an organization you're not part of");
+                throw new AdContainerInsufficientRightsError();
             }
 
             return result;
@@ -85,8 +83,7 @@ namespace api.Business.AdContainer
                 GuidHelper.StringToGuidConverter(adContainer.Version.Game.Organization.Id.ToString()),
                 currentUser.Id) && currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot create an ad container for an organization you're not part of");
+                throw new AdContainerInsufficientRightsError();
             }
 
             adContainer.Organization = adContainer.Version.Game.Organization;
@@ -102,8 +99,7 @@ namespace api.Business.AdContainer
             if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
                 currentUser.Role == UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the ad container of an organization you're not part of");
+                throw new AdContainerInsufficientRightsError();
             }
 
             _mapper.Map(updatedAdContainer, adContainer);
@@ -129,8 +125,7 @@ namespace api.Business.AdContainer
             if (!_organizationBusinessLogic.IsUserInOrganization(adContainer.Organization.Id, currentUser.Id) &&
                 currentUser.Role == UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the ad container of an organization you're not part of");
+                throw new AdContainerInsufficientRightsError();
             }
 
             _repository.DeleteAdContainer(adContainer);
