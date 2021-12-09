@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text.Json;
 using api.Business.Organization;
 using api.Business.Tag;
@@ -45,8 +44,7 @@ namespace api.Business.Media
 
         public MediaModel GetMediaModelById(string id)
         {
-            return _repository.GetMediaById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Media with id {id} not found");
+            return _repository.GetMediaById(GuidHelper.StringToGuidConverter(id)) ?? throw new MediaNotFoundError();
         }
 
         public MediaPublicDto RetryBuild(string id, ConnectedUser currentUser)
@@ -55,7 +53,7 @@ namespace api.Business.Media
 
             if (media.Organization.Users.All(u => u.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+                throw new MediaInsufficientRightsError();
             }
 
             var mediaDto = ConstructMediaDto(media);
@@ -66,8 +64,16 @@ namespace api.Business.Media
             }
             catch (ApiError error)
             {
-                throw new ApiError(error.StatusCode, JsonSerializer.Serialize(mediaDto));
+                throw new ApiError()
+                {
+                    Detail = JsonSerializer.Serialize(mediaDto),
+                    Error = error.Error,
+                    ErrorMessage = error.ErrorMessage,
+                    StatusCode = error.StatusCode
+                };
             }
+            
+            
 
             return mediaDto;
         }
@@ -78,16 +84,11 @@ namespace api.Business.Media
 
             dto.Media = media.Type switch
             {
-                Type.Type2D => _mapper.Map(_repository.Get2DMediaByMediaId(media.Id) ??
-                                           throw new ApiError(HttpStatusCode.PartialContent,
-                                               $"Media with id {media.Id} does not have a 2D media"),
-                    new Media2DPublicDto()),
-                Type.Type3D => _mapper.Map(_repository.Get3DMediaByMediaId(media.Id) ??
-                                           throw new ApiError(HttpStatusCode.PartialContent,
-                                               $"Media with id {media.Id} does not have a 3D media"),
-                    new Media3DPublicDto()),
-                _ => throw new ApiError(HttpStatusCode.PartialContent,
-                    $"Media with id {media.Id} does not have media")
+                Type.Type2D => _mapper.Map(
+                    _repository.Get2DMediaByMediaId(media.Id) ?? throw new MediaMissing2DError(), new Media2DPublicDto()),
+                Type.Type3D => _mapper.Map(
+                    _repository.Get3DMediaByMediaId(media.Id) ?? throw new MediaMissing3DError(), new Media3DPublicDto()),
+                _ => throw new MediaNotSpecifiedError()
             };
             return dto;
         }
@@ -104,11 +105,10 @@ namespace api.Business.Media
             var media2DCreationDto = _mapper.Map(mediaCDto, new Media2DCreationDto());
             var media2DModel = _mapper.Map(media2DCreationDto, new Media2DModel());
 
-            if (media2DCreationDto.Texture == null ||
-                media2DCreationDto.NormalMap == null ||
+            if (media2DCreationDto.Texture == null || media2DCreationDto.NormalMap == null ||
                 media2DCreationDto.AspectRatio == 0)
             {
-                throw new ApiError(HttpStatusCode.BadRequest, "2D media not valid");
+                throw new MediaNotValidError();
             }
 
             var assetsDir = $"/assets/{media.Id.ToString()}";
@@ -121,8 +121,7 @@ namespace api.Business.Media
 
             // Saving texture
             using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
+                new FileStream($"{assetsDir}/texture{Path.GetExtension(media2DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media2DCreationDto.Texture.CopyTo(fileStream);
@@ -131,8 +130,7 @@ namespace api.Business.Media
 
             // Saving normal map
             using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/normal_map{Path.GetExtension(media2DCreationDto.NormalMap.FileName)}",
+                new FileStream($"{assetsDir}/normal_map{Path.GetExtension(media2DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
                 media2DCreationDto.NormalMap.CopyTo(fileStream);
@@ -140,8 +138,7 @@ namespace api.Business.Media
             }
 
             media2DModel.Media = media;
-            var _ = _repository.AddNew2DMedia(media2DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
-                $"Cannot save 2D media for media with id {media.Id}");
+            var _ = _repository.AddNew2DMedia(media2DModel) ?? throw new MediaSaveError();
         }
 
         private void SaveMedia3D(MediaCreationDto mediaCDto, MediaModel media)
@@ -149,14 +146,11 @@ namespace api.Business.Media
             var media3DCreationDto = _mapper.Map(mediaCDto, new Media3DCreationDto());
             var media3DModel = _mapper.Map(media3DCreationDto, new Media3DModel());
 
-            if (media3DCreationDto.Model == null ||
-                media3DCreationDto.NormalMap == null ||
-                media3DCreationDto.Width == 0 ||
-                media3DCreationDto.Height == 0 ||
-                media3DCreationDto.Depth == 0 ||
+            if (media3DCreationDto.Model == null || media3DCreationDto.NormalMap == null ||
+                media3DCreationDto.Width == 0 || media3DCreationDto.Height == 0 || media3DCreationDto.Depth == 0 ||
                 media3DCreationDto.Texture == null)
             {
-                throw new ApiError(HttpStatusCode.BadRequest, "3D media not valid");
+                throw new MediaNotValidError();
             }
 
             var assetsDir = $"/assets/{media.Id.ToString()}";
@@ -169,8 +163,7 @@ namespace api.Business.Media
 
             // Saving texture
             using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
+                new FileStream($"{assetsDir}/texture{Path.GetExtension(media3DCreationDto.Texture.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.Texture.CopyTo(fileStream);
@@ -179,8 +172,7 @@ namespace api.Business.Media
 
             // Saving model
             using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Model.FileName)}",
+                new FileStream($"{assetsDir}/model{Path.GetExtension(media3DCreationDto.Model.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.Model.CopyTo(fileStream);
@@ -189,8 +181,7 @@ namespace api.Business.Media
 
             // Saving normal map
             using (var fileStream =
-                new FileStream(
-                    $"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.NormalMap.FileName)}",
+                new FileStream($"{assetsDir}/nomal_map{Path.GetExtension(media3DCreationDto.NormalMap.FileName)}",
                     FileMode.Create))
             {
                 media3DCreationDto.NormalMap.CopyTo(fileStream);
@@ -198,8 +189,7 @@ namespace api.Business.Media
             }
 
             media3DModel.Media = media;
-            var _ = _repository.AddNew3DMedia(media3DModel) ?? throw new ApiError(HttpStatusCode.Conflict,
-                $"Cannot save 3D media for media with id {media.Id}");
+            var _ = _repository.AddNew3DMedia(media3DModel) ?? throw new MediaSaveError();
         }
 
         public MediaPublicDto GetMediaById(string id, ConnectedUser currentUser)
@@ -208,23 +198,20 @@ namespace api.Business.Media
 
             if (media.Organization.Users.All(u => u.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+                throw new MediaInsufficientRightsError();
             }
 
             return ConstructMediaDto(media);
         }
 
         public (int page, int pageSize, int totalItemCount, IList<MediaPublicDto> medias) GetMedias(PagingDto paging,
-            IList<string> tagNames,
-            string orgId,
-            ConnectedUser currentUser)
+            IList<string> tagNames, string orgId, ConnectedUser currentUser)
         {
             var org = _organizationBusiness.GetOrganizationModelById(GuidHelper.StringToGuidConverter(orgId));
 
             if (!_organizationBusiness.IsUserInOrganization(org.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized,
-                    "You cannot add a media to an organization you are not part of");
+                throw new MediaInsufficientRightsError();
             }
 
             paging = PagingHelper.Check(paging);
@@ -239,8 +226,7 @@ namespace api.Business.Media
             else
             {
                 var (mediaModels, totalItemCount) = _repository.GetMediasByOrganizationId(
-                    (paging.Page - 1) * paging.PageSize,
-                    paging.PageSize, org.Id, currentUser.Id);
+                    (paging.Page - 1) * paging.PageSize, paging.PageSize, org.Id, currentUser.Id);
                 return (paging.Page, paging.PageSize, totalItemCount,
                     _mapper.Map(mediaModels, new List<MediaPublicDto>()));
             }
@@ -253,8 +239,7 @@ namespace api.Business.Media
             if (!_organizationBusiness.IsUserInOrganization(GuidHelper.StringToGuidConverter(newMedia.OrganizationId),
                 currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized,
-                    "You cannot add a media to an organization you are not part of");
+                throw new MediaInsufficientRightsError();
             }
 
             media.Tags = ResolveTags(newMedia.TagName);
@@ -274,7 +259,7 @@ namespace api.Business.Media
                     SaveMedia3D(newMedia, savedMedia);
                     break;
                 default:
-                    throw new ApiError(HttpStatusCode.BadRequest, "Media type not valid");
+                    throw new MediaTypeNotValidError();
             }
 
             var mediaDto = ConstructMediaDto(savedMedia);
@@ -285,7 +270,13 @@ namespace api.Business.Media
             }
             catch (ApiError error)
             {
-                throw new ApiError(error.StatusCode, JsonSerializer.Serialize(mediaDto));
+                throw new ApiError()
+                {
+                    Detail = JsonSerializer.Serialize(mediaDto),
+                    Error = error.Error,
+                    ErrorMessage = error.ErrorMessage,
+                    StatusCode = error.StatusCode
+                };
             }
 
             return mediaDto;
@@ -297,7 +288,7 @@ namespace api.Business.Media
 
             if (media.Organization.Users.All(u => u.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+                throw new MediaInsufficientRightsError();
             }
 
             if (media.Tags.Count > 0)
@@ -319,7 +310,7 @@ namespace api.Business.Media
 
             if (media.Organization.Users.All(u => u.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+                throw new MediaInsufficientRightsError();
             }
 
             var dto = _mapper.Map(media, new MediaPublicDto());
@@ -327,8 +318,7 @@ namespace api.Business.Media
             dto.Media = engine switch
             {
                 Engine.Unity => GetMediaUnityPublicDtoByMediaId(media.Id.ToString()),
-                _ => throw new ApiError(HttpStatusCode.PartialContent,
-                    $"Media with id {media.Id} does not have specified media")
+                _ => throw new MediaNotSpecifiedError()
             };
             return dto;
         }
@@ -337,9 +327,8 @@ namespace api.Business.Media
         {
             var mediaModel = filters.Engine switch
             {
-                Engine.Unity => _repository.GetUnityMediaByFilters(filters) ??
-                                throw new ApiError(HttpStatusCode.NotFound, "No Media Found"),
-                _ => throw new ApiError(HttpStatusCode.Unused, "Not implemented")
+                Engine.Unity => _repository.GetUnityMediaByFilters(filters) ?? throw new MediaNotFoundError(),
+                _ => throw new MediaEngineNotImplementedError()
             };
 
             return mediaModel;
@@ -347,17 +336,14 @@ namespace api.Business.Media
 
         public IEnumerable<Guid> GetMedia3DIds(int width, int height, int depth)
         {
-            var media3D = _repository.Get3DMediasBySize(width, height, depth) ??
-                throw new ApiError(HttpStatusCode.NotFound,
-                $"no 3D media found with width, height, depth with values ${width}, ${height}, ${depth} found");
+            var media3D = _repository.Get3DMediasBySize(width, height, depth) ?? throw new MediaNotFoundError("No media found with filters");
             return media3D.Select(m => m.Media.Id);
         }
 
         public MediaUnityPublicDto GetMediaUnityPublicDtoByMediaId(string mediaId)
         {
             var mediaUnity = _repository.GetUnityMediaByMediaId(GuidHelper.StringToGuidConverter(mediaId)) ??
-                             throw new ApiError(HttpStatusCode.PartialContent,
-                                 $"Media with id {mediaId} does not have an Unity media");
+                             throw new MediaMissingUnityMediaError();
 
             return _mapper.Map(mediaUnity, new MediaUnityPublicDto());
         }
@@ -368,7 +354,7 @@ namespace api.Business.Media
 
             if (media.Organization.Users.All(u => u.Id != currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Unauthorized, $"You are not part of the media organization");
+                throw new MediaInsufficientRightsError();
             }
 
             _repository.DeleteMedia(media);
@@ -382,12 +368,12 @@ namespace api.Business.Media
 
             if (newMediaUnity.AssetBundle == null && newMediaUnity.State == 0)
             {
-                throw new ApiError(HttpStatusCode.BadRequest, "You need to specify at least an AssetBundle or a State");
+                throw new MediaMissingAssetBundleOrStateError();
             }
 
             if (_repository.GetUnityMediaById(media.Id) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict, $"Media with id ${media.Id} already have an unity media");
+                throw new MediaAlreadyExistUnityMediaError();
             }
 
             // Saving asset bundle
@@ -402,8 +388,7 @@ namespace api.Business.Media
                 }
 
                 using var fileStream =
-                    new FileStream(
-                        $"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
+                    new FileStream($"{assetsDir}/unity{Path.GetExtension(newMediaUnity.AssetBundle.FileName)}",
                         FileMode.Create);
                 newMediaUnity.AssetBundle.CopyTo(fileStream);
                 mediaUnityModel.AssetBundleLink = _uriHelper.UriBuilder(fileStream.Name);
@@ -420,15 +405,11 @@ namespace api.Business.Media
                 mediaUnityModel.StateMessage = "Unity media processed";
             }
 
-            UpdateMediaStateFromEngine(new MediaState
-            {
-                State = mediaUnityModel.State,
-                Message = mediaUnityModel.StateMessage
-            }, mediaId, "unity");
+            UpdateMediaStateFromEngine(
+                new MediaState {State = mediaUnityModel.State, Message = mediaUnityModel.StateMessage}, mediaId,
+                "unity");
             mediaUnityModel.Media = media;
-            var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new ApiError(
-                HttpStatusCode.Conflict,
-                $"Cannot save Unity media for media with id {media.Id}");
+            var mediaUnityModelSaved = _repository.AddNewUnityMedia(mediaUnityModel) ?? throw new MediaSaveError();
 
             return _mapper.Map(mediaUnityModelSaved, new MediaUnityPublicDto());
         }
@@ -438,7 +419,8 @@ namespace api.Business.Media
             var media = GetMediaModelById(mediaId);
 
             if (newState.State != MediaStateEnum.Invalid && newState.State != MediaStateEnum.Processing &&
-                newState.State != MediaStateEnum.Processed) return;
+                newState.State != MediaStateEnum.Processed)
+                return;
 
             media.State = newState.State;
             media.StateMessage = $"|{engine}:{newState.Message}|";
@@ -450,8 +432,7 @@ namespace api.Business.Media
             var _ = GetMediaModelById(mediaId);
 
             var mediaUnity = _repository.GetUnityMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
-                             throw new ApiError(HttpStatusCode.NotFound,
-                                 $"Media with id ${mediaId} does not have a unity media");
+                             throw new MediaMissingUnityMediaError();
 
             // Saving asset bundle
             if (updatedUnityMedia.AssetBundle != null)
@@ -465,8 +446,7 @@ namespace api.Business.Media
                 }
 
                 using var fileStream =
-                    new FileStream(
-                        $"{assetsDir}/unity{Path.GetExtension(updatedUnityMedia.AssetBundle.FileName)}",
+                    new FileStream($"{assetsDir}/unity{Path.GetExtension(updatedUnityMedia.AssetBundle.FileName)}",
                         FileMode.Create);
                 updatedUnityMedia.AssetBundle.CopyTo(fileStream);
                 mediaUnity.AssetBundleLink = _uriHelper.UriBuilder(fileStream.Name);
@@ -479,9 +459,7 @@ namespace api.Business.Media
                 UpdateMediaStateFromEngine(updatedUnityMedia.State, mediaId, "unity");
             }
 
-            var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new ApiError(
-                HttpStatusCode.Conflict,
-                $"Cannot save Unity media for media with id {mediaUnity.Media.Id}");
+            var mediaUnitySaved = _repository.UpdateUnityMedia(mediaUnity) ?? throw new MediaSaveError();
 
             return _mapper.Map(mediaUnitySaved, new MediaUnityPublicDto());
         }
@@ -489,14 +467,14 @@ namespace api.Business.Media
         public IEnumerable<Guid> GetMedia2DIds(AspectRatio aspectRatio)
         {
             var media2D = _repository.Get2DMediasByAspectRatio(aspectRatio) ??
-                        throw new ApiError(HttpStatusCode.NotFound, $"no 2D media with aspect ratio ${aspectRatio} found");
+                          throw new MediaNotFoundError();
             return media2D.Select(m => m.Media.Id);
         }
 
         public MediaPublicDto UpdateMediaState(MediaState newState, string mediaId)
         {
             var media = _repository.GetMediaById(GuidHelper.StringToGuidConverter(mediaId)) ??
-                        throw new ApiError(HttpStatusCode.NotFound, $"media with ID ${mediaId} not found");
+                        throw new MediaNotFoundError();
             media.State = newState.State;
             media.StateMessage = newState.Message;
             return _mapper.Map(_repository.UpdateMedia(media), new MediaPublicDto());
