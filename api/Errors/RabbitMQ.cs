@@ -17,4 +17,20 @@ namespace api.Errors
             Detail = detail;
         }
     }
+    
+    public class RabbitSendPayloadError : ApiError
+    {
+        public HttpStatusCode StatusCode { get; set; }
+        public string Error { get; set; }
+        public string ErrorMessage { get; set; }
+        public string Detail { get; set; }
+
+        public RabbitSendPayloadError(string detail = "")
+        {
+            StatusCode = HttpStatusCode.FailedDependency;
+            Error = "rabbit-0001";
+            ErrorMessage = "Cannot connect to message broker";
+            Detail = detail;
+        }
+    }
 }

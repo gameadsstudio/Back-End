@@ -34,14 +34,14 @@ namespace api.Business.MediaQuery
                 Type.Type2D => _mediaBusinessLogic.GetMedia2DIds(adContainer.AspectRatio),
                 Type.Type3D => _mediaBusinessLogic.GetMedia3DIds(adContainer.Width, adContainer.Height,
                     adContainer.Depth),
-                _ => throw new ApiError(HttpStatusCode.NotImplemented, "Type not supported"),
+                _ => throw new MediaTypeNotSupportedError(),
             };
             
             var engineMedia = _mediaBusinessLogic.GetEngineMedia(new MediaQueryFilters(engine, mediaIDs, adContainer.Tags));
 
             if (engineMedia == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"No media found for ad container ${adContainerId}");
+                throw new MediaNotFoundForAdContainerError();
             }
 
             var media = _mediaBusinessLogic.GetMediaModelById(engineMedia.Media.Id.ToString());
@@ -49,14 +49,13 @@ namespace api.Business.MediaQuery
             var result = engine switch
             {
                 Engine.Unity => _mapper.Map(media, new MediaPublicDto()),
-                _ => throw new ApiError(HttpStatusCode.NotImplemented, "Specified engine not implemented")
+                _ => throw new MediaEngineNotImplementedError()
             };
             
             result.Media = engine switch
             {
                 Engine.Unity => _mediaBusinessLogic.GetMediaUnityPublicDtoByMediaId(media.Id.ToString()),
-                _ => throw new ApiError(HttpStatusCode.PartialContent,
-                    $"Media with id {media.Id} does not have specified media")
+                _ => throw new MediaNotSpecifiedError()
             };
 
             return result;
