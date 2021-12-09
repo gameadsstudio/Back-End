@@ -11,6 +11,7 @@ using api.Models.Version;
 using api.Repositories.AdContainer;
 using api.Repositories.Version;
 using AutoMapper;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace api.Business.Version
 {
@@ -38,7 +39,7 @@ namespace api.Business.Version
 
             if (!_organizationBusinessLogic.IsUserInOrganization(version.Game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
+                throw new Errors.Version.VersionInvalidRightsError(
                     "Cannot get a game version from an organization to which you don't belong.");
             }
 
@@ -60,13 +61,13 @@ namespace api.Business.Version
 
             if (!_organizationBusinessLogic.IsUserInOrganization(game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
+                throw new Errors.Version.VersionInvalidRightsError(
                     "Cannot create a game version from an organization to which you don't belong.");
             }
 
             if (VersionExistForGame(newVersion.SemVer, game.Id))
             {
-                throw new ApiError(HttpStatusCode.Conflict,
+                throw new Errors.Version.VersionSemVerAlreadyExistError(
                     $"Version with SemVer: {newVersion.SemVer} already exist for the game: {game.Id}");
             }
 
@@ -82,13 +83,13 @@ namespace api.Business.Version
 
             if (!_organizationBusinessLogic.IsUserInOrganization(version.Game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot delete a game version from an organization to which you don't belong.");
+                throw new Errors.Version.VersionInvalidRightsError(
+                    "Cannot update a game version from an organization to which you don't belong.");
             }
 
             if (updatedVersion.SemVer != null && VersionExistForGame(updatedVersion.SemVer, version.Game.Id))
             {
-                throw new ApiError(HttpStatusCode.Conflict,
+                throw new Errors.Version.VersionSemVerAlreadyExistError(
                     $"Version with SemVer: {updatedVersion.SemVer} already exist for the game: {version.Game.Id}");
             }
 
@@ -103,7 +104,7 @@ namespace api.Business.Version
 
             if (!_organizationBusinessLogic.IsUserInOrganization(version.Game.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
+                throw new Errors.Version.VersionInvalidRightsError(
                     "Cannot delete a game version from an organization to which you don't belong.");
             }
 
@@ -117,7 +118,7 @@ namespace api.Business.Version
 
             if (version == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find version with Id: {id}");
+                throw new Errors.Version.VersionNotFoundError($"Couldn't find version with Id: {id}");
             }
 
             return version;
