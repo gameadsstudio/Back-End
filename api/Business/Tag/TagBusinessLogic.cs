@@ -24,20 +24,20 @@ namespace api.Business.Tag
         public TagPublicDto GetTagById(string id)
         {
             return _mapper.Map(_repository.GetTagById(GuidHelper.StringToGuidConverter(id)) ??
-                throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found"),
+                throw new TagNotFoundError($"Tag with id {id} not found"),
                 new TagPublicDto());
         }
 
         public TagModel GetTagModelByName(string name)
         {
             return _repository.GetTagByName(name) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Tag with name {name} not found");
+                   throw new TagNotFoundError($"Tag with name {name} not found");
         }
 
         private TagModel GetTagModelById(string id)
         {
             return _repository.GetTagById(GuidHelper.StringToGuidConverter(id)) ??
-                   throw new ApiError(HttpStatusCode.NotFound, $"Tag with id {id} not found");
+                   throw new TagNotFoundError($"Tag with id {id} not found");
         }
 
         public (int page, int pageSize, int totalItemCount, List<TagPublicDto> tags) GetTags(PagingDto paging, TagFiltersDto filters)
@@ -72,8 +72,7 @@ namespace api.Business.Tag
         {
             if (!string.IsNullOrEmpty(name) && _repository.GetTagByName(name) != null)
             {
-                throw new ApiError(HttpStatusCode.Conflict,
-                    $"Tag with name: {name} already exists");
+                throw new TagNameAlreadyExist($"Tag with name: {name} already exists");
             }
         }
         
