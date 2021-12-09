@@ -20,7 +20,7 @@ namespace api.Services.RabbitMQ
 
             if (!ConnectionExists())
             {
-                throw new ApiError(HttpStatusCode.FailedDependency, "Cannot connect to message broker");
+                throw new RabbitMQConnectionError();
             }
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(
@@ -67,7 +67,7 @@ namespace api.Services.RabbitMQ
             }
             catch (Exception e)
             {
-                throw new ApiError(HttpStatusCode.FailedDependency, $"Cannot connect to message broker: {e.Message}");
+                throw new RabbitMQConnectionError($"Cannot connect to message broker: {e.Message}");
             }
         }
 

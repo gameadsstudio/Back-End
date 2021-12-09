@@ -21,18 +21,12 @@ namespace api.Helpers
             Id = Guid.Parse(
                 claims.FirstOrDefault(
                     p => p.Type == ClaimTypes.NameIdentifier
-                )?.Value ?? throw new ApiError(
-                    HttpStatusCode.BadRequest,
-                    "Bad Token - No ID specified in token"
-                )
+                )?.Value ?? throw new BadTokenError("No ID specified in token")
             );
             Role = Enum.Parse<UserRole>(
                 claims.FirstOrDefault(
                     p => p.Type == ClaimTypes.Role
-                )?.Value ?? throw new ApiError(
-                    HttpStatusCode.BadRequest,
-                    "Bad Token - No role specified in token"
-                )
+                )?.Value ?? throw new BadTokenError("No role specified in token")
             );
             EmailValidated = Boolean.Parse(
                 claims.FirstOrDefault(

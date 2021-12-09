@@ -71,7 +71,7 @@ namespace api.Business.User
                 }
             }
             if (!httpResponseMessage.IsSuccessStatusCode) {
-                throw new BadToken();
+                throw new BadTokenError();
             }
             json = JsonDocument.Parse(
                 httpResponseMessage.Content.ReadAsStringAsync().Result

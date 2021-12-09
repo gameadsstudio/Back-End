@@ -243,7 +243,7 @@ namespace api.Business.User
 
             if (!HashHelper.ValidatePassword(loginDto.Password, user.Password))
             {
-                throw new InvalidCredentials("Invalid password");
+                throw new InvalidCredentialsError("Invalid password");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();

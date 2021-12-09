@@ -14,7 +14,7 @@ namespace api.Helpers
             }
             catch (FormatException e)
             {
-                throw new ApiError(HttpStatusCode.BadRequest, e.Message);
+                throw new UserBadRequestError(e.Message);
             }
         }
     }
