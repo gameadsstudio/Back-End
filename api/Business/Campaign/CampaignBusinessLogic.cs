@@ -36,13 +36,12 @@ namespace api.Business.Campaign
 
             if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot create a campaign for an organization you're not part of");
+                throw new CampaignInsufficientRightsError();
             }
             
             if (campaign.DateBegin >= campaign.DateEnd)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot set a starting date after the ending date");
+                throw new CampaignStartAfterEndError();
             }
 
             campaign.Organization = organization;
@@ -57,13 +56,12 @@ namespace api.Business.Campaign
 
             if (!_organizationBusinessLogic.IsUserInOrganization(campaignMerge.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot update a campaign for an organization you're not part of");
+                throw new CampaignInsufficientRightsError();
             }
 
             if (campaignMerge.DateBegin >= campaignMerge.DateEnd)
             {
-                throw new ApiError(HttpStatusCode.Forbidden, "Cannot set a starting date after the ending date");
+                throw new CampaignStartAfterEndError();
             }
             
             return _mapper.Map(_repository.UpdateCampaign(campaignMerge), new CampaignPublicDto());
@@ -75,8 +73,7 @@ namespace api.Business.Campaign
 
             if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot delete a campaign for an organization you're not part of");
+                throw new CampaignInsufficientRightsError();
             }
 
             _repository.DeleteCampaign(campaign);
@@ -88,8 +85,7 @@ namespace api.Business.Campaign
 
             if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get a campaign from an organization to which you don't belong.");
+                throw new CampaignInsufficientRightsError();
             }
 
             return _mapper.Map(campaign, new CampaignPublicDto());
@@ -100,8 +96,7 @@ namespace api.Business.Campaign
         {
             if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id))
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get a campaign from an organization to which you don't belong.");
+                throw new CampaignInsufficientRightsError();
             }
 
             paging = PagingHelper.Check(paging);
@@ -117,7 +112,7 @@ namespace api.Business.Campaign
 
             if (campaign == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find campaign with Id: {id}");
+                throw new CampaignNotFoundError();
             }
 
             return campaign;

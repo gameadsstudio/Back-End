@@ -41,8 +41,7 @@ namespace api.Business.Advertisements
             if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
                 currentUser.Id) && currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the advertisement of an organization you're not a part of");
+                throw new AdvertisementInsufficientRightsError();
             }
 
             return _mapper.Map(advertisement, new AdvertisementPublicDto());
@@ -54,7 +53,7 @@ namespace api.Business.Advertisements
 
             if (advertisement == null)
             {
-                throw new ApiError(HttpStatusCode.NotFound, $"Couldn't find advertisement with Id: {id}");
+                throw new AdvertisementNotFoundError();
             }
 
             return advertisement;
@@ -66,8 +65,7 @@ namespace api.Business.Advertisements
             if (!_organizationBusinessLogic.IsUserInOrganization(filters.OrganizationId, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot get the advertisements of an organization you're not a part of");
+                throw new AdvertisementInsufficientRightsError();
             }
 
             paging = PagingHelper.Check(paging);
@@ -85,8 +83,7 @@ namespace api.Business.Advertisements
             if (!_organizationBusinessLogic.IsUserInOrganization(campaign.Organization.Id, currentUser.Id) &&
                 currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot create an advertisement in an organization you're not a part of");
+                throw new AdvertisementInsufficientRightsError();
             }
 
             var advertisement = _mapper.Map(newAdvertisement, new AdvertisementModel());
@@ -121,8 +118,7 @@ namespace api.Business.Advertisements
             if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
                 currentUser.Id) && currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot modify an advertisement in an organization you're not a part of");
+                throw new AdvertisementInsufficientRightsError();
             }
 
             if (updatedAdvertisement.MediaId != Guid.Empty)
@@ -130,8 +126,7 @@ namespace api.Business.Advertisements
                 var media = _mediaBusinessLogic.GetMediaModelById(updatedAdvertisement.MediaId.ToString());
                 if (media.Organization.Id != advertisement.Campaign.Organization.Id)
                 {
-                    throw new ApiError(HttpStatusCode.Forbidden,
-                        "Cannot add an media from another organisation to this advertisement");
+                    throw new AdvertisementInsufficientRightsError();
                 }
 
                 advertisement.Media = media;
@@ -154,8 +149,7 @@ namespace api.Business.Advertisements
             if (!_organizationBusinessLogic.IsUserInOrganization(advertisement.Campaign.Organization.Id,
                 currentUser.Id) && currentUser.Role != UserRole.User)
             {
-                throw new ApiError(HttpStatusCode.Forbidden,
-                    "Cannot delete an advertisement in an organization you're not a part of");
+                throw new AdvertisementInsufficientRightsError();
             }
 
             _repository.DeleteAdvertisement(advertisement);
